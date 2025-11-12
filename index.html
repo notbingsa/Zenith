@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zenith - Unblocked Games</title>
+    <!-- Load Exo 2 font from Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@100..900&display=swap" rel="stylesheet">
+    <!-- Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Custom Configuration for Tailwind (using Exo 2 font) -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Exo 2"', 'sans-serif'], // Changed font family to Exo 2
+                    },
+                    colors: {
+                        'zenith-dark': '#0c0a09', // Near black background
+                        'zenith-blue': '#3b82f6', // Bright blue for glow
+                        'zenith-purple': '#7c3aed', // Bright purple for glow
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Custom CSS for the glowing text and overall dark gradient */
+        .dark-gradient-bg {
+            /* Mimics the deep dark, slight gradient seen in the reference image */
+            background: linear-gradient(180deg, #111827 0%, #0c0a09 100%);
+            min-height: 100vh;
+        }
+
+        /* The main Zenith title glow effect */
+        .zenith-title-glow {
+            text-shadow: 
+                0 0 5px rgba(59, 130, 246, 0.5), /* soft blue */
+                0 0 20px rgba(124, 58, 237, 0.7), /* purple */
+                0 0 40px rgba(59, 130, 246, 0.3); /* wide blue */
+            color: #ffffff; /* Use white or a very light color for the text itself */
+        }
+
+        /* Smaller heading glow effect */
+        .section-heading-glow {
+            text-shadow: 0 0 10px #7c3aed;
+            color: #d1d5db; /* A light gray */
+        }
+
+        .game-card-shadow {
+            box-shadow: 0 10px 15px rgba(124, 58, 237, 0.3), 0 4px 6px rgba(59, 130, 246, 0.1);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .game-card-shadow:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 15px 25px rgba(124, 58, 237, 0.5), 0 6px 10px rgba(59, 130, 246, 0.2);
+        }
+        
+        /* Style for the fullscreen button */
+        .fullscreen-button {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            z-index: 20;
+            background-color: rgba(124, 58, 237, 0.8);
+            color: white;
+            padding: 8px 12px;
+            border-radius: 9999px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            box-shadow: 0 0 10px rgba(124, 58, 237, 0.5);
+        }
+
+        .fullscreen-button:hover {
+            background-color: rgba(124, 58, 237, 1);
+        }
+    </style>
+</head>
+<body class="font-sans dark-gradient-bg text-gray-100">
+
+    <!-- Header / Navigation Bar -->
+    <header class="p-4 md:p-6 flex justify-between items-center fixed top-0 left-0 right-0 z-10 bg-black/30 backdrop-blur-sm">
+        <!-- Logo and App Name (Left) -->
+        <div class="flex items-center space-x-3">
+            <!-- Mock Logo Icon (Glowing Orb) -->
+            <svg class="w-8 h-8 text-zenith-purple" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="filter: drop-shadow(0 0 5px #7c3aed);"><circle cx="12" cy="12" r="10"></circle><path d="M14.5 9.5a2.5 2.5 0 0 1-5 0"></path><path d="M12 17a5 5 0 0 0 5-5"></path><path d="M7 12a5 5 0 0 0 5 5"></path></svg>
+            <h1 id="header-title" class="text-3xl font-bold">Homepage</h1>
+        </div>
+        
+    </header>
+
+    <!-- Main Content Area (Used for both Homepage and Game View) -->
+    <main class="pt-24 md:pt-32 pb-8 px-4 md:px-8 max-w-7xl mx-auto">
+        
+        <!-- 1. HOMEPAGE CONTENT (Initially Visible) -->
+        <div id="homepage-section">
+            
+            <!-- Main Title Section -->
+            <section class="text-center py-16">
+                <h2 class="text-6xl md:text-8xl font-extrabold zenith-title-glow tracking-tighter mb-4">
+                    Zenith
+                </h2>
+                <!-- Element to display the random tagline -->
+                <p id="random-tagline" class="text-xl md:text-2xl font-medium text-zenith-blue mb-4" style="text-shadow: 0 0 10px #3b82f6;">
+                    <!-- Placeholder text, replaced by JavaScript -->
+                </p>
+                <div class="w-full h-0.5 bg-gradient-to-r from-transparent via-zenith-purple/50 to-transparent mb-16"></div>
+            </section>
+
+            <!-- Recently Played Section -->
+            <section class="text-center mb-16">
+                <h3 class="text-3xl font-bold section-heading-glow mb-8 uppercase tracking-wide">
+                    Recently Played
+                </h3>
+                <div class="text-gray-500 italic text-lg">
+                    No recently played games yet!
+                </div>
+            </section>
+
+            <!-- Random Games Section -->
+            <section class="text-center">
+                <h3 class="text-3xl font-bold section-heading-glow mb-10 uppercase tracking-wide">
+                    Random Games
+                </h3>
+                
+                <!-- Game Grid -->
+                <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-6 lg:gap-8">
+                    <!-- Game 1: Geometry Dash Lite (Updated to use JS click handler) -->
+                    <a href="#" onclick="loadGame('Geometry Dash Lite', 'https://nebulaplay.site/storage/Geometry%20Dash%20Lite.html'); return false;" class="block bg-gray-800 rounded-xl overflow-hidden game-card-shadow">
+                        <img src="https://play-lh.googleusercontent.com/p7kWbWBFxQIrzolEqiV5uSvctLeyssZvBV7UBOX29wzZI52IdcSs4qCB_zsQJL1mt9A" 
+                             onerror="this.src='https://placehold.co/400x400/3b82f6/ffffff?text=Geometry+Dash+Lite'" 
+                             alt="Geometry Dash Lite" 
+                             class="w-full h-auto object-cover rounded-xl transition duration-300 transform scale-[1.02] hover:scale-105" />
+                    </a>
+
+                    <!-- Game 2: Plants vs. Zombies (Mock) -->
+                    <a href="#" class="block bg-gray-800 rounded-xl overflow-hidden game-card-shadow">
+                        <img src="https://placehold.co/400x400/10b981/ffffff?text=Plants+vs.+Zombies" onerror="this.src='https://placehold.co/400x400/10b981/ffffff?text=Game+2'" alt="Plants vs. Zombies" class="w-full h-auto object-cover rounded-xl transition duration-300 transform scale-[1.02] hover:scale-105" />
+                    </a>
+
+                    <!-- Game 3: Minecraft (Mock) -->
+                    <a href="#" class="block bg-gray-800 rounded-xl overflow-hidden game-card-shadow">
+                        <img src="https://placehold.co/400x400/ef4444/ffffff?text=Minecraft" onerror="this.src='https://placehold.co/400x400/ef4444/ffffff?text=Game+3'" alt="Minecraft" class="w-full h-auto object-cover rounded-xl transition duration-300 transform scale-[1.02] hover:scale-105" />
+                    </a>
+
+                    <!-- Game 4: Pokemon Ruby Version (Mock) -->
+                    <a href="#" class="block bg-gray-800 rounded-xl overflow-hidden game-card-shadow">
+                        <img src="https://placehold.co/400x400/f59e0b/ffffff?text=Pokemon+Ruby" onerror="this.src='https://placehold.co/400x400/f59e0b/ffffff?text=Game+4'" alt="Pokemon Ruby Version" class="w-full h-auto object-cover rounded-xl transition duration-300 transform scale-[1.02] hover:scale-105" />
+                    </a>
+                    
+                    <!-- Game 5: Five Nights at Freddy's (Mock) -->
+                    <a href="#" class="block bg-gray-800 rounded-xl overflow-hidden game-card-shadow">
+                        <img src="https://placehold.co/400x400/8b5cf6/ffffff?text=FNAF+4" onerror="this.src='https://placehold.co/400x400/8b5cf6/ffffff?text=Game+5'" alt="Five Nights at Freddy's 4" class="w-full h-auto object-cover rounded-xl transition duration-300 transform scale-[1.02] hover:scale-105" />
+                    </a>
+                    
+                </div>
+                
+            </section>
+        </div>
+        
+        <!-- 2. GAME VIEW CONTAINER (Hidden by default) -->
+        <div id="game-container" class="hidden relative w-full h-[80vh] mx-auto md:max-w-4xl" style="height: calc(100vh - 100px);">
+            <!-- Iframe and Fullscreen button will be generated here -->
+        </div>
+
+        <!-- Bottom Menu Placeholder -->
+        <div class="fixed bottom-0 left-0 p-3 bg-black/50 backdrop-blur-sm rounded-tr-xl">
+            <!-- Updated the button to include a function to go back to the homepage -->
+            <button onclick="showHomepage()" id="menu-button" class="text-gray-400 hover:text-white transition duration-200 flex items-center space-x-2">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+                <span class="text-sm hidden sm:inline">Menu / Back</span>
+            </button>
+        </div>
+        
+    </main>
+
+    <script>
+        // Global references for easy access
+        const homepageSection = document.getElementById('homepage-section');
+        const gameContainer = document.getElementById('game-container');
+        const headerTitle = document.getElementById('header-title');
+        const menuButtonText = document.querySelector('#menu-button span');
+
+
+        // Function to switch to the game view
+        function loadGame(title, url) {
+            // 1. Update Header
+            headerTitle.textContent = title;
+
+            // 2. Hide Homepage and Show Game Container
+            homepageSection.classList.add('hidden');
+            gameContainer.classList.remove('hidden');
+
+            // 3. Clear previous game content
+            gameContainer.innerHTML = '';
+            
+            // 4. Create Iframe
+            const iframe = document.createElement('iframe');
+            iframe.id = 'game-iframe';
+            iframe.src = url;
+            iframe.className = 'w-full h-full rounded-2xl border-none';
+            iframe.allow = 'fullscreen';
+            iframe.setAttribute('allowfullscreen', 'true'); // For broader compatibility
+            iframe.setAttribute('loading', 'lazy');
+
+            // 5. Create Fullscreen Button
+            const fullscreenButton = document.createElement('button');
+            fullscreenButton.className = 'fullscreen-button flex items-center space-x-1';
+            fullscreenButton.innerHTML = `
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-5v4m0 0h-4m4 0l-5 5m-5 0l5 5m0 0v4m0-4h-4m-4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5v-4m0 0h-4m4 0l-5-5"></path></svg>
+                <span>Fullscreen</span>
+            `;
+            
+            // 6. Fullscreen Logic (works on the container)
+            fullscreenButton.onclick = () => {
+                if (gameContainer.requestFullscreen) {
+                    gameContainer.requestFullscreen();
+                } else if (gameContainer.webkitRequestFullscreen) { /* Safari */
+                    gameContainer.webkitRequestFullscreen();
+                } else if (gameContainer.msRequestFullscreen) { /* IE11 */
+                    gameContainer.msRequestFullscreen();
+                } else {
+                    // Fallback for full screen on the iframe itself (might be blocked by browser)
+                    if (iframe.requestFullscreen) {
+                        iframe.requestFullscreen();
+                    }
+                }
+            };
+
+            // 7. Append elements to container
+            gameContainer.appendChild(iframe);
+            gameContainer.appendChild(fullscreenButton);
+            
+            // 8. Update Menu button text
+            menuButtonText.textContent = "Back to Homepage";
+        }
+        
+        // Function to switch back to the homepage
+        function showHomepage() {
+            // 1. Update Header
+            headerTitle.textContent = "Homepage";
+
+            // 2. Show Homepage and Hide Game Container
+            homepageSection.classList.remove('hidden');
+            gameContainer.classList.add('hidden');
+            
+            // 3. Update Menu button text
+            menuButtonText.textContent = "Menu / Back";
+
+             // 4. Exit fullscreen if active
+            if (document.fullscreenElement) {
+                document.exitFullscreen();
+            }
+        }
+
+
+        // Function to initialize homepage taglines
+        document.addEventListener('DOMContentLoaded', () => {
+            const phrases = [
+                "We are doing our work... Just not the teachers.",
+                "This is the only thing keeping me in school.",
+                "\"A student's dream\" - some random student that doesn't exist",
+                "We know you didn't get here accidently.",
+                "What game shall you pick?",
+            ];
+
+            const taglineElement = document.getElementById('random-tagline');
+            
+            if (taglineElement) {
+                // Pick a random phrase
+                const randomIndex = Math.floor(Math.random() * phrases.length);
+                taglineElement.textContent = phrases[randomIndex];
+            }
+        });
+    </script>
+
+</body>
+</html>
