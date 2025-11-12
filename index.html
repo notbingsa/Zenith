@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Zenith - Unblocked Games</title>
-    <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@100..900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght=100..900&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -155,16 +155,32 @@
                 <span>Fullscreen</span>
             `;
             
+            // Updated fullscreen logic to be more compatible with restricted environments
             fullscreenButton.onclick = () => {
-                if (gameContainer.requestFullscreen) {
-                    gameContainer.requestFullscreen();
-                } else if (gameContainer.webkitRequestFullscreen) {
-                    gameContainer.webkitRequestFullscreen();
-                } else if (gameContainer.msRequestFullscreen) {
-                    gameContainer.msRequestFullscreen();
-                } else {
-                    if (iframe.requestFullscreen) {
-                        iframe.requestFullscreen();
+                const element = iframe; // Prioritize the iframe element
+                
+                // Attempt standard and vendor-prefixed methods on the iframe
+                if (element.requestFullscreen) {
+                    element.requestFullscreen();
+                } else if (element.webkitRequestFullscreen) { // Chrome, Safari, Opera
+                    element.webkitRequestFullscreen();
+                } else if (element.mozRequestFullScreen) { // Firefox
+                    element.mozRequestFullScreen();
+                } else if (element.msRequestFullscreen) { // IE/Edge
+                    element.msRequestFullscreen();
+                } else if (element.webkitEnterFullscreen) { // Specific for some webkit contexts
+                    element.webkitEnterFullscreen();
+                }
+                
+                // Fallback: If iframe fails, try the container (the current setup's parent)
+                else {
+                    const container = gameContainer;
+                    if (container.requestFullscreen) {
+                        container.requestFullscreen();
+                    } else if (container.webkitRequestFullscreen) {
+                        container.webkitRequestFullscreen();
+                    } else if (container.msRequestFullscreen) {
+                        container.msRequestFullscreen();
                     }
                 }
             };
