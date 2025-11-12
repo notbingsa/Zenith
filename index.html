@@ -68,6 +68,24 @@
         .fullscreen-button:hover {
             background-color: rgba(124, 58, 237, 1);
         }
+
+        /* --- Full View Overrides (Toggled by JS) --- */
+        .full-view {
+            position: fixed !important;
+            top: 0 !important;
+            left: 0 !important;
+            width: 100vw !important;
+            height: 100vh !important;
+            z-index: 9999 !important;
+            border-radius: 0 !important;
+            max-width: none !important;
+            box-shadow: none !important;
+        }
+
+        /* Ensure iframe inside full-view is also full size and loses corners */
+        .full-view iframe {
+            border-radius: 0 !important;
+        }
     </style>
 </head>
 <body class="font-sans dark-gradient-bg text-gray-100">
@@ -113,10 +131,10 @@
             </section>
         </div>
         
-        <div id="game-container" class="hidden relative w-full h-[80vh] mx-auto md:max-w-4xl" style="height: calc(100vh - 100px);">
+        <div id="game-container" class="hidden relative">
         </div>
 
-        <div class="fixed bottom-0 left-0 p-3 bg-black/50 backdrop-blur-sm rounded-tr-xl">
+        <div class="fixed bottom-0 left-0 p-3 bg-black/50 backdrop-blur-sm rounded-tr-xl z-50">
             <button onclick="showHomepage()" id="menu-button" class="text-gray-400 hover:text-white transition duration-200 flex items-center space-x-2">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
                 <span class="text-sm hidden sm:inline">Menu / Back</span>
@@ -136,53 +154,31 @@
             headerTitle.textContent = title;
 
             homepageSection.classList.add('hidden');
-            gameContainer.classList.remove('hidden');
+            
+            // Set game container to initial compact view with rounded corners and centered
+            gameContainer.className = 'relative w-full h-[80vh] mx-auto md:max-w-4xl rounded-2xl overflow-hidden shadow-2xl transition-all duration-300'; 
+            gameContainer.style.height = 'calc(100vh - 100px)';
 
             gameContainer.innerHTML = '';
             
             const iframe = document.createElement('iframe');
             iframe.id = 'game-iframe';
             iframe.src = url;
-            iframe.className = 'w-full h-full rounded-2xl border-none';
+            iframe.className = 'w-full h-full border-none rounded-2xl';
             iframe.allow = 'fullscreen';
             iframe.setAttribute('allowfullscreen', 'true');
             iframe.setAttribute('loading', 'lazy');
 
             const fullscreenButton = document.createElement('button');
+            fullscreenButton.id = 'fullscreen-toggle-button';
             fullscreenButton.className = 'fullscreen-button flex items-center space-x-1';
             fullscreenButton.innerHTML = `
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-5v4m0 0h-4m4 0l-5 5m-5 0l5 5m0 0v4m0-4h-4m-4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5v-4m0 0h-4m4 0l-5-5"></path></svg>
-                <span>Fullscreen</span>
+                <svg class="w-5 h-5" id="fs-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-5v4m0 0h-4m4 0l-5 5m-5 0l5 5m0 0v4m0-4h-4m-4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5v-4m0 0h-4m4 0l-5-5"></path></svg>
+                <span id="fs-text">Fullscreen</span>
             `;
             
-            // Updated fullscreen logic to be more compatible with restricted environments
             fullscreenButton.onclick = () => {
-                const element = iframe; // Prioritize the iframe element
-                
-                // Attempt standard and vendor-prefixed methods on the iframe
-                if (element.requestFullscreen) {
-                    element.requestFullscreen();
-                } else if (element.webkitRequestFullscreen) { // Chrome, Safari, Opera
-                    element.webkitRequestFullscreen();
-                } else if (element.mozRequestFullScreen) { // Firefox
-                    element.mozRequestFullScreen();
-                } else if (element.msRequestFullscreen) { // IE/Edge
-                    element.msRequestFullscreen();
-                } else if (element.webkitEnterFullscreen) { // Specific for some webkit contexts
-                    element.webkitEnterFullscreen();
-                }
-                
-                // Fallback: If iframe fails, try the container (the current setup's parent)
-                else {
-                    const container = gameContainer;
-                    if (container.requestFullscreen) {
-                        container.requestFullscreen();
-                    } else if (container.webkitRequestFullscreen) {
-                        container.webkitRequestFullscreen();
-                    } else if (container.msRequestFullscreen) {
-                        container.msRequestFullscreen();
-                    }
-                }
+                toggleGameView(gameContainer);
             };
 
             gameContainer.appendChild(iframe);
@@ -191,14 +187,42 @@
             menuButtonText.textContent = "Back to Homepage";
         }
         
+        // This function handles the CSS-based toggle for full-page view
+        function toggleGameView(container) {
+            const isFullView = container.classList.toggle('full-view');
+            const fsIcon = document.getElementById('fs-icon');
+            const fsText = document.getElementById('fs-text');
+            const iframe = document.getElementById('game-iframe');
+            
+            if (isFullView) {
+                // Now in Full View mode
+                fsIcon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"></path>`; 
+                fsText.textContent = "Exit View";
+                
+                // Remove rounded corners on iframe for full immersion
+                if (iframe) iframe.classList.remove('rounded-2xl');
+
+            } else {
+                // Return to normal view
+                fsIcon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-5v4m0 0h-4m4 0l-5 5m-5 0l5 5m0 0v4m0-4h-4m-4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5v-4m0 0h-4m4 0l-5-5"></path>`; 
+                fsText.textContent = "Fullscreen";
+
+                // Restore rounded corners on iframe
+                if (iframe) iframe.classList.add('rounded-2xl');
+            }
+        }
+        
         function showHomepage() {
             headerTitle.textContent = "Homepage";
 
             homepageSection.classList.remove('hidden');
-            gameContainer.classList.add('hidden');
+            
+            // Reset game container to its original hidden state and remove full-view class
+            gameContainer.className = 'hidden relative';
             
             menuButtonText.textContent = "Menu / Back";
 
+            // If the user happens to be in native fullscreen mode when they click back, exit it.
             if (document.fullscreenElement) {
                 document.exitFullscreen();
             }
