@@ -1,28 +1,27 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <!-- Basic metadata for the page -->
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Basic metadata -->
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Zenith - Unblocked Games</title>
-    
-    <!-- Load custom font 'Exo 2' for futuristic aesthetic -->
-    <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@100..900&display=swap" rel="stylesheet">
-    
-    <!-- Load Tailwind CSS framework -->
+
+    <!-- Google Font (fixed wght parameter) -->
+    <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+    <!-- Tailwind CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
-    
-    <!-- Tailwind Configuration Block -->
+
+    <!-- Tailwind config -->
     <script>
         tailwind.config = {
             theme: {
                 extend: {
                     fontFamily: {
-                        // Set Exo 2 as the default font
+                        // set Exo 2 as default
                         sans: ['"Exo 2"', 'sans-serif'],
                     },
                     colors: {
-                        // Define custom color palette for the neon theme
                         'zenith-dark': '#0c0a09',
                         'zenith-blue': '#3b82f6',
                         'zenith-purple': '#7c3aed',
@@ -31,332 +30,257 @@
             }
         }
     </script>
-    
-    <!-- Custom CSS Styles for Glow, Shadows, and Fullscreen Logic -->
+
     <style>
-        /* Define the dark gradient background for the entire page */
+        body { font-family: 'Exo 2', sans-serif; }
         .dark-gradient-bg {
             background: linear-gradient(180deg, #111827 0%, #0c0a09 100%);
             min-height: 100vh;
         }
 
-        /* Styling for the main 'Zenith' title text glow */
         .zenith-title-glow {
-            text-shadow: 
+            text-shadow:
                 0 0 5px rgba(59, 130, 246, 0.5),
                 0 0 20px rgba(124, 58, 237, 0.7),
                 0 0 40px rgba(59, 130, 246, 0.3);
             color: #ffffff;
         }
 
-        /* Generic glow for subheadings/elements (currently unused) */
         .section-heading-glow {
             text-shadow: 0 0 10px #7c3aed;
             color: #d1d5db;
         }
 
-        /* Styling for game card shadows and hover effects */
         .game-card-shadow {
             box-shadow: 0 10px 15px rgba(124, 58, 237, 0.3), 0 4px 6px rgba(59, 130, 246, 0.1);
             transition: transform 0.2s ease, box-shadow 0.2s ease;
         }
-
-        /* Hover effect: lift and intensify shadow */
         .game-card-shadow:hover {
             transform: translateY(-4px);
             box-shadow: 0 15px 25px rgba(124, 58, 237, 0.5), 0 6px 10px rgba(59, 130, 246, 0.2);
         }
-        
-        /* Fixed style for the fullscreen toggle button inside the game view */
+
         .fullscreen-button {
             position: absolute;
             top: 10px;
             right: 10px;
             z-index: 20;
-            background-color: rgba(124, 58, 237, 0.8);
+            background-color: rgba(124, 58, 237, 0.85);
             color: white;
             padding: 8px 12px;
             border-radius: 9999px;
             cursor: pointer;
             transition: background-color 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
             box-shadow: 0 0 10px rgba(124, 58, 237, 0.5);
         }
+        .fullscreen-button:hover { background-color: rgba(124, 58, 237, 1); }
 
-        .fullscreen-button:hover {
-            background-color: rgba(124, 58, 237, 1);
-        }
-
-        /* --- Full View Overrides (Toggled by JS) --- */
-        /* This class makes the game container take up the entire viewport */
         .full-view {
             position: fixed !important;
             top: 0 !important;
             left: 0 !important;
             width: 100vw !important;
             height: 100vh !important;
-            z-index: 9999 !important; /* Ensures it covers the header */
-            border-radius: 0 !important; /* Removes rounded corners in full-page mode */
+            z-index: 9999 !important;
+            border-radius: 0 !important;
             max-width: none !important;
             box-shadow: none !important;
         }
-
-        /* Ensure the iframe inside the full-view also loses rounded corners */
-        .full-view iframe {
-            border-radius: 0 !important;
-        }
+        .full-view iframe { border-radius: 0 !important; }
     </style>
 </head>
 <body class="font-sans dark-gradient-bg text-gray-100">
 
-    <!-- Fixed Header / Navigation Bar -->
+    <!-- Header -->
     <header class="p-4 md:p-6 flex justify-between items-center fixed top-0 left-0 right-0 z-10 bg-black/30 backdrop-blur-sm">
         <div class="flex items-center space-x-3">
-            <!-- Zenith Logo Icon (Stylized Circle/Star SVG) -->
-            <svg class="w-8 h-8 text-zenith-purple" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="filter: drop-shadow(0 0 5px #7c3aed);"><circle cx="12" cy="12" r="10"></circle><path d="M14.5 9.5a2.5 2.5 0 0 1-5 0"></path><path d="M12 17a5 5 0 0 0 5-5"></path><path d="M7 12a5 5 0 0 0 5 5"></path></svg>
-            <!-- Dynamic title: Shows "Homepage" or the current game name -->
+            <svg class="w-8 h-8 text-zenith-purple" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-opacity="0.9"></circle>
+                <path d="M12 4v8l5 3" stroke="currentColor"></path>
+            </svg>
             <h1 id="header-title" class="text-3xl font-bold">Homepage</h1>
         </div>
-        
     </header>
 
-    <!-- Main Content Area -->
+    <!-- Main -->
     <main class="pt-24 md:pt-32 pb-8 px-4 md:px-8 max-w-7xl mx-auto">
-        
-        <!-- Homepage Section - Visible by default, hidden when a game loads -->
+
+        <!-- Homepage section -->
         <div id="homepage-section">
-            
-            <!-- Zenith Title and Tagline Section -->
+
             <section class="text-center py-16">
-                <h2 class="text-6xl md:text-8xl font-extrabold zenith-title-glow tracking-tighter mb-4">
-                    Zenith
-                </h2>
-                <!-- Dynamic random tagline populated by JavaScript -->
-                <p id="random-tagline" class="text-xl md:text-2xl font-medium text-zenith-blue mb-4" style="text-shadow: 0 0 10px #3b82f6;">
-                </p>
-                <!-- Decorative neon separator line -->
+                <h2 class="text-6xl md:text-8xl font-extrabold zenith-title-glow tracking-tighter mb-4">Zenith</h2>
+                <p id="random-tagline" class="text-xl md:text-2xl font-medium text-zenith-blue mb-4" style="text-shadow: 0 0 10px #3b82f6;"></p>
                 <div class="w-full h-0.5 bg-gradient-to-r from-transparent via-zenith-purple/50 to-transparent mb-16"></div>
             </section>
 
-            <!-- Game Card Listing Section -->
             <section class="text-center">
-                <!-- Search Bar Added Here -->
                 <div class="mb-10 w-full max-w-xl mx-auto relative flex items-center">
                     <input type="text" id="game-search" placeholder="Search for games..." 
-                           class="w-full p-3 pl-12 bg-gray-700/50 border border-zenith-purple/50 rounded-lg text-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-zenith-blue transition duration-300"
-                           oninput="filterGames()">
-                    <!-- Search Icon -->
-                    <svg class="absolute left-4 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                           class="w-full p-3 pl-12 bg-gray-700/50 border border-zenith-purple/50 rounded-lg text-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-zenith-purple"
+                           oninput="filterGames()" />
+                    <svg class="absolute left-4 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-4.35-4.35M17 11a6 6 0 11-12 0 6 6 0 0112 0z"></path>
+                    </svg>
                 </div>
-                
+
                 <div id="game-list" class="flex flex-wrap justify-center gap-6 lg:gap-8">
-                    
-                    <!-- Chat (Padlet) Card - MOVED TO FIRST POSITION -->
-                    <a href="#" onclick="loadGame('Chat', 'https://padlet.com/lincolnharrison8pc/zenith-kcoo8yyruf8y416e'); return false;" class="block bg-gray-800 rounded-xl overflow-hidden game-card-shadow w-40 h-40">
-                        <img src="/games/images/Chat.png" 
-                             onerror="this.src='https://placehold.co/160x160/7c3aed/ffffff?text=Chat'" 
-                             alt="Chat" 
-                             class="w-full h-full object-cover rounded-xl transition duration-300 transform scale-[1.02] hover:scale-105" />
+
+                    <!-- Chat (Padlet) -->
+                    <a href="#" onclick="loadGame('Chat', 'https://padlet.com/lincolnharrison8pc/zenith-kcoo8yyruf8y416e'); return false;" class="block bg-gray-800 rounded-xl overflow-hidden game-card-shadow w-40 h-40" aria-label="Chat">
+                        <img src="https://notbingsa.github.io/Zenith/games/images/Chat.png" onerror="this.src='https://placehold.co/160x160/7c3aed/ffffff?text=Chat'" alt="Chat" class="w-full h-full object-cover" />
                     </a>
 
-                    <!-- Geometry Dash Lite Card -->
-                    <a href="#" onclick="loadGame('Geometry Dash Lite', 'https://nebulaplay.site/storage/Geometry%20Dash%20Lite.html'); return false;" class="block bg-gray-800 rounded-xl overflow-hidden game-card-shadow w-40 h-40">
-                        <img src="/games/images/Geometry Dash Lite.png" 
-                             onerror="this.src='https://placehold.co/160x160/3b82f6/ffffff?text=Geometry+Dash+Lite'" 
-                             alt="Geometry Dash Lite" 
-                             class="w-full h-full object-cover rounded-xl transition duration-300 transform scale-[1.02] hover:scale-105" />
+                    <!-- Geometry Dash Lite -->
+                    <a href="#" onclick="loadGame('Geometry Dash Lite', 'https://nebulaplay.site/storage/Geometry%20Dash%20Lite.html'); return false;" class="block bg-gray-800 rounded-xl overflow-hidden game-card-shadow w-40 h-40" aria-label="Geometry Dash Lite">
+                        <img src="https://notbingsa.github.io/Zenith/games/images/Geometry Dash Lite.png" onerror="this.src='https://placehold.co/160x160/3b82f6/ffffff?text=Geometry+Dash+Lite'" alt="Geometry Dash Lite" class="w-full h-full object-cover" />
                     </a>
 
-                    <!-- Crossy Road Card -->
-                    <a href="#" onclick="loadGame('Crossy Road', 'https://nebulaplay.site/storage/Crossy%20Road.html'); return false;" class="block bg-gray-800 rounded-xl overflow-hidden game-card-shadow w-40 h-40">
-                        <img src="games/images/Crossy%20Road.png
-                             onerror="this.src='https://placehold.co/160x160/10b981/ffffff?text=Crossy+Road'" 
-                             alt="Crossy Road" 
-                             class="w-full h-full object-cover rounded-xl transition duration-300 transform scale-[1.02] hover:scale-105" />
+                    <!-- Crossy Road -->
+                    <a href="#" onclick="loadGame('Crossy Road', 'https://nebulaplay.site/storage/Crossy%20Road.html'); return false;" class="block bg-gray-800 rounded-xl overflow-hidden game-card-shadow w-40 h-40" aria-label="Crossy Road">
+                        <img src="https://notbingsa.github.io/Zenith/games/images/Crossy Road.png" onerror="this.src='https://placehold.co/160x160/10b981/ffffff?text=Crossy+Road'" alt="Crossy Road" class="w-full h-full object-cover" />
                     </a>
 
-                    <!-- Bouncemasters Card -->
-                    <a href="#" onclick="loadGame('Bouncemasters', 'https://nebulaplay.site/storage/Bouncemasters.html'); return false;" class="block bg-gray-800 rounded-xl overflow-hidden game-card-shadow w-40 h-40">
-                        <img src="games/images/Bouncemasters.png" 
-                             onerror="this.src='https://placehold.co/160x160/f97316/ffffff?text=Bouncemasters'" 
-                             alt="Bouncemasters" 
-                             class="w-full h-full object-cover rounded-xl transition duration-300 transform scale-[1.02] hover:scale-105" />
+                    <!-- Bouncemasters -->
+                    <a href="#" onclick="loadGame('Bouncemasters', 'https://nebulaplay.site/storage/Bouncemasters.html'); return false;" class="block bg-gray-800 rounded-xl overflow-hidden game-card-shadow w-40 h-40" aria-label="Bouncemasters">
+                        <img src="https://notbingsa.github.io/Zenith/games/images/Bouncemasters.png" onerror="this.src='https://placehold.co/160x160/f97316/ffffff?text=Bouncemasters'" alt="Bouncemasters" class="w-full h-full object-cover" />
                     </a>
 
-                    <!-- Ragdoll Archers Card -->
-                    <a href="#" onclick="loadGame('Ragdoll Archers', 'https://nebulaplay.site/storage/Ragdoll%20Archers.html'); return false;" class="block bg-gray-800 rounded-xl overflow-hidden game-card-shadow w-40 h-40">
-                        <img src="/games/images/Ragdoll Archers.png" 
-                             onerror="this.src='https://placehold.co/160x160/ef4444/ffffff?text=Ragdoll+Archers'" 
-                             alt="Ragdoll Archers" 
-                             class="w-full h-full object-cover rounded-xl transition duration-300 transform scale-[1.02] hover:scale-105" />
+                    <!-- Ragdoll Archers -->
+                    <a href="#" onclick="loadGame('Ragdoll Archers', 'https://nebulaplay.site/storage/Ragdoll%20Archers.html'); return false;" class="block bg-gray-800 rounded-xl overflow-hidden game-card-shadow w-40 h-40" aria-label="Ragdoll Archers">
+                        <img src="https://notbingsa.github.io/Zenith/games/images/Ragdoll Archers.png" onerror="this.src='https://placehold.co/160x160/ef4444/ffffff?text=Ragdoll+Archers'" alt="Ragdoll Archers" class="w-full h-full object-cover" />
                     </a>
 
-                    <!-- Sandboxels Card -->
-                    <a href="#" onclick="loadGame('Sandboxels', 'https://sandboxels.r74n.com/'); return false;" class="block bg-gray-800 rounded-xl overflow-hidden game-card-shadow w-40 h-40">
-                        <!-- Custom placeholder image for a pixel/sandbox theme -->
-                        <img src="/games/images/Sandboxels.png"
-                            onerror="this.src='https://placehold.co/160x160/ef4444/ffffff?text=Sandboxels'" 
-                            alt="Sandboxels"
-                             class="w-full h-full object-cover rounded-xl transition duration-300 transform scale-[1.02] hover:scale-105" />
+                    <!-- Sandboxels -->
+                    <a href="#" onclick="loadGame('Sandboxels', 'https://sandboxels.r74n.com/'); return false;" class="block bg-gray-800 rounded-xl overflow-hidden game-card-shadow w-40 h-40" aria-label="Sandboxels">
+                        <img src="https://notbingsa.github.io/Zenith/games/images/Sandboxels.png" onerror="this.src='https://placehold.co/160x160/ef4444/ffffff?text=Sandboxels'" alt="Sandboxels" class="w-full h-full object-cover" />
                     </a>
-                                    <a href="#" onclick="loadGame('Friday Night Funkin', 'https://html-classic.itch.zone/html/4459499/luckydog7.github.io-master/funkinmobile/game/index.html'); return false;" class="block bg-gray-800 rounded-xl overflow-hidden game-card-shadow w-40 h-40">
-                        <img src="games/images/Friday%20Night%20Funkin.png" 
-                             onerror="this.src='https://placehold.co/160x160/ef4444/ffffff?text=Friday+Night+Funkin'" 
-                             alt="Friday Night Funkin" 
-                             class="w-full h-full object-cover rounded-xl transition duration-300 transform scale-[1.02] hover:scale-105" />
+
+                    <!-- Friday Night Funkin -->
+                    <a href="#" onclick="loadGame('Friday Night Funkin', 'https://html-classic.itch.zone/html/4459499/luckydog7.github.io-master/funkinmobile/game/index.html'); return false;" class="block bg-gray-800 rounded-xl overflow-hidden game-card-shadow w-40 h-40" aria-label="Friday Night Funkin">
+                        <img src="https://notbingsa.github.io/Zenith/games/images/Friday Night Funkin.png" onerror="this.src='https://placehold.co/160x160/ef4444/ffffff?text=Friday+Night+Funkin'" alt="Friday Night Funkin" class="w-full h-full object-cover" />
                     </a>
+
                 </div>
             </section>
         </div>
-        
-        <!-- Game Container - Hidden until a game is selected -->
-        <div id="game-container" class="hidden relative">
-        </div>
 
-        <!-- Sticky Menu / Back Button -->
+        <!-- Game container (hidden until a game is launched) -->
+        <div id="game-container" class="hidden relative"></div>
+
+        <!-- Sticky menu / back button -->
         <div class="fixed bottom-0 left-0 p-3 bg-black/50 backdrop-blur-sm rounded-tr-xl z-50">
             <button onclick="showHomepage()" id="menu-button" class="text-gray-400 hover:text-white transition duration-200 flex items-center space-x-2">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
                 <span class="text-sm hidden sm:inline">Menu / Back</span>
             </button>
         </div>
-        
+
     </main>
 
     <script>
-        // DOM element references
+        // DOM refs
         const homepageSection = document.getElementById('homepage-section');
         const gameContainer = document.getElementById('game-container');
         const headerTitle = document.getElementById('header-title');
         const menuButtonText = document.querySelector('#menu-button span');
 
-
-        // Function to filter game cards based on search input
+        // Filter game cards by search text
         function filterGames() {
             const searchInput = document.getElementById('game-search');
-            // Convert input to lowercase for case-insensitive searching
-            const filter = searchInput.value.toLowerCase();
-            const gameList = document.getElementById('game-list');
-            // Get all game card anchor tags (the clickable links)
-            const cards = gameList.querySelectorAll('a'); 
-
+            const filter = (searchInput && searchInput.value || '').toLowerCase();
+            const cards = document.querySelectorAll('#game-list a');
             cards.forEach(card => {
-                // Get the game title from the alt attribute of the image inside the card
                 const img = card.querySelector('img');
-                const title = img ? img.alt.toLowerCase() : '';
-
-                // Check if the game title includes the search filter text
+                const title = img ? (img.alt || '').toLowerCase() : '';
                 if (title.includes(filter)) {
-                    // Show the card
                     card.classList.remove('hidden');
-                    card.style.display = 'block'; 
+                    card.style.display = 'block';
                 } else {
-                    // Hide the card
                     card.classList.add('hidden');
-                    card.style.display = 'none'; 
+                    card.style.display = 'none';
                 }
             });
         }
-        
-        // Function to handle the transition from homepage to game view
+
+        // Launch a game inside an iframe
         function loadGame(title, url) {
             headerTitle.textContent = title;
-
             homepageSection.classList.add('hidden');
-            
-            // Initial view: set game container to compact, centered, and rounded view
-            gameContainer.className = 'relative w-full h-[80vh] mx-auto md:max-w-4xl rounded-2xl overflow-hidden shadow-2xl transition-all duration-300'; 
-            gameContainer.style.height = 'calc(100vh - 100px)'; // Calculate height relative to viewport
 
+            gameContainer.className = 'relative w-full h-[80vh] mx-auto md:max-w-4xl rounded-2xl overflow-hidden shadow-2xl transition-all duration-300';
+            gameContainer.style.height = 'calc(100vh - 100px)';
             gameContainer.innerHTML = '';
-            
-            // Create the game iframe dynamically
+
             const iframe = document.createElement('iframe');
             iframe.id = 'game-iframe';
             iframe.src = url;
             iframe.className = 'w-full h-full border-none rounded-2xl';
-            iframe.allow = 'fullscreen';
+            iframe.setAttribute('allow', 'fullscreen');
             iframe.setAttribute('allowfullscreen', 'true');
             iframe.setAttribute('loading', 'lazy');
 
-            // Create the Fullscreen toggle button
             const fullscreenButton = document.createElement('button');
             fullscreenButton.id = 'fullscreen-toggle-button';
-            fullscreenButton.className = 'fullscreen-button flex items-center space-x-1';
-            fullscreenButton.innerHTML = `
-                <svg class="w-5 h-5" id="fs-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-5v4m0 0h-4m4 0l-5 5m-5 0l5 5m0 0v4m0-4h-4m-4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5v-4m0 0h-4m4 0l-5-5"></path></svg>
-                <span id="fs-text">Fullscreen</span>
-            `;
-            
-            // Attach toggle logic to the button
-            fullscreenButton.onclick = () => {
-                toggleGameView(gameContainer);
-            };
+            fullscreenButton.className = 'fullscreen-button';
+            const enterIcon = '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4h4M4 4l5 5M20 16v4h-4M20 20l-5-5"/></svg>';
+            fullscreenButton.innerHTML = enterIcon + '<span id="fs-text">Fullscreen</span>';
+            fullscreenButton.onclick = () => toggleGameView(gameContainer);
 
             gameContainer.appendChild(iframe);
             gameContainer.appendChild(fullscreenButton);
-            
-            menuButtonText.textContent = "Back to Homepage";
+
+            if (menuButtonText) menuButtonText.textContent = 'Back to Homepage';
         }
-        
-        // Function to handle the CSS-based toggle for full-page view
-        // This function avoids the native Fullscreen API to prevent "permissions policy" errors
+
+        // CSS-based fullscreen toggle (no native Fullscreen API by default)
         function toggleGameView(container) {
-            // Toggle the 'full-view' class which applies fixed, 100vw/100vh styling
             const isFullView = container.classList.toggle('full-view');
-            const fsIcon = document.getElementById('fs-icon');
             const fsText = document.getElementById('fs-text');
+            const fullscreenButton = document.getElementById('fullscreen-toggle-button');
             const iframe = document.getElementById('game-iframe');
-            
+
             if (isFullView) {
-                // Change button text/icon to Exit View
-                fsIcon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"></path>`; 
-                fsText.textContent = "Exit View";
-                
-                // Remove rounded corners on iframe for full immersion
+                if (fsText) fsText.textContent = 'Exit View';
+                if (fullscreenButton && fullscreenButton.querySelector('svg')) {
+                    fullscreenButton.querySelector('svg').outerHTML = '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 14l6-6M9 8h6v6"/></svg>';
+                }
                 if (iframe) iframe.classList.remove('rounded-2xl');
-
             } else {
-                // Change button text/icon back to Fullscreen
-                fsIcon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-5v4m0 0h-4m4 0l-5 5m-5 0l5 5m0 0v4m0-4h-4m-4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5v-4m0 0h-4m4 0l-5-5"></path>`; 
-                fsText.textContent = "Fullscreen";
-
-                // Restore rounded corners on iframe
+                if (fsText) fsText.textContent = 'Fullscreen';
+                if (fullscreenButton && fullscreenButton.querySelector('svg')) {
+                    fullscreenButton.querySelector('svg').outerHTML = '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4h4M4 4l5 5M20 16v4h-4M20 20l-5-5"/></svg>';
+                }
                 if (iframe) iframe.classList.add('rounded-2xl');
             }
         }
-        
-        // Function to return to the main homepage view
+
+        // Show homepage and hide game
         function showHomepage() {
-            headerTitle.textContent = "Homepage";
-
+            headerTitle.textContent = 'Homepage';
             homepageSection.classList.remove('hidden');
-            
-            // Reset game container to its original hidden state and remove full-view class
             gameContainer.className = 'hidden relative';
-            
-            menuButtonText.textContent = "Menu / Back";
+            if (menuButtonText) menuButtonText.textContent = 'Menu / Back';
 
-            // If the user happens to be in native fullscreen mode when they click back, exit it.
+            // If the page is in a native fullscreen state, exit it
             if (document.fullscreenElement) {
-                document.exitFullscreen();
+                document.exitFullscreen().catch(() => { /* ignore errors */ });
             }
         }
 
-
-        // Script runs when the page content is loaded
+        // Random tagline on load
         document.addEventListener('DOMContentLoaded', () => {
-            // List of random taglines
             const phrases = [
                 "We are doing our work... just not the teachers.",
                 "This is the only thing keeping me in school.",
                 "\"A student's dream\" - some random student that doesn't exist",
                 "We know you didn't get here accidently.",
-                "What game shall you pick?",
+                "What game shall you pick?"
             ];
-
             const taglineElement = document.getElementById('random-tagline');
-            
-            // Pick a random phrase and display it on the homepage
             if (taglineElement) {
                 const randomIndex = Math.floor(Math.random() * phrases.length);
                 taglineElement.textContent = phrases[randomIndex];
