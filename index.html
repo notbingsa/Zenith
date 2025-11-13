@@ -200,7 +200,7 @@
 
             const iframe = document.createElement('iframe');
             iframe.id = 'game-iframe';
-            iframe.src = url;
+            
             iframe.className = 'w-full h-full border-none rounded-2xl';
             iframe.setAttribute('allow', 'fullscreen');
             iframe.setAttribute('allowfullscreen', 'true');
@@ -216,7 +216,9 @@
             gameContainer.appendChild(iframe);
             gameContainer.appendChild(fullscreenButton);
 
-            if (menuButtonText) menuButtonText.textContent = 'Back to Homepage';
+            setTimeout(() => {
+                iframe.src = url; 
+            }, 300);
         }
 
         function toggleGameView(container) {
