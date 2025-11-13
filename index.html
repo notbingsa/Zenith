@@ -190,7 +190,7 @@
             });
         }
 
-               function loadGame(title, url) {
+        function loadGame(title, url) {
             headerTitle.textContent = title;
             homepageSection.classList.add('hidden');
 
@@ -218,7 +218,7 @@
 
             setTimeout(() => {
                 iframe.src = url; 
-            }, 300);
+            }, 1000);
         }
 
         function toggleGameView(container) {
