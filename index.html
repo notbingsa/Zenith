@@ -88,11 +88,20 @@
     </style>
 
     <script>
-        // Use let/var here, and initialize inside DOMContentLoaded to ensure elements exist.
         let homepageSection, gameContainer, headerTitle, menuButtonText;
+        
+        // Helper function to decode Base64 URLs
+        function decodeUrl(encodedUrl) {
+            try {
+                // Use atob to decode the Base64 string
+                return atob(encodedUrl);
+            } catch (e) {
+                console.error("Error decoding URL:", e);
+                return "";
+            }
+        }
 
         function filterGames() {
-            // Check if searchInput exists before accessing its value
             const searchInput = document.getElementById('game-search');
             const filter = (searchInput && searchInput.value || '').toLowerCase();
             const cards = document.querySelectorAll('#game-list a');
@@ -107,8 +116,10 @@
             });
         }
 
-        function loadGame(title, url) {
-            // Log the URL to the console immediately to help debug the blocking issue
+        function loadGame(title, encodedUrl) {
+            // DECODE THE URL immediately upon click
+            const url = decodeUrl(encodedUrl);
+            
             console.log(`[Zenith Debug] Attempting to load: ${url}`);
             
             if (headerTitle) headerTitle.textContent = title;
@@ -117,34 +128,92 @@
             if (gameContainer) {
                 gameContainer.className = 'relative w-full h-[80vh] mx-auto md:max-w-4xl rounded-2xl overflow-hidden shadow-2xl transition-all duration-300';
                 gameContainer.style.height = 'calc(100vh - 100px)';
-                gameContainer.innerHTML = '';
+                gameContainer.innerHTML = ''; // Clear previous content
+                gameContainer.classList.remove('hidden'); // Ensure container is visible
             } else {
-                // Should not happen, but safe check
                 console.error("Game container not found.");
                 return;
             }
 
+            // 1. Create Loading Overlay (Game-specific overlay)
+            const loadingOverlay = document.createElement('div');
+            loadingOverlay.id = 'loading-overlay';
+            loadingOverlay.className = 'absolute inset-0 bg-zenith-dark/95 flex flex-col items-center justify-center p-8 z-10 rounded-2xl transition-opacity duration-500';
+            loadingOverlay.innerHTML = `
+                <div class="animate-pulse mb-4">
+                    <svg class="w-12 h-12 animate-spin text-zenith-purple" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"></circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                </div>
+                <h3 class="text-xl font-semibold mb-2 text-white">Loading Game: ${title}</h3>
+                <p class="text-sm text-gray-400 text-center">
+                    Connecting to the game server...
+                </p>
+                <div class="mt-4 w-48 h-2 bg-gray-700 rounded-full overflow-hidden">
+                    <div id="loading-bar" class="h-full bg-zenith-purple transition-all duration-300" style="width: 0%"></div>
+                </div>
+            `;
+            gameContainer.appendChild(loadingOverlay);
+
+            // Start simulated progress (covers the 2000ms delay)
+            const loadingBar = document.getElementById('loading-bar');
+            let progress = 0;
+            const interval = setInterval(() => {
+                if (progress < 80) { // Simulate quick load up to 80%
+                    progress += 5;
+                    loadingBar.style.width = `${progress}%`;
+                } else {
+                    clearInterval(interval);
+                }
+            }, 100);
+
+
+            // 2. Create Iframe (initially hidden using opacity-0)
             const iframe = document.createElement('iframe');
             iframe.id = 'game-iframe';
-            
-            // Re-adding the 2-second delay to help with the anti-filter strategy
-            setTimeout(() => {
-                iframe.src = url;
-            }, 2000);
-
-            iframe.className = 'w-full h-full border-none rounded-2xl';
+            // Initially opaque, will become visible on load
+            iframe.className = 'w-full h-full border-none rounded-2xl opacity-0 transition-opacity duration-500'; 
             iframe.setAttribute('allow', 'fullscreen');
             iframe.setAttribute('allowfullscreen', 'true');
             iframe.setAttribute('loading', 'lazy');
+            gameContainer.appendChild(iframe);
 
+            // 3. Iframe Load Detection
+            iframe.onload = () => {
+                console.log(`[Zenith Debug] Iframe loaded successfully (or failed to load content). Hiding overlay.`);
+                
+                // Complete progress bar
+                clearInterval(interval);
+                loadingBar.style.width = '100%';
+
+                // Fade out overlay and show iframe
+                loadingOverlay.style.opacity = '0'; 
+                iframe.classList.remove('opacity-0');
+
+                // Clean up overlay after transition finishes
+                setTimeout(() => {
+                    loadingOverlay.remove();
+                }, 500);
+            };
+
+            // 4. Set URL after 2000ms delay (Anti-filter strategy)
+            setTimeout(() => {
+                // Update message before network call
+                loadingOverlay.querySelector('h3').textContent = 'Connecting and Loading...';
+                if (progress < 90) loadingBar.style.width = '90%'; // Jump to near completion while waiting for network response
+                iframe.src = url; // This triggers the external request using the DECODED URL
+            }, 2000);
+
+            // 5. Add Fullscreen button
             const fullscreenButton = document.createElement('button');
             fullscreenButton.id = 'fullscreen-toggle-button';
-            fullscreenButton.className = 'fullscreen-button';
+            // Set z-index: 20 so it's on top of the loading overlay
+            fullscreenButton.className = 'fullscreen-button'; 
             const enterIcon = '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4h4M4 4l5 5M20 16v4h-4M20 20l-5-5"/></svg>';
             fullscreenButton.innerHTML = enterIcon + '<span id="fs-text">Fullscreen</span>';
             fullscreenButton.onclick = () => toggleGameView(gameContainer);
 
-            gameContainer.appendChild(iframe);
             gameContainer.appendChild(fullscreenButton);
         }
 
@@ -175,6 +244,10 @@
             if (gameContainer) gameContainer.className = 'hidden relative';
             if (menuButtonText) menuButtonText.textContent = 'Menu / Back';
 
+            // Clean up any loading overlay if it's still present
+            const overlay = document.getElementById('loading-overlay');
+            if (overlay) overlay.remove();
+
             if (document.fullscreenElement) {
                 document.exitFullscreen().catch(() => { });
             }
@@ -201,10 +274,31 @@
                 const randomIndex = Math.floor(Math.random() * phrases.length);
                 taglineElement.textContent = phrases[randomIndex];
             }
+            
+            // --- HIDE WEBSITE SPLASH LOADER ---
+            const splashLoader = document.getElementById('website-splash-loader');
+            if (splashLoader) {
+                splashLoader.style.opacity = '0';
+                setTimeout(() => {
+                    splashLoader.style.display = 'none';
+                }, 300); // Wait for fade-out transition
+            }
+            // ----------------------------------
         });
     </script>
 </head>
 <body class="font-sans dark-gradient-bg text-gray-100">
+
+    <!-- WEBSITE SPLASH LOADER (Visible until DOMContentLoaded fires) -->
+    <div id="website-splash-loader" class="fixed inset-0 z-[10000] bg-zenith-dark flex flex-col items-center justify-center transition-opacity duration-300">
+        <svg class="w-16 h-16 text-zenith-purple animate-pulse mb-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-opacity="0.9"></circle>
+            <path d="M12 4v8l5 3" stroke="currentColor"></path>
+        </svg>
+        <h2 class="text-3xl font-extrabold zenith-title-glow tracking-tighter">Zenith</h2>
+        <p class="text-sm text-gray-400 mt-2">Loading interface...</p>
+    </div>
+    <!-- END WEBSITE SPLASH LOADER -->
 
     <header class="p-4 md:p-6 flex justify-between items-center fixed top-0 left-0 right-0 z-10 bg-black/30 backdrop-blur-sm">
         <div class="flex items-center space-x-3">
@@ -238,37 +332,38 @@
 
                 <div id="game-list" class="flex flex-wrap justify-center gap-6 lg:gap-8">
 
-                    <a href="#" onclick="loadGame('Chat', 'https://padlet.com/lincolnharrison8pc/zenith-kcoo8yyruf8y416e'); return false;" class="block bg-gray-800 rounded-xl overflow-hidden game-card-shadow w-40 h-40" aria-label="Chat">
+                    <!-- Links now use Base64 encoded URLs -->
+                    <a href="#" onclick="loadGame('Chat', 'aHR0cHM6Ly9wYWRsZXQuY29tL2xpbmNvbG5oYXJyaXNvbjhwYy96ZW5pdGgta2Nvbzh5eXJ1ZjheNDFmZQ=='); return false;" class="block bg-gray-800 rounded-xl overflow-hidden game-card-shadow w-40 h-40" aria-label="Chat">
                         <img src="https://notbingsa.github.io/Zenith/games/images/Chat.png" onerror="this.src='https://placehold.co/160x160/7c3aed/ffffff?text=Chat'" alt="Chat" class="w-full h-full object-cover" />
                     </a>
 
-                    <a href="#" onclick="loadGame('Geometry Dash Lite', 'https://nebulaplay.site/storage/Geometry%20Dash%20Lite.html'); return false;" class="block bg-gray-800 rounded-xl overflow-hidden game-card-shadow w-40 h-40" aria-label="Geometry Dash Lite">
+                    <a href="#" onclick="loadGame('Geometry Dash Lite', 'aHR0cHM6Ly9uZWJ1bGFwbGF5LnNpdGUvc3RvcmFnZS9HZW9tZXRyeSUyMERhc2glMjBMaXRlLmh0bWw='); return false;" class="block bg-gray-800 rounded-xl overflow-hidden game-card-shadow w-40 h-40" aria-label="Geometry Dash Lite">
                         <img src="https://notbingsa.github.io/Zenith/games/images/Geometry Dash Lite.png" onerror="this.src='https://placehold.co/160x160/3b82f6/ffffff?text=Geometry+Dash+Lite'" alt="Geometry Dash Lite" class="w-full h-full object-cover" />
                     </a>
 
-                    <a href="#" onclick="loadGame('Crossy Road', 'https://nebulaplay.site/storage/Crossy%20Road.html'); return false;" class="block bg-gray-800 rounded-xl overflow-hidden game-card-shadow w-40 h-40" aria-label="Crossy Road">
+                    <a href="#" onclick="loadGame('Crossy Road', 'aHR0cHM6Ly9uZWJ1bGFwbGF5LnNpdGUvc3RvcmFnZS9Dcm9zc3klMjBSb2FkLmh0bWw='); return false;" class="block bg-gray-800 rounded-xl overflow-hidden game-card-shadow w-40 h-40" aria-label="Crossy Road">
                         <img src="https://notbingsa.github.io/Zenith/games/images/Crossy Road.png" onerror="this.src='https://placehold.co/160x160/10b981/ffffff?text=Crossy+Road'" alt="Crossy Road" class="w-full h-full object-cover" />
                     </a>
 
-                    <a href="#" onclick="loadGame('Bouncemasters', 'https://nebulaplay.site/storage/Bouncemasters.html'); return false;" class="block bg-gray-800 rounded-xl overflow-hidden game-card-shadow w-40 h-40" aria-label="Bouncemasters">
+                    <a href="#" onclick="loadGame('Bouncemasters', 'aHR0cHM6Ly9uZWJ1bGFwbGF5LnNpdGUvc3RvcmFnZS9Cb3VuY2VtYXN0ZXJzLmh0bWw='); return false;" class="block bg-gray-800 rounded-xl overflow-hidden game-card-shadow w-40 h-40" aria-label="Bouncemasters">
                         <img src="https://notbingsa.github.io/Zenith/games/images/Bouncemasters.png" onerror="this.src='https://placehold.co/160x160/f97316/ffffff?text=Bouncemasters'" alt="Bouncemasters" class="w-full h-full object-cover" />
                     </a>
 
-                    <a href="#" onclick="loadGame('Ragdoll Archers', 'https://nebulaplay.site/storage/Ragdoll%20Archers.html'); return false;" class="block bg-gray-800 rounded-xl overflow-hidden game-card-shadow w-40 h-40" aria-label="Ragdoll Archers">
+                    <a href="#" onclick="loadGame('Ragdoll Archers', 'aHR0cHM6Ly9uZWJ1bGFwbGF5LnNpdGUvc3RvcmFnZS9SYWdkb2xsJTIwQXJjaGVycy5odG1s'); return false;" class="block bg-gray-800 rounded-xl overflow-hidden game-card-shadow w-40 h-40" aria-label="Ragdoll Archers">
                         <img src="https://notbingsa.github.io/Zenith/games/images/Ragdoll Archers.png" onerror="this.src='https://placehold.co/160x160/ef4444/ffffff?text=Ragdoll+Archers'" alt="Ragdoll Archers" class="w-full h-full object-cover" />
                     </a>
 
-                    <a href="#" onclick="loadGame('Sandboxels', 'https://shalbito.vercel.app/'); return false;" class="block bg-gray-800 rounded-xl overflow-hidden game-card-shadow w-40 h-40" aria-label="Sandboxels">
+                    <a href="#" onclick="loadGame('Sandboxels', 'aHR0cHM6Ly9zaGFsYml0by52ZXJjZWwuYXBwLw=='); return false;" class="block bg-gray-800 rounded-xl overflow-hidden game-card-shadow w-40 h-40" aria-label="Sandboxels">
                         <img src="https://notbingsa.github.io/Zenith/games/images/Sandboxels.png" onerror="this.src='https://placehold.co/160x160/ef4444/ffffff?text=Sandboxels'" alt="Sandboxels" class="w-full h-full object-cover" />
                     </a>
 
-                    <a href="#" onclick="loadGame('Friday Night Funkin', 'https://html-classic.itch.zone/html/4459499/luckydog7.github.io-master/funkinmobile/game/index.html'); return false;" class="block bg-gray-800 rounded-xl overflow-hidden game-card-shadow w-40 h-40" aria-label="Friday Night Funkin">
+                    <a href="#" onclick="loadGame('Friday Night Funkin', 'aHR0cHM6Ly9odG1sLWNsYXNzaWMuaXRjaC56b25lL2h0bWwvNDQ1OTQ5OS9sdWNreWRvZy5naXRodWIuaW8tbWFzdGVyL2Z1bmtpbm1vYmlsZS9nYW1lL2luZGV4Lmh0bWw='); return false;" class="block bg-gray-800 rounded-xl overflow-hidden game-card-shadow w-40 h-40" aria-label="Friday Night Funkin">
                         <img src="https://notbingsa.github.io/Zenith/games/images/Friday Night Funkin.png" onerror="this.src='https://placehold.co/160x160/ef4444/ffffff?text=Friday+Night+Funkin'" alt="Friday Night Funkin" class="w-full h-full object-cover" />
                     </a>
-                    <a href="#" onclick="loadGame('Poly Track', 'https://polytrack-online.github.io/file/'); return false;" class="block bg-gray-800 rounded-xl overflow-hidden game-card-shadow w-40 h-40" aria-label="Poly Track">
+                    <a href="#" onclick="loadGame('Poly Track', 'aHR0cHM6Ly9wb2x5dHJhY2stb25saW5lLmdpdGh1Yi5pby9maWxlLw=='); return false;" class="block bg-gray-800 rounded-xl overflow-hidden game-card-shadow w-40 h-40" aria-label="Poly Track">
                         <img src="https://notbingsa.github.io/Zenith/games/images/Poly Track.png" onerror="this.src='https://placehold.co/160x160/ef4444/ffffff?text=Poly+Track'" alt="Poly Track" class="w-full h-full object-cover" />
                     </a>
-                    <a href="#" onclick="loadGame('Bitlife', 'https://nebulaplay.site/storage/bitlife/'); return false;" class="block bg-gray-800 rounded-xl overflow-hidden game-card-shadow w-40 h-40" aria-label="Bitlife">
+                    <a href="#" onclick="loadGame('Bitlife', 'aHR0cHM6Ly9uZWJ1bGFwbGF5LnNpdGUvc3RvcmFnZS9iaXRsaWZlLw=='); return false;" class="block bg-gray-800 rounded-xl overflow-hidden game-card-shadow w-40 h-40" aria-label="Bitlife">
                         <img src="https://notbingsa.github.io/Zenith/games/images/Bitlife.png" onerror="this.src='https://placehold.co/160x160/ef4444/ffffff?text=Bitlife'" alt="Bitlife" class="w-full h-full object-cover" />
                     </a>
                 </div>
