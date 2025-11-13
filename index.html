@@ -86,6 +86,123 @@
         }
         .full-view iframe { border-radius: 0 !important; }
     </style>
+
+    <script>
+        // Use let/var here, and initialize inside DOMContentLoaded to ensure elements exist.
+        let homepageSection, gameContainer, headerTitle, menuButtonText;
+
+        function filterGames() {
+            // Check if searchInput exists before accessing its value
+            const searchInput = document.getElementById('game-search');
+            const filter = (searchInput && searchInput.value || '').toLowerCase();
+            const cards = document.querySelectorAll('#game-list a');
+            cards.forEach(card => {
+                const img = card.querySelector('img');
+                const title = img ? (img.alt || '').toLowerCase() : '';
+                if (title.includes(filter)) {
+                    card.classList.remove('hidden');
+                } else {
+                    card.classList.add('hidden');
+                }
+            });
+        }
+
+        function loadGame(title, url) {
+            // Log the URL to the console immediately to help debug the blocking issue
+            console.log(`[Zenith Debug] Attempting to load: ${url}`);
+            
+            if (headerTitle) headerTitle.textContent = title;
+            if (homepageSection) homepageSection.classList.add('hidden');
+
+            if (gameContainer) {
+                gameContainer.className = 'relative w-full h-[80vh] mx-auto md:max-w-4xl rounded-2xl overflow-hidden shadow-2xl transition-all duration-300';
+                gameContainer.style.height = 'calc(100vh - 100px)';
+                gameContainer.innerHTML = '';
+            } else {
+                // Should not happen, but safe check
+                console.error("Game container not found.");
+                return;
+            }
+
+            const iframe = document.createElement('iframe');
+            iframe.id = 'game-iframe';
+            
+            // Re-adding the 2-second delay to help with the anti-filter strategy
+            setTimeout(() => {
+                iframe.src = url;
+            }, 2000);
+
+            iframe.className = 'w-full h-full border-none rounded-2xl';
+            iframe.setAttribute('allow', 'fullscreen');
+            iframe.setAttribute('allowfullscreen', 'true');
+            iframe.setAttribute('loading', 'lazy');
+
+            const fullscreenButton = document.createElement('button');
+            fullscreenButton.id = 'fullscreen-toggle-button';
+            fullscreenButton.className = 'fullscreen-button';
+            const enterIcon = '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4h4M4 4l5 5M20 16v4h-4M20 20l-5-5"/></svg>';
+            fullscreenButton.innerHTML = enterIcon + '<span id="fs-text">Fullscreen</span>';
+            fullscreenButton.onclick = () => toggleGameView(gameContainer);
+
+            gameContainer.appendChild(iframe);
+            gameContainer.appendChild(fullscreenButton);
+        }
+
+        function toggleGameView(container) {
+            const isFullView = container.classList.toggle('full-view');
+            const fsText = document.getElementById('fs-text');
+            const fullscreenButton = document.getElementById('fullscreen-toggle-button');
+            const iframe = document.getElementById('game-iframe');
+
+            if (isFullView) {
+                if (fsText) fsText.textContent = 'Exit View';
+                if (fullscreenButton && fullscreenButton.querySelector('svg')) {
+                    fullscreenButton.querySelector('svg').outerHTML = '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 14l6-6M9 8h6v6"/></svg>';
+                }
+                if (iframe) iframe.classList.remove('rounded-2xl');
+            } else {
+                if (fsText) fsText.textContent = 'Fullscreen';
+                if (fullscreenButton && fullscreenButton.querySelector('svg')) {
+                    fullscreenButton.querySelector('svg').outerHTML = '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4h4M4 4l5 5M20 16v4h-4M20 20l-5-5"/></svg>';
+                }
+                if (iframe) iframe.classList.add('rounded-2xl');
+            }
+        }
+
+        function showHomepage() {
+            if (headerTitle) headerTitle.textContent = 'Homepage';
+            if (homepageSection) homepageSection.classList.remove('hidden');
+            if (gameContainer) gameContainer.className = 'hidden relative';
+            if (menuButtonText) menuButtonText.textContent = 'Menu / Back';
+
+            if (document.fullscreenElement) {
+                document.exitFullscreen().catch(() => { });
+            }
+        }
+
+        // Initialize DOM-dependent variables only after the page is fully loaded
+        document.addEventListener('DOMContentLoaded', () => {
+            // Assign global references here
+            homepageSection = document.getElementById('homepage-section');
+            gameContainer = document.getElementById('game-container');
+            headerTitle = document.getElementById('header-title');
+            menuButtonText = document.querySelector('#menu-button span');
+
+            // Random tagline logic
+            const phrases = [
+                "We are doing our work... just not the teachers.",
+                "This is the only thing keeping me in school.",
+                "\"A student's dream\" - some random student that doesn't exist",
+                "We know you didn't get here accidently.",
+                "What game shall you pick?"
+            ];
+            const taglineElement = document.getElementById('random-tagline');
+            if (taglineElement) {
+                const randomIndex = Math.floor(Math.random() * phrases.length);
+                taglineElement.textContent = phrases[randomIndex];
+            }
+        });
+    </script>
 </head>
 <body class="font-sans dark-gradient-bg text-gray-100">
 
@@ -148,11 +265,11 @@
                     <a href="#" onclick="loadGame('Friday Night Funkin', 'https://html-classic.itch.zone/html/4459499/luckydog7.github.io-master/funkinmobile/game/index.html'); return false;" class="block bg-gray-800 rounded-xl overflow-hidden game-card-shadow w-40 h-40" aria-label="Friday Night Funkin">
                         <img src="https://notbingsa.github.io/Zenith/games/images/Friday Night Funkin.png" onerror="this.src='https://placehold.co/160x160/ef4444/ffffff?text=Friday+Night+Funkin'" alt="Friday Night Funkin" class="w-full h-full object-cover" />
                     </a>
-                    <a href="#" onclick="loadGame('Poly Track', 'https://polytrack-online.github.io/file/'); return false;" class="block bg-gray-800 rounded-xl overflow-hidden game-card-shadow w-40 h-40" aria-label="Friday Night Funkin">
-                        <img src="https://notbingsa.github.io/Zenith/games/images/Poly Track.png" onerror="this.src='https://placehold.co/160x160/ef4444/ffffff?text=Poly+Track'" alt="Friday Night Funkin" class="w-full h-full object-cover" />
+                    <a href="#" onclick="loadGame('Poly Track', 'https://polytrack-online.github.io/file/'); return false;" class="block bg-gray-800 rounded-xl overflow-hidden game-card-shadow w-40 h-40" aria-label="Poly Track">
+                        <img src="https://notbingsa.github.io/Zenith/games/images/Poly Track.png" onerror="this.src='https://placehold.co/160x160/ef4444/ffffff?text=Poly+Track'" alt="Poly Track" class="w-full h-full object-cover" />
                     </a>
-                    <a href="#" onclick="loadGame('Bitlife', 'https://nebulaplay.site/storage/bitlife/'); return false;" class="block bg-gray-800 rounded-xl overflow-hidden game-card-shadow w-40 h-40" aria-label="Friday Night Funkin">
-                        <img src="https://notbingsa.github.io/Zenith/games/images/Bitlife.png" onerror="this.src='https://placehold.co/160x160/ef4444/ffffff?text=Poly+Track'" alt="Friday Night Funkin" class="w-full h-full object-cover" />
+                    <a href="#" onclick="loadGame('Bitlife', 'https://nebulaplay.site/storage/bitlife/'); return false;" class="block bg-gray-800 rounded-xl overflow-hidden game-card-shadow w-40 h-40" aria-label="Bitlife">
+                        <img src="https://notbingsa.github.io/Zenith/games/images/Bitlife.png" onerror="this.src='https://placehold.co/160x160/ef4444/ffffff?text=Bitlife'" alt="Bitlife" class="w-full h-full object-cover" />
                     </a>
                 </div>
             </section>
@@ -168,104 +285,5 @@
         </div>
 
     </main>
-
-    <script>
-        const homepageSection = document.getElementById('homepage-section');
-        const gameContainer = document.getElementById('game-container');
-        const headerTitle = document.getElementById('header-title');
-        const menuButtonText = document.querySelector('#menu-button span');
-
-        function filterGames() {
-            const searchInput = document.getElementById('game-search');
-            const filter = (searchInput && searchInput.value || '').toLowerCase();
-            const cards = document.querySelectorAll('#game-list a');
-            cards.forEach(card => {
-                const img = card.querySelector('img');
-                const title = img ? (img.alt || '').toLowerCase() : '';
-                if (title.includes(filter)) {
-                    card.classList.remove('hidden');
-                } else {
-                    card.classList.add('hidden');
-                }
-            });
-        }
-
-        function loadGame(title, url) {
-            headerTitle.textContent = title;
-            homepageSection.classList.add('hidden');
-
-            gameContainer.className = 'relative w-full h-[80vh] mx-auto md:max-w-4xl rounded-2xl overflow-hidden shadow-2xl transition-all duration-300';
-            gameContainer.style.height = 'calc(100vh - 100px)';
-            gameContainer.innerHTML = '';
-
-            const iframe = document.createElement('iframe');
-            iframe.id = 'game-iframe';
-            
-            iframe.src = url
-            iframe.className = 'w-full h-full border-none rounded-2xl';
-            iframe.setAttribute('allow', 'fullscreen');
-            iframe.setAttribute('allowfullscreen', 'true');
-            iframe.setAttribute('loading', 'lazy');
-
-            const fullscreenButton = document.createElement('button');
-            fullscreenButton.id = 'fullscreen-toggle-button';
-            fullscreenButton.className = 'fullscreen-button';
-            const enterIcon = '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4h4M4 4l5 5M20 16v4h-4M20 20l-5-5"/></svg>';
-            fullscreenButton.innerHTML = enterIcon + '<span id="fs-text">Fullscreen</span>';
-            fullscreenButton.onclick = () => toggleGameView(gameContainer);
-
-            gameContainer.appendChild(iframe);
-            gameContainer.appendChild(fullscreenButton);
-\
-        }
-
-        function toggleGameView(container) {
-            const isFullView = container.classList.toggle('full-view');
-            const fsText = document.getElementById('fs-text');
-            const fullscreenButton = document.getElementById('fullscreen-toggle-button');
-            const iframe = document.getElementById('game-iframe');
-
-            if (isFullView) {
-                if (fsText) fsText.textContent = 'Exit View';
-                if (fullscreenButton && fullscreenButton.querySelector('svg')) {
-                    fullscreenButton.querySelector('svg').outerHTML = '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 14l6-6M9 8h6v6"/></svg>';
-                }
-                if (iframe) iframe.classList.remove('rounded-2xl');
-            } else {
-                if (fsText) fsText.textContent = 'Fullscreen';
-                if (fullscreenButton && fullscreenButton.querySelector('svg')) {
-                    fullscreenButton.querySelector('svg').outerHTML = '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4h4M4 4l5 5M20 16v4h-4M20 20l-5-5"/></svg>';
-                }
-                if (iframe) iframe.classList.add('rounded-2xl');
-            }
-        }
-
-        function showHomepage() {
-            headerTitle.textContent = 'Homepage';
-            homepageSection.classList.remove('hidden');
-            gameContainer.className = 'hidden relative';
-            if (menuButtonText) menuButtonText.textContent = 'Menu / Back';
-
-            if (document.fullscreenElement) {
-                document.exitFullscreen().catch(() => { });
-            }
-        }
-
-        document.addEventListener('DOMContentLoaded', () => {
-            const phrases = [
-                "We are doing our work... just not the teachers.",
-                "This is the only thing keeping me in school.",
-                "\"A student's dream\" - some random student that doesn't exist",
-                "We know you didn't get here accidently.",
-                "What game shall you pick?"
-            ];
-            const taglineElement = document.getElementById('random-tagline');
-            if (taglineElement) {
-                const randomIndex = Math.floor(Math.random() * phrases.length);
-                taglineElement.textContent = phrases[randomIndex];
-            }
-        });
-    </script>
-
 </body>
 </html>
