@@ -1,24 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <!-- Basic metadata -->
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Zenith - Unblocked Games</title>
 
-    <!-- Google Font (fixed wght parameter) -->
     <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 
-    <!-- Tailwind CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
 
-    <!-- Tailwind config -->
     <script>
         tailwind.config = {
             theme: {
                 extend: {
                     fontFamily: {
-                        // set Exo 2 as default
                         sans: ['"Exo 2"', 'sans-serif'],
                     },
                     colors: {
@@ -94,7 +89,6 @@
 </head>
 <body class="font-sans dark-gradient-bg text-gray-100">
 
-    <!-- Header -->
     <header class="p-4 md:p-6 flex justify-between items-center fixed top-0 left-0 right-0 z-10 bg-black/30 backdrop-blur-sm">
         <div class="flex items-center space-x-3">
             <svg class="w-8 h-8 text-zenith-purple" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -105,10 +99,8 @@
         </div>
     </header>
 
-    <!-- Main -->
     <main class="pt-24 md:pt-32 pb-8 px-4 md:px-8 max-w-7xl mx-auto">
 
-        <!-- Homepage section -->
         <div id="homepage-section">
 
             <section class="text-center py-16">
@@ -120,8 +112,8 @@
             <section class="text-center">
                 <div class="mb-10 w-full max-w-xl mx-auto relative flex items-center">
                     <input type="text" id="game-search" placeholder="Search for games..." 
-                           class="w-full p-3 pl-12 bg-gray-700/50 border border-zenith-purple/50 rounded-lg text-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-zenith-purple"
-                           oninput="filterGames()" />
+                            class="w-full p-3 pl-12 bg-gray-700/50 border border-zenith-purple/50 rounded-lg text-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-zenith-purple"
+                            oninput="filterGames()" />
                     <svg class="absolute left-4 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-4.35-4.35M17 11a6 6 0 11-12 0 6 6 0 0112 0z"></path>
                     </svg>
@@ -129,37 +121,30 @@
 
                 <div id="game-list" class="flex flex-wrap justify-center gap-6 lg:gap-8">
 
-                    <!-- Chat (Padlet) -->
                     <a href="#" onclick="loadGame('Chat', 'https://padlet.com/lincolnharrison8pc/zenith-kcoo8yyruf8y416e'); return false;" class="block bg-gray-800 rounded-xl overflow-hidden game-card-shadow w-40 h-40" aria-label="Chat">
                         <img src="https://notbingsa.github.io/Zenith/games/images/Chat.png" onerror="this.src='https://placehold.co/160x160/7c3aed/ffffff?text=Chat'" alt="Chat" class="w-full h-full object-cover" />
                     </a>
 
-                    <!-- Geometry Dash Lite -->
                     <a href="#" onclick="loadGame('Geometry Dash Lite', 'https://nebulaplay.site/storage/Geometry%20Dash%20Lite.html'); return false;" class="block bg-gray-800 rounded-xl overflow-hidden game-card-shadow w-40 h-40" aria-label="Geometry Dash Lite">
                         <img src="https://notbingsa.github.io/Zenith/games/images/Geometry Dash Lite.png" onerror="this.src='https://placehold.co/160x160/3b82f6/ffffff?text=Geometry+Dash+Lite'" alt="Geometry Dash Lite" class="w-full h-full object-cover" />
                     </a>
 
-                    <!-- Crossy Road -->
                     <a href="#" onclick="loadGame('Crossy Road', 'https://nebulaplay.site/storage/Crossy%20Road.html'); return false;" class="block bg-gray-800 rounded-xl overflow-hidden game-card-shadow w-40 h-40" aria-label="Crossy Road">
                         <img src="https://notbingsa.github.io/Zenith/games/images/Crossy Road.png" onerror="this.src='https://placehold.co/160x160/10b981/ffffff?text=Crossy+Road'" alt="Crossy Road" class="w-full h-full object-cover" />
                     </a>
 
-                    <!-- Bouncemasters -->
                     <a href="#" onclick="loadGame('Bouncemasters', 'https://nebulaplay.site/storage/Bouncemasters.html'); return false;" class="block bg-gray-800 rounded-xl overflow-hidden game-card-shadow w-40 h-40" aria-label="Bouncemasters">
                         <img src="https://notbingsa.github.io/Zenith/games/images/Bouncemasters.png" onerror="this.src='https://placehold.co/160x160/f97316/ffffff?text=Bouncemasters'" alt="Bouncemasters" class="w-full h-full object-cover" />
                     </a>
 
-                    <!-- Ragdoll Archers -->
                     <a href="#" onclick="loadGame('Ragdoll Archers', 'https://nebulaplay.site/storage/Ragdoll%20Archers.html'); return false;" class="block bg-gray-800 rounded-xl overflow-hidden game-card-shadow w-40 h-40" aria-label="Ragdoll Archers">
                         <img src="https://notbingsa.github.io/Zenith/games/images/Ragdoll Archers.png" onerror="this.src='https://placehold.co/160x160/ef4444/ffffff?text=Ragdoll+Archers'" alt="Ragdoll Archers" class="w-full h-full object-cover" />
                     </a>
 
-                    <!-- Sandboxels -->
                     <a href="#" onclick="loadGame('Sandboxels', 'https://sandboxels.r74n.com/'); return false;" class="block bg-gray-800 rounded-xl overflow-hidden game-card-shadow w-40 h-40" aria-label="Sandboxels">
                         <img src="https://notbingsa.github.io/Zenith/games/images/Sandboxels.png" onerror="this.src='https://placehold.co/160x160/ef4444/ffffff?text=Sandboxels'" alt="Sandboxels" class="w-full h-full object-cover" />
                     </a>
 
-                    <!-- Friday Night Funkin -->
                     <a href="#" onclick="loadGame('Friday Night Funkin', 'https://html-classic.itch.zone/html/4459499/luckydog7.github.io-master/funkinmobile/game/index.html'); return false;" class="block bg-gray-800 rounded-xl overflow-hidden game-card-shadow w-40 h-40" aria-label="Friday Night Funkin">
                         <img src="https://notbingsa.github.io/Zenith/games/images/Friday Night Funkin.png" onerror="this.src='https://placehold.co/160x160/ef4444/ffffff?text=Friday+Night+Funkin'" alt="Friday Night Funkin" class="w-full h-full object-cover" />
                     </a>
@@ -168,10 +153,8 @@
             </section>
         </div>
 
-        <!-- Game container (hidden until a game is launched) -->
         <div id="game-container" class="hidden relative"></div>
 
-        <!-- Sticky menu / back button -->
         <div class="fixed bottom-0 left-0 p-3 bg-black/50 backdrop-blur-sm rounded-tr-xl z-50">
             <button onclick="showHomepage()" id="menu-button" class="text-gray-400 hover:text-white transition duration-200 flex items-center space-x-2">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
@@ -182,13 +165,11 @@
     </main>
 
     <script>
-        // DOM refs
         const homepageSection = document.getElementById('homepage-section');
         const gameContainer = document.getElementById('game-container');
         const headerTitle = document.getElementById('header-title');
         const menuButtonText = document.querySelector('#menu-button span');
 
-        // Filter game cards by search text
         function filterGames() {
             const searchInput = document.getElementById('game-search');
             const filter = (searchInput && searchInput.value || '').toLowerCase();
@@ -198,15 +179,12 @@
                 const title = img ? (img.alt || '').toLowerCase() : '';
                 if (title.includes(filter)) {
                     card.classList.remove('hidden');
-                    card.style.display = 'block';
                 } else {
                     card.classList.add('hidden');
-                    card.style.display = 'none';
                 }
             });
         }
 
-        // Launch a game inside an iframe
         function loadGame(title, url) {
             headerTitle.textContent = title;
             homepageSection.classList.add('hidden');
@@ -236,7 +214,6 @@
             if (menuButtonText) menuButtonText.textContent = 'Back to Homepage';
         }
 
-        // CSS-based fullscreen toggle (no native Fullscreen API by default)
         function toggleGameView(container) {
             const isFullView = container.classList.toggle('full-view');
             const fsText = document.getElementById('fs-text');
@@ -258,20 +235,17 @@
             }
         }
 
-        // Show homepage and hide game
         function showHomepage() {
             headerTitle.textContent = 'Homepage';
             homepageSection.classList.remove('hidden');
             gameContainer.className = 'hidden relative';
             if (menuButtonText) menuButtonText.textContent = 'Menu / Back';
 
-            // If the page is in a native fullscreen state, exit it
             if (document.fullscreenElement) {
-                document.exitFullscreen().catch(() => { /* ignore errors */ });
+                document.exitFullscreen().catch(() => { });
             }
         }
 
-        // Random tagline on load
         document.addEventListener('DOMContentLoaded', () => {
             const phrases = [
                 "We are doing our work... just not the teachers.",
