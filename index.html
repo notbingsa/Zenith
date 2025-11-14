@@ -6,6 +6,8 @@
     <title>Zenith - Unblocked Games</title>
 
     <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 
     <script src="https://cdn.tailwindcss.com"></script>
 
@@ -34,14 +36,21 @@
         }
 
         .zenith-title-glow {
+            /* Gradient for the Zenith title */
+            background-image: linear-gradient(to right, #7c3aed, #3b82f6); /* Purple to Blue */
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-fill-color: transparent;
+            /* Keep glow for aesthetic */
             text-shadow:
-                0 0 5px rgba(59, 130, 246, 0.5),
-                0 0 20px rgba(124, 58, 237, 0.7),
-                0 0 40px rgba(59, 130, 246, 0.3);
-            color: #ffffff;
+                0 0 5px rgba(59, 130, 246, 0.3),
+                0 0 20px rgba(124, 58, 237, 0.5);
+            color: #ffffff; /* Fallback for browsers not supporting text-fill-color */
         }
 
         .section-heading-glow {
+            /* General text glow for headings */
             text-shadow: 0 0 10px #7c3aed;
             color: #d1d5db;
         }
@@ -55,24 +64,62 @@
             box-shadow: 0 15px 25px rgba(124, 58, 237, 0.5), 0 6px 10px rgba(59, 130, 246, 0.2);
         }
 
+        /* --- Fullscreen Button Style --- */
         .fullscreen-button {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            z-index: 20;
-            background-color: rgba(124, 58, 237, 0.85);
+            position: relative; 
+            background-color: rgba(107, 114, 128, 0.9);
             color: white;
-            padding: 8px 12px;
-            border-radius: 9999px;
+            padding: 0; 
+            height: 40px; 
+            width: 40px; 
+            border-radius: 8px; 
             cursor: pointer;
             transition: background-color 0.2s;
+            display: flex; 
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            box-shadow: none;
+            margin-left: 10px; 
+        }
+
+        .fullscreen-button:hover { background-color: rgba(107, 114, 128, 1); }
+
+        /* --- Game View Structure: Control Bar --- */
+        .game-control-bar {
+            position: absolute;
+            top: auto;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 50px; 
+            z-index: 30; 
+            background-color: #1f2937;
             display: flex;
             align-items: center;
-            gap: 8px;
-            box-shadow: 0 0 10px rgba(124, 58, 237, 0.5);
+            justify-content: flex-end; 
+            padding: 0 10px; 
+            box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.4); 
+            
+            border-bottom-left-radius: 1rem; 
+            border-bottom-right-radius: 1rem; 
         }
-        .fullscreen-button:hover { background-color: rgba(124, 58, 237, 1); }
+        
+        /* --- Game View Structure: Iframe positioning --- */
+        .game-iframe-content {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 50px;
+            background-color: black; 
+        }
+        
+        #loading-overlay {
+            border-radius: 1rem;
+        }
 
+        /* Full View overrides */
         .full-view {
             position: fixed !important;
             top: 0 !important;
@@ -80,21 +127,41 @@
             width: 100vw !important;
             height: 100vh !important;
             z-index: 9999 !important;
-            border-radius: 0 !important;
+            border-radius: 0 !important; 
             max-width: none !important;
             box-shadow: none !important;
         }
-        .full-view iframe { border-radius: 0 !important; }
+        
+        .full-view .game-control-bar {
+            border-radius: 0 !important;
+        }
+        .full-view .fullscreen-button {
+            border-radius: 0 !important;
+        }
     </style>
 
     <script>
 
         let homepageSection, gameContainer, headerTitle, menuButtonText;
         
+        // --- GAME DATA DEFINITION ---
+        // Refactored game list for dynamic rendering and randomization
+        const ALL_GAMES = [
+            { title: 'Chat', encodedUrl: 'aHR0cHM6Ly9wYWRsZXQuY29tL2xpbmNvbG5oYXJyaXNvbjhwYy96ZW5pdGgta2Nvbzh5eXJ1ZjheNDFmZQ==', placeholderColor: '7c3aed', type: 'loadGame' },
+            { title: 'Coreball', encodedUrl: 'aHR0cHM6Ly9uZWJ1bGFwbGF5LnNpdGUvc3RvcmFnZS9Db3JlYmFsbC5odG1s', placeholderColor: 'f87171', type: 'loadGame' },
+            { title: 'Geometry Dash Lite', encodedUrl: 'aHR0cHM6Ly9uZWJ1bGFwbGF5LnNpdGUvc3RvcmFnZS9HZW9tZXRyeSUyMERhc2glMjBMaXRlLmh0bWw=', placeholderColor: '3b82f6', type: 'loadGame' },
+            { title: 'Crossy Road', encodedUrl: 'aHR0cHM6Ly9uZWJ1bGFwbGF5LnNpdGUvc3RvcmFnZS9Dcm9zc3klMjBSb2FkLmh0bWw=', placeholderColor: '10b981', type: 'loadGame' },
+            { title: 'Bouncemasters', encodedUrl: 'aHR0cHM6Ly9uZWJ1bGFwbGF5LnNpdGUvc3RvcmFnZS9Cb3VuY2VtYXN0ZXJzLmh0bWw=', placeholderColor: 'f97316', type: 'loadGame' },
+            { title: 'Ragdoll Archers', encodedUrl: 'aHR0cHM6Ly9uZWJ1bGFwbGF5LnNpdGUvc3RvcmFnZS9SYWdkb2xsJTIwQXJjaGVycy5odG1s', placeholderColor: 'ef4444', type: 'loadGame' },
+            { title: 'Sandboxels', encodedUrl: 'aHR0cHM6Ly9zaGFsYml0by52ZXJjZWwuYXBwLw==', placeholderColor: 'ef4444', type: 'loadGame' },
+            { title: 'Friday Night Funkin', encodedUrl: '', placeholderColor: 'ef4444', type: 'loadFNFMobileOrPC' }, // Special handler
+            { title: 'Poly Track', encodedUrl: 'aHR0cHM6Ly9odG1sLWNsYXNzaWMuaXRjaC56b25lL2h0bWwvMTU0NTEzMzAvaW5kZXguaHRtbA==', placeholderColor: 'ef4444', type: 'loadGame' },
+            { title: 'Bitlife', encodedUrl: 'aHR0cHM6Ly9uZWJ1bGFwbGF5LnNpdGUvc3RvcmFnZS9iaXRsaWZlLw==', placeholderColor: 'ef4444', type: 'loadGame' },
+        ];
+
         // Helper function to decode Base64 URLs
         function decodeUrl(encodedUrl) {
             try {
-                // Use atob to decode the Base64 string
                 return atob(encodedUrl);
             } catch (e) {
                 console.error("Error decoding URL:", e);
@@ -102,11 +169,70 @@
             }
         }
 
-        function filterGames() {
+        // --- GAME RENDERING FUNCTIONS ---
+        
+        /** Generates the HTML for a single game card. */
+        function createGameCardHtml(game, sizeClass = 'w-40 h-40') {
+            let clickHandler;
+            if (game.type === 'loadFNFMobileOrPC') {
+                clickHandler = `loadFNFMobileOrPC('${game.title}')`;
+            } else {
+                clickHandler = `loadGame('${game.title}', '${game.encodedUrl}')`;
+            }
+            
+            // Determine placeholder size based on sizeClass (160x160 for w-40, 128x128 for others)
+            const isLarge = sizeClass.includes('w-40');
+            const placeholderSize = isLarge ? '160x160' : '128x128';
+            
+            return `
+                <a href="#" onclick="${clickHandler}; return false;" class="block bg-gray-800 rounded-xl overflow-hidden game-card-shadow ${sizeClass}" aria-label="${game.title}">
+                    <img src="https://notbingsa.github.io/Zenith/games/images/${game.title}.png" 
+                         onerror="this.src='https://placehold.co/${placeholderSize}/${game.placeholderColor}/ffffff?text=${game.title.replace(/\s/g, '+')}'" 
+                         alt="${game.title}" 
+                         class="w-full h-full object-cover" />
+                </a>
+            `;
+        }
+        
+        /** Populates the main game list section. */
+        function renderAllGames() {
+            const gameList = document.getElementById('game-list');
+            if (gameList) {
+                const allGamesHtml = ALL_GAMES.map(game => createGameCardHtml(game, 'w-40 h-40')).join('');
+                gameList.innerHTML = allGamesHtml;
+            }
+        }
 
+        /** Selects random games and populates the "Random Picks" section. */
+        function renderRandomGames() {
+            const getRandomGames = (count) => {
+                const shuffled = [...ALL_GAMES].sort(() => 0.5 - Math.random());
+                return shuffled.slice(0, count);
+            }
+
+            const randomGames = getRandomGames(5); // Get 5 random games
+            // Smaller cards for the random section
+            const randomGamesHtml = randomGames.map(game => createGameCardHtml(game, 'w-28 h-28 md:w-32 md:h-32')).join('');
+            
+            const randomGamesContainer = document.getElementById('random-games-section');
+            if (randomGamesContainer) {
+                randomGamesContainer.innerHTML = `
+                    <h3 class="section-heading-glow text-xl md:text-2xl font-semibold mb-6 text-center pt-8 text-white">
+                        <i class="fas fa-dice text-zenith-purple mr-2"></i>Random Picks
+                    </h3>
+                    <div class="flex flex-wrap justify-center gap-4 lg:gap-6 mb-12">
+                        ${randomGamesHtml}
+                    </div>
+                `;
+            }
+        }
+
+
+        function filterGames() {
             const searchInput = document.getElementById('game-search');
             const filter = (searchInput && searchInput.value || '').toLowerCase();
-            const cards = document.querySelectorAll('#game-list a');
+            // Filter both the main list and the random list
+            const cards = document.querySelectorAll('#game-list a, #random-games-section a'); 
             cards.forEach(card => {
                 const img = card.querySelector('img');
                 const title = img ? (img.alt || '').toLowerCase() : '';
@@ -119,12 +245,9 @@
         }
 
         /**
-         * Loads the game into the iframe.
-         * @param {string} title - The title of the game.
-         * @param {string} encodedUrl - The Base64 encoded URL of the game.
+         * Loads the game into the iframe, structured with a control bar.
          */
         function loadGame(title, encodedUrl) {
-            // DECODE THE URL immediately upon click
             const url = decodeUrl(encodedUrl);
             
             console.log(`[Zenith Debug] Attempting to load: ${url}`);
@@ -135,21 +258,19 @@
             if (gameContainer) {
                 gameContainer.className = 'relative w-full h-[80vh] mx-auto md:max-w-4xl rounded-2xl overflow-hidden shadow-2xl transition-all duration-300';
                 gameContainer.style.height = 'calc(100vh - 100px)';
-                gameContainer.innerHTML = ''; // Clear previous content
-                gameContainer.classList.remove('hidden'); // Ensure container is visible
+                gameContainer.innerHTML = ''; 
+                gameContainer.classList.remove('hidden'); 
             } else {
-
                 console.error("Game container not found.");
                 return;
             }
 
-            // 1. Create Loading Overlay (Game-specific overlay)
+            // 1. Create Loading Overlay
             const loadingOverlay = document.createElement('div');
             loadingOverlay.id = 'loading-overlay';
             loadingOverlay.className = 'absolute inset-0 bg-zenith-dark/95 flex flex-col items-center justify-center p-8 z-10 rounded-2xl transition-opacity duration-500';
             loadingOverlay.innerHTML = `
                 <div class="animate-pulse mb-4">
-                    <!-- Solid loading circle -->
                     <svg class="w-12 h-12 animate-spin text-zenith-purple" viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round">
                         <circle class="opacity-25" cx="12" cy="12" r="10" fill="currentColor"></circle>
                         <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
@@ -163,98 +284,79 @@
                     <div id="loading-bar" class="h-full bg-zenith-purple transition-all duration-300" style="width: 0%"></div>
                 </div>
             `;
-            gameContainer.appendChild(loadingOverlay);
-
-            const loadingBar = document.getElementById('loading-bar');
+            
+            const loadingBar = loadingOverlay.querySelector('#loading-bar');
             let progress = 0;
             
-            // 1. Initial rapid setup simulation (up to 50%)
             const interval = setInterval(() => {
                 if (progress < 50) { 
-                    progress += 10; // Rapidly reach 50% for initial setup
-                    loadingBar.style.width = `${progress}%`;
+                    progress += 10; 
+                    if (loadingBar) loadingBar.style.width = `${progress}%`; 
                 } else {
                     clearInterval(interval);
-                    // 2. Once setup simulation is done, start the real load
                     loadingOverlay.querySelector('h3').textContent = 'Connecting to Game...';
                     loadingOverlay.querySelector('p').textContent = 'Waiting for game data to load...';
-                    
-                    // Jump progress to 70% to show network request is ongoing
-                    loadingBar.style.width = '70%'; 
-                    iframe.src = url; // Set the URL immediately to start genuine loading
+                    if (loadingBar) loadingBar.style.width = '70%'; 
+                    iframe.src = url; 
                 }
-            }, 50); // Very fast 50ms interval
+            }, 50);
 
-            // 2. Create Iframe (initially hidden using opacity-0)
+            // 2. Create the Control Bar
+            const controlBar = document.createElement('div');
+            controlBar.className = 'game-control-bar';
+            
+            // 3. Create Fullscreen Button
+            const fullscreenButton = document.createElement('button');
+            fullscreenButton.id = 'fullscreen-toggle-button';
+            fullscreenButton.className = 'fullscreen-button'; 
+            fullscreenButton.innerHTML = '<i id="fs-icon" class="fas fa-expand"></i>'; 
+            fullscreenButton.onclick = () => toggleGameView(gameContainer);
+            controlBar.appendChild(fullscreenButton);
+
+            // 4. Create Iframe
             const iframe = document.createElement('iframe');
             iframe.id = 'game-iframe';
-            // Initially opaque, will become visible on load
-            iframe.className = 'w-full h-full border-none rounded-2xl opacity-0 transition-opacity duration-500'; 
+            iframe.className = 'game-iframe-content w-full h-full border-none opacity-0 transition-opacity duration-500'; 
             iframe.setAttribute('allow', 'fullscreen');
             iframe.setAttribute('allowfullscreen', 'true');
             iframe.setAttribute('loading', 'lazy');
-            gameContainer.appendChild(iframe);
 
-            // 3. Iframe Load Detection (This will be the closing signal)
+            // 5. Append all structured elements
+            gameContainer.appendChild(controlBar);
+            gameContainer.appendChild(iframe);
+            gameContainer.appendChild(loadingOverlay); 
+
+            // 6. Iframe Load Detection
             iframe.onload = () => {
                 console.log(`[Zenith Debug] Iframe loaded successfully. Hiding overlay.`);
                 
-                // Complete progress bar
-                clearInterval(interval); // Clear interval just in case
-                loadingBar.style.width = '100%';
+                clearInterval(interval);
+                if (loadingBar) loadingBar.style.width = '100%';
 
-                // Fade out overlay and show iframe
                 loadingOverlay.style.opacity = '0'; 
                 iframe.classList.remove('opacity-0');
 
-                // Clean up overlay after transition finishes
                 setTimeout(() => {
                     loadingOverlay.remove();
                 }, 500);
             };
-
-            // 4. Add Fullscreen button
-            const fullscreenButton = document.createElement('button');
-            fullscreenButton.id = 'fullscreen-toggle-button';
-            // Set z-index: 20 so it's on top of the loading overlay
-            fullscreenButton.className = 'fullscreen-button'; 
-            const enterIcon = '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4h4M4 4l5 5M20 16v4h-4M20 20l-5-5"/></svg>';
-            fullscreenButton.innerHTML = enterIcon + '<span id="fs-text">Fullscreen</span>';
-            fullscreenButton.onclick = () => toggleGameView(gameContainer);
-
-
-            gameContainer.appendChild(fullscreenButton);
         }
 
-        /**
-         * Checks the user agent and loads the appropriate version of Friday Night Funkin.
-         * Loads the mobile version if:
-         * 1. The device is detected as a common mobile device (iOS/Android).
-         * 2. The browser is specifically detected as Safari (to cover the user's request).
-         * @param {string} title - The title of the game.
-         */
+        /** Checks the user agent and loads the appropriate version of Friday Night Funkin. */
         function loadFNFMobileOrPC(title) {
             const userAgent = navigator.userAgent;
             
-            // Check for common mobile patterns (Android, iOS devices)
             const isMobileDevice = /Mobi|Android|iPhone|iPod|iPad/i.test(userAgent);
-            
-            // Explicitly check for Safari browser (excluding Chrome which often includes 'Safari' in its UA string)
             const isSafariBrowser = userAgent.includes('Safari') && !userAgent.includes('Chrome');
 
-            // Load mobile version if it's a known mobile device OR if it's the Safari browser.
             const loadMobileVersion = isMobileDevice || isSafariBrowser;
             
             let encodedUrl;
 
             if (loadMobileVersion) {
-                // Mobile URL
                 encodedUrl = 'aHR0cHM6Ly9odG1sLWNsYXNzaWMuaXRjaC56b25lL2h0bWwvNDQ1OTQ5OS9sdWNreWRvZzcuZ2l0aHViLmlvLW1hc3Rlci9mdW5raW5tb2JpbGUvZ2FtZS9pbmRleC5odG1s';
-                console.log(`[Zenith Debug] Loading mobile version of ${title} (Detected as Mobile or Safari)`);
             } else {
-                // PC/Laptop URL
                 encodedUrl = 'aHR0cHM6Ly9odG1sLWNsYXNzaWMuaXRjaC56b25lL2h0bWwvMjg3NjM1OS0xMzgzODg2L2luZGV4Lmh0bWw=';
-                console.log(`[Zenith Debug] Loading PC version of ${title} (Detected as PC/Desktop)`);
             }
 
             loadGame(title, encodedUrl);
@@ -262,22 +364,21 @@
 
         function toggleGameView(container) {
             const isFullView = container.classList.toggle('full-view');
-            const fsText = document.getElementById('fs-text');
-            const fullscreenButton = document.getElementById('fullscreen-toggle-button');
-            const iframe = document.getElementById('game-iframe');
+            const fsIcon = document.getElementById('fs-icon');
+            const fsButton = document.getElementById('fullscreen-toggle-button');
 
             if (isFullView) {
-                if (fsText) fsText.textContent = 'Exit View';
-                if (fullscreenButton && fullscreenButton.querySelector('svg')) {
-                    fullscreenButton.querySelector('svg').outerHTML = '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 14l6-6M9 8h6v6"/></svg>';
+                if (fsIcon) {
+                    fsIcon.classList.remove('fa-expand');
+                    fsIcon.classList.add('fa-compress');
                 }
-                if (iframe) iframe.classList.remove('rounded-2xl');
+                if (fsButton) fsButton.innerHTML = '<i id="fs-icon" class="fas fa-compress"></i>';
             } else {
-                if (fsText) fsText.textContent = 'Fullscreen';
-                if (fullscreenButton && fullscreenButton.querySelector('svg')) {
-                    fullscreenButton.querySelector('svg').outerHTML = '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4h4M4 4l5 5M20 16v4h-4M20 20l-5-5"/></svg>';
+                if (fsIcon) {
+                    fsIcon.classList.remove('fa-compress');
+                    fsIcon.classList.add('fa-expand');
                 }
-                if (iframe) iframe.classList.add('rounded-2xl');
+                if (fsButton) fsButton.innerHTML = '<i id="fs-icon" class="fas fa-expand"></i>';
             }
         }
 
@@ -287,7 +388,6 @@
             if (gameContainer) gameContainer.className = 'hidden relative';
             if (menuButtonText) menuButtonText.textContent = 'Menu / Back';
 
-            // Clean up any loading overlay if it's still present
             const overlay = document.getElementById('loading-overlay');
             if (overlay) overlay.remove();
 
@@ -303,6 +403,11 @@
             gameContainer = document.getElementById('game-container');
             headerTitle = document.getElementById('header-title');
             menuButtonText = document.querySelector('#menu-button span');
+            
+            // Render all dynamic content
+            renderAllGames();
+            renderRandomGames();
+
 
             // Random tagline logic
             const phrases = [
@@ -345,10 +450,7 @@
 
     <header class="p-4 md:p-6 flex justify-between items-center fixed top-0 left-0 right-0 z-10 bg-black/30 backdrop-blur-sm">
         <div class="flex items-center space-x-3">
-            <svg class="w-8 h-8 text-zenith-purple" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-opacity="0.9"></circle>
-                <path d="M12 4v8l5 3" stroke="currentColor"></path>
-            </svg>
+            <img src="https://notbingsa.github.io/Zenith/ui/logo.png" alt="Zenith Logo" class="w-8 h-8 object-contain" />
             <h1 id="header-title" class="text-3xl font-bold">Homepage</h1>
         </div>
     </header>
@@ -359,9 +461,16 @@
 
             <section class="text-center py-16">
                 <h2 class="text-6xl md:text-8xl font-extrabold zenith-title-glow tracking-tighter mb-4">Zenith</h2>
-                <p id="random-tagline" class="text-xl md:text-2xl font-medium text-zenith-blue mb-4" style="text-shadow: 0 0 10px #3b82f6;"></p>
-                <div class="w-full h-0.5 bg-gradient-to-r from-transparent via-zenith-purple/50 to-transparent mb-16"></div>
+                <p id="random-tagline" class="text-xl md:text-2xl font-medium text-white mb-4" style="text-shadow: 0 0 10px #3b82f6;"></p>
+                <!-- Spacer with margin removed (mb-0) -->
+                <div class="w-full h-0.5 bg-gradient-to-r from-transparent via-zenith-purple/50 to-transparent mb-0"></div>
             </section>
+            
+            <!-- NEW RANDOM GAMES SECTION - Content inserted by renderRandomGames() JS function -->
+            <div id="random-games-section" class="mb-4">
+                <!-- Content will be injected here -->
+            </div>
+            <!-- END RANDOM GAMES SECTION -->
 
             <section class="text-center">
                 <div class="mb-10 w-full max-w-xl mx-auto relative flex items-center">
@@ -373,46 +482,10 @@
                     </svg>
                 </div>
 
+                <!-- MAIN GAME LIST - Content now injected by renderAllGames() JS function -->
+                <h3 class="section-heading-glow text-3xl font-bold mb-6 text-white pt-8">Full Catalog</h3>
                 <div id="game-list" class="flex flex-wrap justify-center gap-6 lg:gap-8">
-
-                    <!-- Links now use Base64 encoded URLs -->
-                    <a href="#" onclick="loadGame('Chat', 'aHR0cHM6Ly9wYWRsZXQuY29tL2xpbmNvbG5oYXJyaXNvbjhwYy96ZW5pdGgta2Nvbzh5eXJ1Zjh5NDE2ZQ=='); return false;" class="block bg-gray-800 rounded-xl overflow-hidden game-card-shadow w-40 h-40" aria-label="Chat">
-                        <img src="https://notbingsa.github.io/Zenith/games/images/Chat.png" onerror="this.src='https://placehold.co/160x160/7c3aed/ffffff?text=Chat'" alt="Chat" class="w-full h-full object-cover" />
-                    </a>
-                    <a href="#" onclick="loadGame('Geometry Dash Lite', 'aHR0cHM6Ly9uZWJ1bGFwbGF5LnNpdGUvc3RvcmFnZS9HZW9tZXRyeSUyMERhc2glMjBMaXRlLmh0bWw='); return false;" class="block bg-gray-800 rounded-xl overflow-hidden game-card-shadow w-40 h-40" aria-label="Geometry Dash Lite">
-                        <img src="https://notbingsa.github.io/Zenith/games/images/Geometry Dash Lite.png" onerror="this.src='https://placehold.co/160x160/3b82f6/ffffff?text=Geometry+Dash+Lite'" alt="Geometry Dash Lite" class="w-full h-full object-cover" />
-                    </a>
-
-                    <a href="#" onclick="loadGame('Crossy Road', 'aHR0cHM6Ly9uZWJ1bGFwbGF5LnNpdGUvc3RvcmFnZS9Dcm9zc3klMjBSb2FkLmh0bWw='); return false;" class="block bg-gray-800 rounded-xl overflow-hidden game-card-shadow w-40 h-40" aria-label="Crossy Road">
-                        <img src="https://notbingsa.github.io/Zenith/games/images/Crossy Road.png" onerror="this.src='https://placehold.co/160x160/10b981/ffffff?text=Crossy+Road'" alt="Crossy Road" class="w-full h-full object-cover" />
-                    </a>
-
-                    <a href="#" onclick="loadGame('Bouncemasters', 'aHR0cHM6Ly9uZWJ1bGFwbGF5LnNpdGUvc3RvcmFnZS9Cb3VuY2VtYXN0ZXJzLmh0bWw='); return false;" class="block bg-gray-800 rounded-xl overflow-hidden game-card-shadow w-40 h-40" aria-label="Bouncemasters">
-                        <img src="https://notbingsa.github.io/Zenith/games/images/Bouncemasters.png" onerror="this.src='https://placehold.co/160x160/f97316/ffffff?text=Bouncemasters'" alt="Bouncemasters" class="w-full h-full object-cover" />
-                    </a>
-
-                    <a href="#" onclick="loadGame('Ragdoll Archers', 'aHR0cHM6Ly9uZWJ1bGFwbGF5LnNpdGUvc3RvcmFnZS9SYWdkb2xsJTIwQXJjaGVycy5odG1s'); return false;" class="block bg-gray-800 rounded-xl overflow-hidden game-card-shadow w-40 h-40" aria-label="Ragdoll Archers">
-                        <img src="https://notbingsa.github.io/Zenith/games/images/Ragdoll Archers.png" onerror="this.src='https://placehold.co/160x160/ef4444/ffffff?text=Ragdoll+Archers'" alt="Ragdoll Archers" class="w-full h-full object-cover" />
-                    </a>
-
-                    <a href="#" onclick="loadGame('Sandboxels', 'aHR0cHM6Ly9zaGFsYml0by52ZXJjZWwuYXBwLw=='); return false;" class="block bg-gray-800 rounded-xl overflow-hidden game-card-shadow w-40 h-40" aria-label="Sandboxels">
-                        <img src="https://notbingsa.github.io/Zenith/games/images/Sandboxels.png" onerror="this.src='https://placehold.co/160x160/ef4444/ffffff?text=Sandboxels'" alt="Sandboxels" class="w-full h-full object-cover" />
-                    </a>
-
-                    <!-- UPDATED FNF LINK TO USE PLATFORM CHECKING FUNCTION -->
-                    <a href="#" onclick="loadFNFMobileOrPC('Friday Night Funkin'); return false;" class="block bg-gray-800 rounded-xl overflow-hidden game-card-shadow w-40 h-40" aria-label="Friday Night Funkin">
-                        <img src="https://notbingsa.github.io/Zenith/games/images/Friday Night Funkin.png" onerror="this.src='https://placehold.co/160x160/ef4444/ffffff?text=Friday+Night+Funkin'" alt="Friday Night Funkin" class="w-full h-full object-cover" />
-                    </a>
-                    <!-- ********************************************** -->
-                    
-                    <!-- UPDATED POLY TRACK SOURCE HERE with the new itch.zone link -->
-                    <a href="#" onclick="loadGame('Poly Track', 'aHR0cHM6Ly9odG1sLWNsYXNzaWMuaXRjaC56b25lL2h0bWwvMTU0NTEzMzAvaW5kZXguaHRtbA=='); return false;" class="block bg-gray-800 rounded-xl overflow-hidden game-card-shadow w-40 h-40" aria-label="Poly Track">
-                        <img src="https://notbingsa.github.io/Zenith/games/images/Poly Track.png" onerror="this.src='https://placehold.co/160x160/ef4444/ffffff?text=Poly+Track'" alt="Poly Track" class="w-full h-full object-cover" />
-                    </a>
-                    <!-- ************************************ -->
-                    <a href="#" onclick="loadGame('Bitlife', 'aHR0cHM6Ly9uZWJ1bGFwbGF5LnNpdGUvc3RvcmFnZS9iaXRsaWZlLw=='); return false;" class="block bg-gray-800 rounded-xl overflow-hidden game-card-shadow w-40 h-40" aria-label="Bitlife">
-                        <img src="https://notbingsa.github.io/Zenith/games/images/Bitlife.png" onerror="this.src='https://placehold.co/160x160/ef4444/ffffff?text=Bitlife'" alt="Bitlife" class="w-full h-full object-cover" />
-                    </a>
+                    <!-- Game cards will be dynamically inserted here -->
                 </div>
             </section>
         </div>
