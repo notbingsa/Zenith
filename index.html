@@ -228,21 +228,33 @@
 
         /**
          * Checks the user agent and loads the appropriate version of Friday Night Funkin.
+         * Loads the mobile version if:
+         * 1. The device is detected as a common mobile device (iOS/Android).
+         * 2. The browser is specifically detected as Safari (to cover the user's request).
          * @param {string} title - The title of the game.
          */
         function loadFNFMobileOrPC(title) {
-            // Check for common mobile patterns in the user agent string
-            const isMobile = /Mobi|Android|iPhone|iPod|iPad/i.test(navigator.userAgent);
+            const userAgent = navigator.userAgent;
+            
+            // Check for common mobile patterns (Android, iOS devices)
+            const isMobileDevice = /Mobi|Android|iPhone|iPod|iPad/i.test(userAgent);
+            
+            // Explicitly check for Safari browser (excluding Chrome which often includes 'Safari' in its UA string)
+            const isSafariBrowser = userAgent.includes('Safari') && !userAgent.includes('Chrome');
+
+            // Load mobile version if it's a known mobile device OR if it's the Safari browser.
+            const loadMobileVersion = isMobileDevice || isSafariBrowser;
+            
             let encodedUrl;
 
-            if (isMobile) {
-                // Mobile URL: https://html-classic.itch.zone/html/4459499/luckydog7.github.io-master/funkinmobile/game/index.html
+            if (loadMobileVersion) {
+                // Mobile URL
                 encodedUrl = 'aHR0cHM6Ly9odG1sLWNsYXNzaWMuaXRjaC56b25lL2h0bWwvNDQ1OTQ5OS9sdWNreWRvZy5naXRodWIuaW8tbWFzdGVyL2Z1bmtpbm1vYmlsZS9nYW1lL2luZGV4Lmh0bWw=';
-                console.log(`[Zenith Debug] Loading mobile version of ${title}`);
+                console.log(`[Zenith Debug] Loading mobile version of ${title} (Detected as Mobile or Safari)`);
             } else {
-                // PC/Laptop URL: https://html-classic.itch.zone/html/2876359-1383886/index.html
+                // PC/Laptop URL
                 encodedUrl = 'aHR0cHM6Ly9odG1sLWNsYXNzaWMuaXRjaC56b25lL2h0bWwvMjg3NjM1OS0xMzgzODg2L2luZGV4Lmh0bWw=';
-                console.log(`[Zenith Debug] Loading PC version of ${title}`);
+                console.log(`[Zenith Debug] Loading PC version of ${title} (Detected as PC/Desktop)`);
             }
 
             loadGame(title, encodedUrl);
