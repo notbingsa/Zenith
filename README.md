@@ -4,7 +4,7 @@
   </a>
 </h1>
 <div align="center">
-# Zenith
+Zenith
 </div>
 Zenith is a website to play games unblocked.
 
