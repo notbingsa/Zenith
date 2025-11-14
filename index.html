@@ -9,7 +9,6 @@
 
     <script src="https://cdn.tailwindcss.com"></script>
 
-    
     <script>
         tailwind.config = {
             theme: {
@@ -42,6 +41,11 @@
             color: #ffffff;
         }
 
+        .section-heading-glow {
+            text-shadow: 0 0 10px #7c3aed;
+            color: #d1d5db;
+        }
+
         .game-card-shadow {
             box-shadow: 0 10px 15px rgba(124, 58, 237, 0.3), 0 4px 6px rgba(59, 130, 246, 0.1);
             transition: transform 0.2s ease, box-shadow 0.2s ease;
@@ -49,29 +53,6 @@
         .game-card-shadow:hover {
             transform: translateY(-4px);
             box-shadow: 0 15px 25px rgba(124, 58, 237, 0.5), 0 6px 10px rgba(59, 130, 246, 0.2);
-        }
-
-        .category-button {
-            padding: 8px 16px;
-            border-radius: 9999px;
-            font-weight: 600;
-            transition: all 0.2s;
-            cursor: pointer;
-            border: 2px solid transparent;
-        }
-        .category-button-active {
-            background-color: #7c3aed; 
-            color: white;
-            border-color: #a78bfa;
-            box-shadow: 0 0 15px rgba(124, 58, 237, 0.7);
-        }
-        .category-button-inactive {
-            background-color: #1f2937; 
-            color: #d1d5db; 
-            border-color: #374151; 
-        }
-        .category-button-inactive:hover {
-            background-color: #374151; 
         }
 
         .fullscreen-button {
@@ -107,24 +88,13 @@
     </style>
 
     <script>
+
         let homepageSection, gameContainer, headerTitle, menuButtonText;
-        let currentCategory = 'Game'; 
-
-        const catalog = [
-            { title: 'Bitlife', encodedUrl: 'aHR0cHM6Ly9uZWJ1bGFwbGF5LnNpdGUvc3RvcmFnZS9iaXRsaWZlLw==', encodedImageSrc: 'aHR0cHM6Ly9ub3RiaW5nc2EuZ2l0aHViLmlvL1plbml0aC9nYW1lcy9pbWFnZXMvQml0bGlmZS5wbmc=', category: 'Game' },
-            { title: 'Bouncemasters', encodedUrl: 'aHR0cHM6Ly9uZWJ1bGFwbGF5LnNpdGUvc3RvcmFnZS9Cb3VuY2VtYXN0ZXJzLmh0bWw=', encodedImageSrc: 'aHR0cHM6Ly9ub3RiaW5nc2EuZ2l0aHViLmlvL1plbml0aC9nYW1lcy9pbWFnZXMvQm91bmNlbWFzdGVycy5wbmc=', category: 'Game' },
-            { title: 'Chat', encodedUrl: 'aHR0cHM6Ly9wYWRsZXQuY29tL2xpbmNvbG5oYXJyaXNvbjhwYy96ZW5pdGgta2Nvbzh5eXJ1ZjheNDFmZQ==', encodedImageSrc: 'aHR0cHM6Ly9ub3RiaW5nc2EuZ2l0aHViLmlvL1plbml0aC9nYW1lcy9pbWFnZXMvQ2hhdC5wbmc=', category: 'App' },
-            { title: 'Crossy Road', encodedUrl: 'aHR0cHM6Ly9uZWJ1bGFwbGF5LnNpdGUvc3RvcmFnZS9Dcm9zc3klMjBSb2FkLmh0bWw=', encodedImageSrc: 'aHR0cHM6Ly9ub3RiaW5nc2EuZ2l0aHViLmlvL1plbml0aC9nYW1lcy9pbWFnZXMvQ3Jvc3N5JTIwUm9hZC5wbmc=', category: 'Game' },
-            { title: 'Friday Night Funkin', encodedUrl: 'aHR0cHM6Ly9odG1sLWNsYXNzaWMuaXRjaC56b25lL2h0bWwvNDQ1OTQ5OS9sdWNreWRvZy5naXRodWIuaW8tbWFzdGVyL2Z1bmtpbm1vYmlsZS9nYW1lL2luZGV4Lmh0bWw=', encodedImageSrc: 'aHR0cHM6Ly9ub3RiaW5nc2EuZ2l0aHViLmlvL1plbml0aC9nYW1lcy9pbWFnZXMvRnJpZGF5JTIwTmlnaHQlMjBGdW5raW4ucG5n', category: 'Game' },
-            { title: 'Geometry Dash Lite', encodedUrl: 'aHR0cHM6Ly9uZWJ1bGFwbGF5LnNpdGUvc3RvcmFnZS9HZW9tZXRyeSUyMERhc2glMjBMaXRlLmh0bWw=', encodedImageSrc: 'aHR0cHM6Ly9ub3RiaW5nc2EuZ2l0aHViLmlvL1plbml0aC9nYW1lcy9pbWFnZXMvR2VvbWV0cnklMjBEYXNoJTIwTGl0ZS5wbmc=', category: 'Game' },
-            { title: 'Poly Track', encodedUrl: 'aHR0cHM6Ly9wb2x5dHJhY2stb25saW5lLmdpdGh1Yi5pby9maWxlLw==', encodedImageSrc: 'aHR0cHM6Ly9ub3RiaW5nc2EuZ2l0aHViLmlvL1plbml0aC9nYW1lcy9pbWFnZXMvUG9seSUyMFRyYWNrLnBuZw==', category: 'Game' },
-            { title: 'Ragdoll Archers', encodedUrl: 'aHR0cHM6Ly9uZWJ1bGFwbGF5LnNpdGUvc3RvcmFnZS9SYWdkb2xsJTIwQXJjaGVycy5odG1s', encodedImageSrc: 'aHR0cHM6Ly9ub3RiaW5nc2EuZ2l0aHViLmlvL1plbml0aC9nYW1lcy9pbWFnZXMvUmFnZG9sbCUyMEFyY2hlcnMucG5n', category: 'Game' },
-            { title: 'Sandboxels', encodedUrl: 'aHR0cHM6Ly9zaGFsYml0by52ZXJjZWwuYXBwLw==', encodedImageSrc: 'aHR0cHM6Ly9ub3RiaW5nc2EuZ2l0aHViLmlvL1plbml0aC9nYW1lcy9pbWFnZXMvU2FuZGJveGVscy5wbmc=', category: 'Game' },
-            { title: 'Subway Surfers', encodedUrl: 'aHR0cHM6Ly9uZWJ1bGFwbGF5LnNpdGUvc3RvcmFnZS9TdWJ3YXklMjBTdXJmZXJzXyUyMFNhbiUyMEZyYW5jaXNjby5odG1s', encodedImageSrc: 'aHR0cHM6Ly9ub3RiaW5nc2EuZ2l0aHViLmlvL1plbml0aC9nYW1lcy9pbWFnZXMvU3Vid2F5JTIwU3VyZmVycy5wbmc=', category: 'Game' },
-        ].sort((a, b) => a.title.localeCompare(b.title));
-
+        
+        // Helper function to decode Base64 URLs
         function decodeUrl(encodedUrl) {
             try {
+                // Use atob to decode the Base64 string
                 return atob(encodedUrl);
             } catch (e) {
                 console.error("Error decoding URL:", e);
@@ -132,76 +102,43 @@
             }
         }
 
-        function setActiveCategory(category) {
-            currentCategory = category;
-            
-            document.getElementById('btn-games').classList.remove('category-button-active', 'category-button-inactive');
-            document.getElementById('btn-apps').classList.remove('category-button-active', 'category-button-inactive');
-
-            if (category === 'Game') {
-                document.getElementById('btn-games').classList.add('category-button-active');
-                document.getElementById('btn-apps').classList.add('category-button-inactive');
-            } else {
-                document.getElementById('btn-apps').classList.add('category-button-active');
-                document.getElementById('btn-games').classList.add('category-button-inactive');
-            }
-
-            filterGames();
-        }
-
         function filterGames() {
+
             const searchInput = document.getElementById('game-search');
-            const filterText = (searchInput && searchInput.value || '').toLowerCase();
-            const gameListContainer = document.getElementById('game-list');
-            
-            const filteredItems = catalog.filter(item => {
-                const matchesCategory = item.category === currentCategory;
-                const matchesSearch = item.title.toLowerCase().includes(filterText);
-                return matchesCategory && matchesSearch;
-            });
-
-            gameListContainer.innerHTML = '';
-            
-            if (filteredItems.length === 0) {
-                gameListContainer.innerHTML = `<p class="text-xl text-gray-400 col-span-full">No ${currentCategory}s found matching your search.</p>`;
-                return;
-            }
-
-            filteredItems.forEach(item => {
-                const imageUrl = decodeUrl(item.encodedImageSrc);
-
-                const cardHtml = `
-                    <a href="#" onclick="loadGame('${item.title}', '${item.encodedUrl}'); return false;" 
-                       class="block bg-gray-800 rounded-xl overflow-hidden game-card-shadow w-40 h-40" 
-                       aria-label="${item.title}">
-                        <img src="${imageUrl}" 
-                             onerror="this.src='https://placehold.co/160x160/7c3aed/ffffff?text=${encodeURIComponent(item.title.replace(' ', '+'))}'" 
-                             alt="${item.title}" 
-                             class="w-full h-full object-cover" />
-                    </a>
-                `;
-                gameListContainer.insertAdjacentHTML('beforeend', cardHtml);
+            const filter = (searchInput && searchInput.value || '').toLowerCase();
+            const cards = document.querySelectorAll('#game-list a');
+            cards.forEach(card => {
+                const img = card.querySelector('img');
+                const title = img ? (img.alt || '').toLowerCase() : '';
+                if (title.includes(filter)) {
+                    card.classList.remove('hidden');
+                } else {
+                    card.classList.add('hidden');
+                }
             });
         }
 
         function loadGame(title, encodedUrl) {
+            // DECODE THE URL immediately upon click
             const url = decodeUrl(encodedUrl);
             
             console.log(`[Zenith Debug] Attempting to load: ${url}`);
-            
+
             if (headerTitle) headerTitle.textContent = title;
             if (homepageSection) homepageSection.classList.add('hidden');
 
             if (gameContainer) {
                 gameContainer.className = 'relative w-full h-[80vh] mx-auto md:max-w-4xl rounded-2xl overflow-hidden shadow-2xl transition-all duration-300';
                 gameContainer.style.height = 'calc(100vh - 100px)';
-                gameContainer.innerHTML = ''; 
-                gameContainer.classList.remove('hidden'); 
+                gameContainer.innerHTML = ''; // Clear previous content
+                gameContainer.classList.remove('hidden'); // Ensure container is visible
             } else {
+
                 console.error("Game container not found.");
                 return;
             }
 
+            // 1. Create Loading Overlay (Game-specific overlay)
             const loadingOverlay = document.createElement('div');
             loadingOverlay.id = 'loading-overlay';
             loadingOverlay.className = 'absolute inset-0 bg-zenith-dark/95 flex flex-col items-center justify-center p-8 z-10 rounded-2xl transition-opacity duration-500';
@@ -212,41 +149,79 @@
                         <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                     </svg>
                 </div>
-                <h3 class="text-xl font-semibold mb-2 text-white">Loading ${currentCategory}: ${title}</h3>
+                <h3 class="text-xl font-semibold mb-2 text-white">Loading Game: ${title}</h3>
                 <p class="text-sm text-gray-400 text-center">
-                    Please wait while the game loads...
+                    Connecting to the game server...
                 </p>
+                <div class="mt-4 w-48 h-2 bg-gray-700 rounded-full overflow-hidden">
+                    <div id="loading-bar" class="h-full bg-zenith-purple transition-all duration-300" style="width: 0%"></div>
+                </div>
             `;
             gameContainer.appendChild(loadingOverlay);
 
+            // Start simulated progress (covers the 2000ms delay)
+            const loadingBar = document.getElementById('loading-bar');
+            let progress = 0;
+            const interval = setInterval(() => {
+                if (progress < 80) { // Simulate quick load up to 80%
+                    progress += 5;
+                    loadingBar.style.width = `${progress}%`;
+                } else {
+                    clearInterval(interval);
+                }
+            }, 100);
+
+
+            // 2. Create Iframe (initially hidden using opacity-0)
             const iframe = document.createElement('iframe');
             iframe.id = 'game-iframe';
+            // Initially opaque, will become visible on load
             iframe.className = 'w-full h-full border-none rounded-2xl opacity-0 transition-opacity duration-500'; 
+
+
+
+
+
             iframe.setAttribute('allow', 'fullscreen');
             iframe.setAttribute('allowfullscreen', 'true');
-            iframe.setAttribute('loading', 'lazy'); 
+            iframe.setAttribute('loading', 'lazy');
             gameContainer.appendChild(iframe);
 
+            // 3. Iframe Load Detection
             iframe.onload = () => {
-                console.log(`[Zenith Debug] Iframe loaded successfully. Hiding overlay.`);
+                console.log(`[Zenith Debug] Iframe loaded successfully (or failed to load content). Hiding overlay.`);
+                
+                // Complete progress bar
+                clearInterval(interval);
+                loadingBar.style.width = '100%';
+
+                // Fade out overlay and show iframe
                 loadingOverlay.style.opacity = '0'; 
                 iframe.classList.remove('opacity-0');
+
+                // Clean up overlay after transition finishes
                 setTimeout(() => {
                     loadingOverlay.remove();
                 }, 500);
             };
 
+            // 4. Set URL after 2000ms delay (Anti-filter strategy)
             setTimeout(() => {
-                loadingOverlay.querySelector('h3').textContent = `Loading ${currentCategory}: ${title}`;
-                iframe.src = url; 
+                // Update message before network call
+                loadingOverlay.querySelector('h3').textContent = 'Connecting and Loading...';
+                if (progress < 90) loadingBar.style.width = '90%'; // Jump to near completion while waiting for network response
+                iframe.src = url; // This triggers the external request using the DECODED URL
             }, 2000);
 
+            // 5. Add Fullscreen button
             const fullscreenButton = document.createElement('button');
             fullscreenButton.id = 'fullscreen-toggle-button';
+            // Set z-index: 20 so it's on top of the loading overlay
             fullscreenButton.className = 'fullscreen-button'; 
             const enterIcon = '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4h4M4 4l5 5M20 16v4h-4M20 20l-5-5"/></svg>';
             fullscreenButton.innerHTML = enterIcon + '<span id="fs-text">Fullscreen</span>';
             fullscreenButton.onclick = () => toggleGameView(gameContainer);
+
 
             gameContainer.appendChild(fullscreenButton);
         }
@@ -278,6 +253,7 @@
             if (gameContainer) gameContainer.className = 'hidden relative';
             if (menuButtonText) menuButtonText.textContent = 'Menu / Back';
 
+            // Clean up any loading overlay if it's still present
             const overlay = document.getElementById('loading-overlay');
             if (overlay) overlay.remove();
 
@@ -286,14 +262,15 @@
             }
         }
 
+        // Initialize DOM-dependent variables only after the page is fully loaded
         document.addEventListener('DOMContentLoaded', () => {
+            // Assign global references here
             homepageSection = document.getElementById('homepage-section');
             gameContainer = document.getElementById('game-container');
             headerTitle = document.getElementById('header-title');
             menuButtonText = document.querySelector('#menu-button span');
 
-            setActiveCategory(currentCategory); 
-
+            // Random tagline logic
             const phrases = [
                 "We are doing our work... just not the teachers.",
                 "This is the only thing keeping me in school.",
@@ -307,18 +284,21 @@
                 taglineElement.textContent = phrases[randomIndex];
             }
             
+            // --- HIDE WEBSITE SPLASH LOADER ---
             const splashLoader = document.getElementById('website-splash-loader');
             if (splashLoader) {
                 splashLoader.style.opacity = '0';
                 setTimeout(() => {
                     splashLoader.style.display = 'none';
-                }, 300); 
+                }, 300); // Wait for fade-out transition
             }
+            // ----------------------------------
         });
     </script>
 </head>
 <body class="font-sans dark-gradient-bg text-gray-100">
 
+    <!-- WEBSITE SPLASH LOADER (Visible until DOMContentLoaded fires) -->
     <div id="website-splash-loader" class="fixed inset-0 z-[10000] bg-zenith-dark flex flex-col items-center justify-center transition-opacity duration-300">
         <svg class="w-16 h-16 text-zenith-purple animate-pulse mb-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
             <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-opacity="0.9"></circle>
@@ -327,6 +307,7 @@
         <h2 class="text-3xl font-extrabold zenith-title-glow tracking-tighter">Zenith</h2>
         <p class="text-sm text-gray-400 mt-2">Loading interface...</p>
     </div>
+    <!-- END WEBSITE SPLASH LOADER -->
 
     <header class="p-4 md:p-6 flex justify-between items-center fixed top-0 left-0 right-0 z-10 bg-black/30 backdrop-blur-sm">
         <div class="flex items-center space-x-3">
@@ -349,18 +330,8 @@
             </section>
 
             <section class="text-center">
-
-                <div class="mb-6 flex justify-center space-x-4">
-                    <button id="btn-games" class="category-button" onclick="setActiveCategory('Game')">
-                        Games
-                    </button>
-                    <button id="btn-apps" class="category-button" onclick="setActiveCategory('App')">
-                        Apps
-                    </button>
-                </div>
-
                 <div class="mb-10 w-full max-w-xl mx-auto relative flex items-center">
-                    <input type="text" id="game-search" placeholder="Search the catalog..." 
+                    <input type="text" id="game-search" placeholder="Search for games..." 
                             class="w-full p-3 pl-12 bg-gray-700/50 border border-zenith-purple/50 rounded-lg text-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-zenith-purple"
                             oninput="filterGames()" />
                     <svg class="absolute left-4 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
@@ -369,6 +340,41 @@
                 </div>
 
                 <div id="game-list" class="flex flex-wrap justify-center gap-6 lg:gap-8">
+
+                    <!-- Links now use Base64 encoded URLs -->
+                    <a href="#" onclick="loadGame('Chat', 'aHR0cHM6Ly9wYWRsZXQuY29tL2xpbmNvbG5oYXJyaXNvbjhwYy96ZW5pdGgta2Nvbzh5eXJ1ZjheNDFmZQ=='); return false;" class="block bg-gray-800 rounded-xl overflow-hidden game-card-shadow w-40 h-40" aria-label="Chat">
+                        <img src="https://notbingsa.github.io/Zenith/games/images/Chat.png" onerror="this.src='https://placehold.co/160x160/7c3aed/ffffff?text=Chat'" alt="Chat" class="w-full h-full object-cover" />
+                    </a>
+
+                    <a href="#" onclick="loadGame('Geometry Dash Lite', 'aHR0cHM6Ly9uZWJ1bGFwbGF5LnNpdGUvc3RvcmFnZS9HZW9tZXRyeSUyMERhc2glMjBMaXRlLmh0bWw='); return false;" class="block bg-gray-800 rounded-xl overflow-hidden game-card-shadow w-40 h-40" aria-label="Geometry Dash Lite">
+                        <img src="https://notbingsa.github.io/Zenith/games/images/Geometry Dash Lite.png" onerror="this.src='https://placehold.co/160x160/3b82f6/ffffff?text=Geometry+Dash+Lite'" alt="Geometry Dash Lite" class="w-full h-full object-cover" />
+                    </a>
+
+                    <a href="#" onclick="loadGame('Crossy Road', 'aHR0cHM6Ly9uZWJ1bGFwbGF5LnNpdGUvc3RvcmFnZS9Dcm9zc3klMjBSb2FkLmh0bWw='); return false;" class="block bg-gray-800 rounded-xl overflow-hidden game-card-shadow w-40 h-40" aria-label="Crossy Road">
+                        <img src="https://notbingsa.github.io/Zenith/games/images/Crossy Road.png" onerror="this.src='https://placehold.co/160x160/10b981/ffffff?text=Crossy+Road'" alt="Crossy Road" class="w-full h-full object-cover" />
+                    </a>
+
+                    <a href="#" onclick="loadGame('Bouncemasters', 'aHR0cHM6Ly9uZWJ1bGFwbGF5LnNpdGUvc3RvcmFnZS9Cb3VuY2VtYXN0ZXJzLmh0bWw='); return false;" class="block bg-gray-800 rounded-xl overflow-hidden game-card-shadow w-40 h-40" aria-label="Bouncemasters">
+                        <img src="https://notbingsa.github.io/Zenith/games/images/Bouncemasters.png" onerror="this.src='https://placehold.co/160x160/f97316/ffffff?text=Bouncemasters'" alt="Bouncemasters" class="w-full h-full object-cover" />
+                    </a>
+
+                    <a href="#" onclick="loadGame('Ragdoll Archers', 'aHR0cHM6Ly9uZWJ1bGFwbGF5LnNpdGUvc3RvcmFnZS9SYWdkb2xsJTIwQXJjaGVycy5odG1s'); return false;" class="block bg-gray-800 rounded-xl overflow-hidden game-card-shadow w-40 h-40" aria-label="Ragdoll Archers">
+                        <img src="https://notbingsa.github.io/Zenith/games/images/Ragdoll Archers.png" onerror="this.src='https://placehold.co/160x160/ef4444/ffffff?text=Ragdoll+Archers'" alt="Ragdoll Archers" class="w-full h-full object-cover" />
+                    </a>
+
+                    <a href="#" onclick="loadGame('Sandboxels', 'aHR0cHM6Ly9zaGFsYml0by52ZXJjZWwuYXBwLw=='); return false;" class="block bg-gray-800 rounded-xl overflow-hidden game-card-shadow w-40 h-40" aria-label="Sandboxels">
+                        <img src="https://notbingsa.github.io/Zenith/games/images/Sandboxels.png" onerror="this.src='https://placehold.co/160x160/ef4444/ffffff?text=Sandboxels'" alt="Sandboxels" class="w-full h-full object-cover" />
+                    </a>
+
+                    <a href="#" onclick="loadGame('Friday Night Funkin', 'aHR0cHM6Ly9odG1sLWNsYXNzaWMuaXRjaC56b25lL2h0bWwvNDQ1OTQ5OS9sdWNreWRvZy5naXRodWIuaW8tbWFzdGVyL2Z1bmtpbm1vYmlsZS9nYW1lL2luZGV4Lmh0bWw='); return false;" class="block bg-gray-800 rounded-xl overflow-hidden game-card-shadow w-40 h-40" aria-label="Friday Night Funkin">
+                        <img src="https://notbingsa.github.io/Zenith/games/images/Friday Night Funkin.png" onerror="this.src='https://placehold.co/160x160/ef4444/ffffff?text=Friday+Night+Funkin'" alt="Friday Night Funkin" class="w-full h-full object-cover" />
+                    </a>
+                    <a href="#" onclick="loadGame('Poly Track', 'aHR0cHM6Ly9wb2x5dHJhY2stb25saW5lLmdpdGh1Yi5pby9maWxlLw=='); return false;" class="block bg-gray-800 rounded-xl overflow-hidden game-card-shadow w-40 h-40" aria-label="Poly Track">
+                        <img src="https://notbingsa.github.io/Zenith/games/images/Poly Track.png" onerror="this.src='https://placehold.co/160x160/ef4444/ffffff?text=Poly+Track'" alt="Poly Track" class="w-full h-full object-cover" />
+                    </a>
+                    <a href="#" onclick="loadGame('Bitlife', 'aHR0cHM6Ly9uZWJ1bGFwbGF5LnNpdGUvc3RvcmFnZS9iaXRsaWZlLw=='); return false;" class="block bg-gray-800 rounded-xl overflow-hidden game-card-shadow w-40 h-40" aria-label="Bitlife">
+                        <img src="https://notbingsa.github.io/Zenith/games/images/Bitlife.png" onerror="this.src='https://placehold.co/160x160/ef4444/ffffff?text=Bitlife'" alt="Bitlife" class="w-full h-full object-cover" />
+                    </a>
                 </div>
             </section>
         </div>
