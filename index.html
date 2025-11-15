@@ -145,7 +145,7 @@
 
     <script>
 
-        let mainPanel, renderTarget, labelRegistry, primaryMarker, storedDesignation, modeShiftEngaged = false; // Renamed JS variables
+        let mainPanel, renderTarget, labelRegistry, primaryMarker, storedDesignation, modeShiftEngaged = false; 
 
         const ENCRYPTED_GAMES_LABEL = 'R2FtZXM=';
         const ENCRYPTED_APPS_LABEL = 'QXBwcw==';
@@ -154,14 +154,12 @@
         const ENCRYPTED_RANDOM_PICKS = 'UmFuZG9tIFBpY2tz';
         const ENCRYPTED_HOMEPAGE_TITLE = 'SG9tZXBhZ2U=';
 
-        // Renamed encoded strings for function references (MUST match new function names)
-        const ENCODED_LOAD_GAME = 'cHJvY2Vzc01hdHJpeA=='; // processMatrix
-        const ENCODED_LOAD_FNF = 'ZXhlY3V0ZVZhcmlhbnQ='; // executeVariant
+        const ENCODED_LOAD_GAME = 'cHJvY2Vzc01hdHJpeA=='; 
+        const ENCODED_LOAD_FNF = 'ZXhlY3V0ZVZhcmlhbnQ='; 
         const ENCODED_GAME_CATEGORY = 'R2FtZQ==';
         const ENCODED_APP_CATEGORY = 'QXBw';
 
         const ALL_GAMES = [
-            // Note: The 'y' key values must match the encoded function names above
             { t: 'Q2hhdA==', u: 'aHR0cHM6Ly9wYWRsZXQuY29tL2xpbmNvbG5oYXJyaXNvbjhwYy96ZW5pdGgta2Nvbzh5eXJ1ZjheNDFmZQ==', c: '7c3aed', y: ENCODED_LOAD_GAME, g: ENCODED_APP_CATEGORY },
             { t: 'VW5ibG9ja2Vy', u: 'aHR0cHM6Ly91Yi5lcmV6ZXJ3YWNqYTI0LnBsL3Mv', c: 'f97316', y: ENCODED_LOAD_GAME, g: ENCODED_APP_CATEGORY },
 
@@ -182,7 +180,6 @@
             { t: 'U3RpY2ttYW4gSG9vaw==', u: 'aHR0cHM6Ly9uZWJ1bGFwbGF5LnNpdGUvc3RvcmFnZS9TdGlja21hbiUyMEhvb2suaHRtbA==', c: '10b981', y: ENCODED_LOAD_GAME, g: ENCODED_GAME_CATEGORY },
         ];
 
-        // Renamed from oD to calculateValue
         function calculateValue(s) {
             try {
                 const d = window['a' + 't' + 'ob'];
@@ -199,19 +196,18 @@
 
             let clickHandler;
             if (type === calculateValue(ENCODED_LOAD_FNF)) {
-                clickHandler = `executeVariant('${title}')`; // Renamed call
+                clickHandler = `executeVariant('${title}')`; 
             } else {
-                clickHandler = `processMatrix('${title}', '${game.u}')`; // Renamed call
+                clickHandler = `processMatrix('${title}', '${game.u}')`; 
             }
 
             const placeholderSize = '160x160'; 
             const imageFolder = category === 'App' ? 'apps' : 'games';
 
             return `
-                <a href="#" onclick="${clickHandler}; return false;" class="block bg-gray-800 rounded-xl overflow-hidden game-card-shadow ${sizeClass} group relative" aria-label="${title}" data-category="${category}">
+                <a href="#" onclick="${clickHandler}; return false;" class="block bg-gray-800 rounded-xl overflow-hidden game-card-shadow ${sizeClass} group relative" data-category="${category}">
                     <img src="https://notbingsa.github.io/Zenith/${imageFolder}/images/${title}.png" 
                          onerror="this.src='https://placehold.co/${placeholderSize}/${game.c}/ffffff?text=${title.replace(/\s/g, '+')}'" 
-                         alt="${title}" 
                          class="w-full h-full object-cover transition duration-300 group-hover:scale-105" />
                     <div class="absolute inset-0 bg-black/30 flex items-end justify-center p-2 opacity-0 transition-opacity duration-200 group-hover:opacity-100">
                         <span class="text-sm font-semibold text-white text-center">${title}</span>
@@ -294,7 +290,10 @@
             const filter = (searchInput && searchInput.value || '').toLowerCase();
             const cards = document.querySelectorAll('#game-list a, #random-games-section a'); 
             cards.forEach(card => {
-                const title = card.getAttribute('aria-label') || '';
+                // The title for filtering is now pulled from the inner span text instead of an attribute
+                const titleElement = card.querySelector('span');
+                const title = titleElement ? titleElement.textContent : '';
+
                 if (title.toLowerCase().includes(filter)) {
                     card.classList.remove('hidden');
                 } else {
@@ -303,14 +302,13 @@
             });
         }
 
-        // Renamed function to processMatrix (formerly initiatePayload/loadGame)
         function processMatrix(title, encodedUrl) {
             const url = calculateValue(encodedUrl);
 
-            if (labelRegistry) labelRegistry.textContent = title; // Renamed
-            if (mainPanel) mainPanel.classList.add('hidden'); // Renamed
+            if (labelRegistry) labelRegistry.textContent = title; 
+            if (mainPanel) mainPanel.classList.add('hidden'); 
 
-            if (renderTarget) { // Renamed variable (formerly payloadDisplay/gameContainer)
+            if (renderTarget) { 
                 renderTarget.className = 'relative w-full h-[80vh] mx-auto md:max-w-4xl rounded-2xl overflow-hidden shadow-2xl transition-all duration-300';
                 renderTarget.style.height = 'calc(100vh - 100px)';
                 renderTarget.innerHTML = ''; 
@@ -353,11 +351,11 @@
             const controlBar = document.createElement('div');
             controlBar.className = 'game-control-bar';
 
-            const displayToggleButton = document.createElement('button'); // Renamed (formerly fullscreenButton)
+            const displayToggleButton = document.createElement('button'); 
             displayToggleButton.id = 'fullscreen-toggle-button';
             displayToggleButton.className = 'fullscreen-button'; 
             displayToggleButton.innerHTML = '<i id="fs-icon" class="fas fa-expand"></i>'; 
-            displayToggleButton.onclick = () => adjustCanvasGeometry(renderTarget); // Renamed call
+            displayToggleButton.onclick = () => adjustCanvasGeometry(renderTarget); 
             controlBar.appendChild(displayToggleButton);
 
             const iframe = document.createElement('iframe');
@@ -367,8 +365,8 @@
             iframe.setAttribute('allowfullscreen', 'true');
             iframe.setAttribute('loading', 'lazy');
 
-            renderTarget.appendChild(controlBar); // Renamed
-            renderTarget.appendChild(iframe); // Renamed
+            renderTarget.appendChild(controlBar); 
+            renderTarget.appendChild(iframe); 
             renderTarget.appendChild(loadingOverlay); 
 
             iframe.onload = () => {
@@ -384,7 +382,6 @@
             };
         }
 
-        // Renamed function to executeVariant (formerly launchFNF/loadFNFMobileOrPC)
         function executeVariant(title) {
             const userAgent = navigator.userAgent;
 
@@ -401,10 +398,9 @@
                 encodedUrl = 'aHR0cHM6Ly9odG1sLWNsYXNzaWMuaXRjaC56b25lL2h0bWwvMjg3NjM1OTktMTM4Mzg4Ni9pbmRleC5odG1s=';
             }
 
-            processMatrix(title, encodedUrl); // Renamed call
+            processMatrix(title, encodedUrl); 
         }
 
-        // Renamed function to adjustCanvasGeometry (formerly toggleDisplayMode/toggleGameView)
         function adjustCanvasGeometry(container) {
             const isFullView = container.classList.toggle('full-view');
             const fsButton = document.getElementById('fullscreen-toggle-button');
@@ -416,11 +412,10 @@
             }
         }
 
-        // Renamed function to resetViewport (formerly showHomepage)
         function resetViewport() {
-            if (labelRegistry) labelRegistry.textContent = calculateValue(ENCRYPTED_HOMEPAGE_TITLE); // Renamed
-            if (mainPanel) mainPanel.classList.remove('hidden'); // Renamed
-            if (renderTarget) renderTarget.className = 'hidden relative'; // Renamed
+            if (labelRegistry) labelRegistry.textContent = calculateValue(ENCRYPTED_HOMEPAGE_TITLE); 
+            if (mainPanel) mainPanel.classList.remove('hidden'); 
+            if (renderTarget) renderTarget.className = 'hidden relative'; 
 
             const overlay = document.getElementById('loading-overlay');
             if (overlay) overlay.remove();
@@ -436,17 +431,17 @@
             
             if (!overlay) return; 
 
-            if (!modeShiftEngaged) { // Renamed
+            if (!modeShiftEngaged) { 
                 // Activate Cloak
-                storedDesignation = document.title; // Renamed
+                storedDesignation = document.title; 
                 document.title = 'Annual Financial Report - Q4 2024';
                 overlay.style.display = 'flex'; 
-                modeShiftEngaged = true; // Renamed
+                modeShiftEngaged = true; 
             } else {
                 // Deactivate Cloak
-                document.title = storedDesignation; // Renamed
+                document.title = storedDesignation; 
                 overlay.style.display = 'none';
-                modeShiftEngaged = false; // Renamed
+                modeShiftEngaged = false; 
             }
         }
 
@@ -461,12 +456,11 @@
 
 
         document.addEventListener('DOMContentLoaded', () => {
-            mainPanel = document.getElementById('homepage-section'); // Renamed variable
-            renderTarget = document.getElementById('game-container'); // Renamed variable
-            labelRegistry = document.getElementById('header-title'); // Renamed variable
-            primaryMarker = document.getElementById('main-zenith-title'); // Renamed variable
+            mainPanel = document.getElementById('homepage-section'); 
+            renderTarget = document.getElementById('game-container'); 
+            labelRegistry = document.getElementById('header-title'); 
+            primaryMarker = document.getElementById('main-zenith-title'); 
             
-            // Set up cloaking listener
             document.addEventListener('keydown', handleKeydown);
 
             const searchInput = document.getElementById('game-search');
@@ -531,7 +525,7 @@
 
     <header class="p-4 md:p-6 flex items-center fixed top-0 left-0 right-0 z-10 bg-black/30 backdrop-blur-sm">
         <div class="flex items-center space-x-3 cursor-pointer" onclick="resetViewport()">
-            <img src="https://notbingsa.github.io/Zenith/ui/logo.png" alt="Zenith Logo" class="w-8 h-8 object-contain" />
+            <img src="https://notbingsa.github.io/Zenith/ui/logo.png" class="w-8 h-8 object-contain" />
             <h1 id="header-title" class="text-xl md:text-3xl font-bold"></h1>
         </div>
     </header>
