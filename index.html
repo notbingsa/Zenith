@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Zenith - Unblocked Games</title>
+    <title>Zenith</title> <!-- Placeholder title, updated by JS to prevent filter detection -->
 
     <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 
@@ -52,11 +52,12 @@
             color: #d1d5db;
         }
 
-        .game-card-shadow {
+        /* Renamed game-card-shadow to asset-card-shadow */
+        .asset-card-shadow {
             box-shadow: 0 10px 15px rgba(124, 58, 237, 0.3), 0 4px 6px rgba(59, 130, 246, 0.1);
             transition: transform 0.2s ease, box-shadow 0.2s ease;
         }
-        .game-card-shadow:hover {
+        .asset-card-shadow:hover {
             transform: translateY(-4px);
             box-shadow: 0 15px 25px rgba(124, 58, 237, 0.5), 0 6px 10px rgba(59, 130, 246, 0.2);
         }
@@ -81,7 +82,8 @@
 
         .fullscreen-button:hover { background-color: rgba(107, 114, 128, 1); }
 
-        .game-control-bar {
+        /* Renamed game-control-bar to asset-control-bar */
+        .asset-control-bar {
             position: absolute;
             top: auto;
             bottom: 0;
@@ -100,7 +102,8 @@
             border-bottom-right-radius: 1rem; 
         }
 
-        .game-iframe-content {
+        /* Renamed game-iframe-content to asset-iframe-content */
+        .asset-iframe-content {
             position: absolute;
             top: 0;
             left: 0;
@@ -125,89 +128,102 @@
             box-shadow: none !important;
         }
 
-        .full-view .game-control-bar {
+        .full-view .asset-control-bar {
             border-radius: 0 !important;
-        }
-
-        /* Cloak Overlay Styles */
-        #cloak-overlay {
-            position: fixed;
-            inset: 0;
-            background-color: #f7f7f7; 
-            z-index: 99999; 
-            display: none; 
-            padding: 20px;
-            font-family: Arial, sans-serif;
-            color: #333;
-            box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.1);
         }
     </style>
 
     <script>
 
-        let mainPanel, renderTarget, labelRegistry, primaryMarker, storedDesignation, modeShiftEngaged = false; 
+        let mainPanel, renderTarget, labelRegistry, primaryMarker; 
 
-        const ENCRYPTED_GAMES_LABEL = 'R2FtZXM=';
-        const ENCRYPTED_APPS_LABEL = 'QXBwcw==';
-        const ENCRYPTED_SEARCH_PLACEHOLDER = 'U2VhcmNoIGZvciBnYW1lcy4uLg==';
+        // UPDATED: Now encodes a single space (" ") for a blank visual placeholder.
+        const ENCRYPTED_SEARCH_PLACEHOLDER = 'IA=='; 
         const ENCRYPTED_ZENITH_TITLE = 'WmVuaXRo';
         const ENCRYPTED_RANDOM_PICKS = 'UmFuZG9tIFBpY2tz';
         const ENCRYPTED_HOMEPAGE_TITLE = 'SG9tZXBhZ2U=';
+        
+        // Encoded URL for the Zenith Logo image
+        const ENCODED_ZENITH_LOGO_URL = 'aHR0cHM6Ly9ub3RiaW5nc2EuZ2l0aHViLmlvL1plbml0aC91aS9sb2dvLnBuZw==';
+        const ENCRYPTED_TITLE_SUFFIX = 'VW5ibG9ja2VkIEdhbWVz'; 
+        const ENCRYPTED_TAGLINES = [
+            'V2UgYXJlIGRvaW5nIG91ciB3b3JrLi4uIGp1c3Qgbm90IHRoZSB0ZWFjaGVycy4=', 
+            'VGhpcyBpcyB0aGUgb25seSB0aGluZyBrZWVwaW5nIG1lIGluIHNjaG9vbC4=', 
+            'IkEgc3R1ZGVudCdzIGRyZWFtIiAtIHNvbWUgcmFuZG9tIHN0dWRlbnQgdGhhdCBkb2Vzbid0IGV4aXN0', 
+            'V2Uga25vdyB5b3UgZGlkbid0IGdldCBoZXJlIGFjY2lkZW50bHku', 
+            'V2hhdCBhc3NldCBzaGFsbCB5b3UgcGljaz8=', // Updated from "game" to "asset" in taglines
+        ];
 
-        const ENCODED_LOAD_GAME = 'cHJvY2Vzc01hdHJpeA=='; 
+        const ENCODED_LOAD_ASSET = 'cHJvY2Vzc01hdHJpeA=='; 
         const ENCODED_LOAD_FNF = 'ZXhlY3V0ZVZhcmlhbnQ='; 
-        const ENCODED_GAME_CATEGORY = 'R2FtZQ==';
+        const ENCODED_GAME_CATEGORY = 'R2FtZQ=='; // Keeping these for random picks filter
         const ENCODED_APP_CATEGORY = 'QXBw';
 
-        const ALL_GAMES = [
-            { t: 'Q2hhdA==', u: 'aHR0cHM6Ly9wYWRsZXQuY29tL2xpbmNvbG5oYXJyaXNvbjhwYy96ZW5pdGgta2Nvbzh5eXJ1ZjheNDFmZQ==', c: '7c3aed', y: ENCODED_LOAD_GAME, g: ENCODED_APP_CATEGORY },
-            { t: 'VW5ibG9ja2Vy', u: 'aHR0cHM6Ly91Yi5lcmV6ZXJ3YWNqYTI0LnBsL3Mv', c: 'f97316', y: ENCODED_LOAD_GAME, g: ENCODED_APP_CATEGORY },
+        // Renamed ALL_GAMES to ALL_ASSETS
+        const ALL_ASSETS = [
+            // Apps
+            { t: 'Q2hhdA==', u: 'aHR0cHM6Ly9wYWRsZXQuY29tL2xpbmNvbG5oYXJyaXNvbjhwYy96ZW5pdGgta2Nvbzh5eXJ1ZjheNDFmZQ==', c: '7c3aed', y: ENCODED_LOAD_ASSET, g: ENCODED_APP_CATEGORY },
+            { t: 'VW5ibG9ja2Vy', u: 'aHR0cHM6Ly91Yi5lcmV6ZXJ3YWNqYTI0LnBsL3Mv', c: 'f97316', y: ENCODED_LOAD_ASSET, g: ENCODED_APP_CATEGORY },
 
-            { t: 'Qml0bGlmZQ==', u: 'aHR0cHM6Ly9uZWJ1bGFwbGF5LnNpdGUvc3RvcmFnZS9iaXRsaWZlLw==', c: 'ef4444', y: ENCODED_LOAD_GAME, g: ENCODED_GAME_CATEGORY },
-            { t: 'QmxvY2sgQmxhc3Q=', u: 'aHR0cHM6Ly9uZWJ1bGFwbGF5LnNpdGUvc3RvcmFnZS9CbG9jayUyMEJsYXN0Lmh0bWw=', c: '1d4ed8', y: ENCODED_LOAD_GAME, g: ENCODED_GAME_CATEGORY },
-            { t: 'Qm91bmNlbWFzdGVycw==', u: 'aHR0cHM6Ly9uZWJ1bGFwbGF5LnNpdGUvc3RvcmFnZS9Cb3VuY2VtYXN0ZXJzLmh0bWw=', c: 'f97316', y: ENCODED_LOAD_GAME, g: ENCODED_GAME_CATEGORY },
-            { t: 'Q29va2llIENsaWNrZXI=', u: 'aHR0cHM6Ly9uZWJ1bGFwbGF5LnNpdGUvc3RvcmFnZS9Db29raWUlMjBDbGlja2VyLmh0bWw=', c: 'd97706', y: ENCODED_LOAD_GAME, g: ENCODED_GAME_CATEGORY },
-            { t: 'Q29yZWJhbGw=', u: 'aHR0cHM6Ly9uZWJ1bGFwbGF5LnNpdGUvc3RvcmFnZS9Db3JlYmFsbC5odG1s', c: 'f87171', y: ENCODED_LOAD_GAME, g: ENCODED_GAME_CATEGORY },
-            { t: 'Q3Jvc3N5IFJvYWQ=', u: 'aHR0cHM6Ly9uZWJ1bGFwbGF5LnNpdGUvc3RvcmFnZS9Dcm9zc3klMjBSb2FkLmh0bWw=', c: '10b981', y: ENCODED_LOAD_GAME, g: ENCODED_GAME_CATEGORY },
-            { t: 'RHJpdmUgTWFk', u: 'aHR0cHM6Ly9uZWJ1bGFwbGF5LnNpdGUvc3RvcmFnZS9Ecml2ZSUyME1hZC5odG1s', c: '34d399', y: ENCODED_LOAD_GAME, g: ENCODED_GAME_CATEGORY },
-            { t: 'RWdneSBDYXI=', u: 'aHR0cHM6Ly9uZWJ1bGFwbGF5LnNpdGUvc3RvcmFnZS9lZ2d5Y2FyLw==', c: 'facc15', y: ENCODED_LOAD_GAME, g: ENCODED_GAME_CATEGORY },
+            // Games
+            { t: 'Qml0bGlmZQ==', u: 'aHR0cHM6Ly9uZWJ1bGFwbGF5LnNpdGUvc3RvcmFnZS9iaXRsaWZlLw==', c: 'ef4444', y: ENCODED_LOAD_ASSET, g: ENCODED_GAME_CATEGORY },
+            { t: 'QmxvY2sgQmxhc3Q=', u: 'aHR0cHM6Ly9uZWJ1bGFwbGF5LnNpdGUvc3RvcmFnZS9CbG9jayUyMEJsYXN0Lmh0bWw=', c: '1d4ed8', y: ENCODED_LOAD_ASSET, g: ENCODED_GAME_CATEGORY },
+            { t: 'Qm91bmNlbWFzdGVycw==', u: 'aHR0cHM6Ly9uZWJ1bGFwbGF5LnNpdGUvc3RvcmFnZS9Cb3VuY2VtYXN0ZXJzLmh0bWw=', c: 'f97316', y: ENCODED_LOAD_ASSET, g: ENCODED_GAME_CATEGORY },
+            { t: 'Q29va2llIENsaWNrZXI=', u: 'aHR0cHM6Ly9uZWJ1bGFwbGF5LnNpdGUvc3RvcmFnZS9Db29raWUlMjBDbGlja2VyLmh0bWw=', c: 'd97706', y: ENCODED_LOAD_ASSET, g: ENCODED_GAME_CATEGORY },
+            { t: 'Q29yZWJhbGw=', u: 'aHR0cHM6Ly9uZWJ1bGFwbGF5LnNpdGUvc3RvcmFnZS9Db3JlYmFsbC5odG1s', c: 'f87171', y: ENCODED_LOAD_ASSET, g: ENCODED_GAME_CATEGORY },
+            { t: 'Q3Jvc3N5IFJvYWQ=', u: 'aHR0cHM6Ly9uZWJ1bGFwbGF5LnNpdGUvc3RvcmFnZS9Dcm9zc3klMjBSb2FkLmh0bWw=', c: '10b981', y: ENCODED_LOAD_ASSET, g: ENCODED_GAME_CATEGORY },
+            { t: 'RHJpdmUgTWFk', u: 'aHR0cHM6Ly9uZWJ1bGFwbGF5LnNpdGUvc3RvcmFnZS9Ecml2ZSUyME1hZC5odG1s', c: '34d399', y: ENCODED_LOAD_ASSET, g: ENCODED_GAME_CATEGORY },
+            { t: 'RWdneSBDYXI=', u: 'aHR0cHM6Ly9uZWJ1bGFwbGF5LnNpdGUvc3RvcmFnZS9lZ2d5Y2FyLw==', c: 'facc15', y: ENCODED_LOAD_ASSET, g: ENCODED_GAME_CATEGORY },
             { t: 'RnJpZGF5IE5pZ2h0IEZ1bmtpbg==', u: '', c: 'ef4444', y: ENCODED_LOAD_FNF, g: ENCODED_GAME_CATEGORY }, 
-            { t: 'R2VvbWV0cnkgRGFzaCBMaXRl', u: 'aHR0cHM6Ly9uZWJ1bGFwbGF5LnNpdGUvc3RvcmFnZS9HZW9tZXRyeSUyMERhc2glMjBMaXRlLmh0bWw=', c: '3b82f6', y: ENCODED_LOAD_GAME, g: ENCODED_GAME_CATEGORY },
-            { t: 'TW90byBYM00=', u: 'aHR0cHM6Ly9uZWJ1bGFwbGF5LnNpdGUvc3RvcmFnZS9tb3RvLXgzbS8=', c: '06b6d4', y: ENCODED_LOAD_GAME, g: ENCODED_GAME_CATEGORY },
-            { t: 'UG9seSBUcmFjaw==', u: 'aHR0cHM6Ly9odG1sLWNsYXNzaWMuaXRjaC56b25lL2h0bWwvMTU0NTEzMzAvaW5kZXguaHRtbA==', c: 'ef4444', y: ENCODED_LOAD_GAME, g: ENCODED_GAME_CATEGORY },
-            { t: 'UmFnZG9sbCBBcmNoZXJz', u: 'aHR0cHM6Ly9uZWJ1bGFwbGF5LnNpdGUvc3RvcmFnZS9SYWdkb2xsJTIwQXJjaGVycy5odG1s', c: 'ef4444', y: ENCODED_LOAD_GAME, g: ENCODED_GAME_CATEGORY },
-            { t: 'U2FuZGJveGVscw==', u: 'aHR0cHM6Ly9zaGFsYml0by52ZXJjZWwuYXBwLw==', c: 'ef4444', y: ENCODED_LOAD_GAME, g: ENCODED_GAME_CATEGORY },
-            { t: 'U3RpY2ttYW4gSG9vaw==', u: 'aHR0cHM6Ly9uZWJ1bGFwbGF5LnNpdGUvc3RvcmFnZS9TdGlja21hbiUyMEhvb2suaHRtbA==', c: '10b981', y: ENCODED_LOAD_GAME, g: ENCODED_GAME_CATEGORY },
+            { t: 'R2VvbWV0cnkgRGFzaCBMaXRl', u: 'aHR0cHM6Ly9uZWJ1bGFwbGF5LnNpdGUvc3RvcmFnZS9HZW9tZXRyeSUyMERhc2glMjBMaXRlLmh0bWw=', c: '3b82f6', y: ENCODED_LOAD_ASSET, g: ENCODED_GAME_CATEGORY },
+            { t: 'TW90byBYM00=', u: 'aHR0cHM6Ly9uZWJ1bGFwbGF5LnNpdGUvc3RvcmFnZS9tb3RvLXgzbS8=', c: '06b6d4', y: ENCODED_LOAD_ASSET, g: ENCODED_GAME_CATEGORY },
+            { t: 'UG9seSBUcmFjax==', u: 'aHR0cHM6Ly9odG1sLWNsYXNzaWMuaXRjaC56b25lL2h0bWwvMTU0NTEzMzAvaW5kZXguaHRtbA==', c: 'ef4444', y: ENCODED_LOAD_ASSET, g: ENCODED_GAME_CATEGORY },
+            { t: 'UmFnZG9sbCBBcmNoZXJz', u: 'aHR0cHM6Ly9uZWJ1bGFwbGF5LnNpdGUvc3RvcmFnZS9SYWdkb2xsJTIwQXJjaGVycy5odG1s', c: 'ef4444', y: ENCODED_LOAD_ASSET, g: ENCODED_GAME_CATEGORY },
+            { t: 'U2FuZGJveGVscw==', u: 'aHR0cHM6Ly9zaGFsYml0by52ZXJjZWwuYXBwLw==', c: 'ef4444', y: ENCODED_LOAD_ASSET, g: ENCODED_GAME_CATEGORY },
+            { t: 'U3RpY2ttYW4gSG9vaw==', u: 'aHR0cHM6Ly9uZWJ1bGFwbGF5LnNpdGUvc3RvcmFnZS9TdGlja21hbiUyMEhvb2suaHRtbA==', c: '10b981', y: ENCODED_LOAD_ASSET, g: ENCODED_GAME_CATEGORY },
         ];
 
         function calculateValue(s) {
             try {
+                // Obfuscated decode function: atob
                 const d = window['a' + 't' + 'ob'];
+                // Handle empty string or string containing only spaces gracefully
+                if (!s || s.trim() === '') return s;
                 return d(s);
             } catch (e) {
                 return "";
             }
         }
 
-        function createGameCardHtml(game, sizeClass = 'w-full h-auto aspect-square') {
-            const title = calculateValue(game.t);
-            const type = calculateValue(game.y);
-            const category = calculateValue(game.g);
+        // Renamed function: createGameCardHtml -> createAssetCardHtml
+        function createAssetCardHtml(asset, sizeClass = 'w-full h-auto aspect-square') {
+            const title = calculateValue(asset.t);
+            const type = calculateValue(asset.y);
+            const category = calculateValue(asset.g);
 
             let clickHandler;
             if (type === calculateValue(ENCODED_LOAD_FNF)) {
                 clickHandler = `executeVariant('${title}')`; 
             } else {
-                clickHandler = `processMatrix('${title}', '${game.u}')`; 
+                clickHandler = `processMatrix('${title}', '${asset.u}')`; 
             }
 
             const placeholderSize = '160x160'; 
-            const imageFolder = category === 'App' ? 'apps' : 'games';
+            
+            // Reverting the image path logic for Apps and Games
+            let imagePathPrefix;
+            if (asset.g === ENCODED_APP_CATEGORY) {
+                // Use the 'apps' folder for apps (Chat, Unblocker, etc.)
+                imagePathPrefix = 'https://notbingsa.github.io/Zenith/apps/images/';
+            } else {
+                // Use the 'games' folder for games
+                imagePathPrefix = 'https://notbingsa.github.io/Zenith/games/images/';
+            }
 
             return `
-                <a href="#" onclick="${clickHandler}; return false;" class="block bg-gray-800 rounded-xl overflow-hidden game-card-shadow ${sizeClass} group relative" data-category="${category}">
-                    <img src="https://notbingsa.github.io/Zenith/${imageFolder}/images/${title}.png" 
-                         onerror="this.src='https://placehold.co/${placeholderSize}/${game.c}/ffffff?text=${title.replace(/\s/g, '+')}'" 
+                <a href="#" onclick="${clickHandler}; return false;" class="block bg-gray-800 rounded-xl overflow-hidden asset-card-shadow ${sizeClass} group relative" data-category="${category}">
+                    <img src="${imagePathPrefix}${title}.png" 
+                         onerror="this.src='https://placehold.co/${placeholderSize}/${asset.c}/ffffff?text=${title.replace(/\s/g, '+')}'" 
                          class="w-full h-full object-cover transition duration-300 group-hover:scale-105" />
                     <div class="absolute inset-0 bg-black/30 flex items-end justify-center p-2 opacity-0 transition-opacity duration-200 group-hover:opacity-100">
                         <span class="text-sm font-semibold text-white text-center">${title}</span>
@@ -216,85 +232,66 @@
             `;
         }
 
-        function renderAllGames(categoryFilter = 'Game') {
-            const gameList = document.getElementById('game-list');
-            if (gameList) {
-                const encodedFilter = categoryFilter === 'Game' ? ENCODED_GAME_CATEGORY : ENCODED_APP_CATEGORY;
-                const filteredGames = ALL_GAMES.filter(game => game.g === encodedFilter);
-                
-                gameList.className = 'grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-7 gap-4 lg:gap-6 transition-opacity duration-150';
+        // Renamed and refactored function: renderAllGames -> renderAllAssets (removes filtering)
+        function renderAllAssets() {
+            // Keep original ID game-list for minimal DOM changes
+            const assetList = document.getElementById('game-list'); 
+            if (assetList) {
+                // Render ALL assets from the pre-sorted list
+                const allAssetsHtml = ALL_ASSETS.map(asset => createAssetCardHtml(asset)).join('');
 
-                const allGamesHtml = filteredGames.map(game => createGameCardHtml(game)).join('');
+                assetList.className = 'grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-7 gap-4 lg:gap-6 transition-opacity duration-150';
 
-                gameList.style.opacity = 0;
+                assetList.style.opacity = 0;
                 setTimeout(() => {
-                    gameList.innerHTML = allGamesHtml;
-                    gameList.style.opacity = 1;
+                    assetList.innerHTML = allAssetsHtml;
+                    assetList.style.opacity = 1;
                 }, 150);
             }
         }
 
-        function toggleCategory(category) {
-            const gameButton = document.getElementById('toggle-games');
-            const appButton = document.getElementById('toggle-apps');
+        // Removed toggleCategory function
 
-            const inactiveClass = 'bg-gray-700/50 text-gray-400 hover:bg-gray-700';
-            const activeClass = 'bg-zenith-purple text-white shadow-lg shadow-zenith-purple/50';
-
-            const decodedGames = calculateValue(ENCRYPTED_GAMES_LABEL);
-            const decodedApps = calculateValue(ENCRYPTED_APPS_LABEL);
-            
-            if (gameButton) gameButton.textContent = decodedGames;
-            if (appButton) appButton.textContent = decodedApps;
-
-
-            if (category === 'Game') {
-                gameButton.className = `px-6 py-2 rounded-lg font-bold transition-all ${activeClass}`;
-                appButton.className = `px-6 py-2 rounded-lg font-bold transition-all ${inactiveClass}`;
-            } else if (category === 'App') {
-                appButton.className = `px-6 py-2 rounded-lg font-bold transition-all ${activeClass}`;
-                gameButton.className = `px-6 py-2 rounded-lg font-bold transition-all ${inactiveClass}`;
-            }
-
-            renderAllGames(category);
-        }
-
-        function renderRandomGames() {
-            const getRandomGames = (count) => {
-                const gameOnlyList = ALL_GAMES.filter(g => g.g === ENCODED_GAME_CATEGORY);
-                const shuffled = [...gameOnlyList].sort(() => 0.5 - Math.random());
+        // Renamed function: renderRandomGames -> renderRandomAssets (still only pulls Games)
+        function renderRandomAssets() {
+            const getRandomAssets = (count) => {
+                // Filter to ensure only Games (ENCODED_GAME_CATEGORY) are in random picks
+                const assetOnlyList = ALL_ASSETS.filter(g => g.g === ENCODED_GAME_CATEGORY);
+                const shuffled = [...assetOnlyList].sort(() => 0.5 - Math.random());
                 return shuffled.slice(0, count);
             }
 
-            const randomGames = getRandomGames(5);
+            const randomAssets = getRandomAssets(5);
             
-            const randomGamesHtml = randomGames.map(game => createGameCardHtml(game)).join('');
+            const randomAssetsHtml = randomAssets.map(asset => createAssetCardHtml(asset)).join('');
 
-            const randomGamesContainer = document.getElementById('random-games-section');
-            if (randomGamesContainer) {
+            // Updated ID: random-games-section -> random-assets-section
+            const randomAssetsContainer = document.getElementById('random-assets-section');
+            if (randomAssetsContainer) {
                 const decodedRandomPicks = calculateValue(ENCRYPTED_RANDOM_PICKS);
-                randomGamesContainer.innerHTML = `
+                randomAssetsContainer.innerHTML = `
                     <h3 class="section-heading-glow text-xl md:text-2xl font-semibold mb-6 text-center pt-8 text-white">
                         <i class="fas fa-dice text-zenith-purple mr-2"></i>${decodedRandomPicks}
                     </h3>
                     <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4 lg:gap-6 mb-12">
-                        ${randomGamesHtml}
+                        ${randomAssetsHtml}
                     </div>
                 `;
             }
         }
 
-
-        function filterGames() {
-            const searchInput = document.getElementById('game-search');
-            const filter = (searchInput && searchInput.value || '').toLowerCase();
-            const cards = document.querySelectorAll('#game-list a, #random-games-section a'); 
+        // Renamed function: filterGames -> applySearch
+        function applySearch() {
+            // Keep original ID game-search
+            const searchInput = document.getElementById('game-search'); 
+            const searchQuery = (searchInput && searchInput.value || '').toLowerCase();
+            // Updated ID: #random-games-section -> #random-assets-section
+            const cards = document.querySelectorAll('#game-list a, #random-assets-section a'); 
             cards.forEach(card => {
-                // The title for filtering is now pulled from the inner span text instead of an attribute
                 const titleElement = card.querySelector('span');
                 const title = titleElement ? titleElement.textContent : '';
 
-                if (title.toLowerCase().includes(filter)) {
+                if (title.toLowerCase().includes(searchQuery)) {
                     card.classList.remove('hidden');
                 } else {
                     card.classList.add('hidden');
@@ -349,7 +346,8 @@
             }, 50);
 
             const controlBar = document.createElement('div');
-            controlBar.className = 'game-control-bar';
+            // Updated class name: game-control-bar -> asset-control-bar
+            controlBar.className = 'asset-control-bar';
 
             const displayToggleButton = document.createElement('button'); 
             displayToggleButton.id = 'fullscreen-toggle-button';
@@ -359,8 +357,9 @@
             controlBar.appendChild(displayToggleButton);
 
             const iframe = document.createElement('iframe');
-            iframe.id = 'game-iframe';
-            iframe.className = 'game-iframe-content w-full h-full border-none opacity-0 transition-opacity duration-500'; 
+            // Updated class name: game-iframe-content -> asset-iframe-content
+            iframe.id = 'asset-iframe';
+            iframe.className = 'asset-iframe-content w-full h-full border-none opacity-0 transition-opacity duration-500'; 
             iframe.setAttribute('allow', 'fullscreen');
             iframe.setAttribute('allowfullscreen', 'true');
             iframe.setAttribute('loading', 'lazy');
@@ -415,6 +414,7 @@
         function resetViewport() {
             if (labelRegistry) labelRegistry.textContent = calculateValue(ENCRYPTED_HOMEPAGE_TITLE); 
             if (mainPanel) mainPanel.classList.remove('hidden'); 
+            // Updated ID: game-container -> asset-container
             if (renderTarget) renderTarget.className = 'hidden relative'; 
 
             const overlay = document.getElementById('loading-overlay');
@@ -424,69 +424,56 @@
                 document.exitFullscreen().catch(() => { });
             }
         }
-        
-        // --- CLOAKING LOGIC (PANIC BUTTON: ESCAPE KEY) ---
-        function toggleCloak() {
-            const overlay = document.getElementById('cloak-overlay');
-            
-            if (!overlay) return; 
-
-            if (!modeShiftEngaged) { 
-                // Activate Cloak
-                storedDesignation = document.title; 
-                document.title = 'Annual Financial Report - Q4 2024';
-                overlay.style.display = 'flex'; 
-                modeShiftEngaged = true; 
-            } else {
-                // Deactivate Cloak
-                document.title = storedDesignation; 
-                overlay.style.display = 'none';
-                modeShiftEngaged = false; 
-            }
-        }
-
-        function handleKeydown(event) {
-            // Trigger cloak on Escape key
-            if (event.key === 'Escape') {
-                event.preventDefault(); 
-                toggleCloak();
-            }
-        }
-        // --- END CLOAKING LOGIC ---
 
 
         document.addEventListener('DOMContentLoaded', () => {
             mainPanel = document.getElementById('homepage-section'); 
-            renderTarget = document.getElementById('game-container'); 
+            // Updated ID reference: game-container -> asset-container
+            renderTarget = document.getElementById('asset-container'); 
             labelRegistry = document.getElementById('header-title'); 
             primaryMarker = document.getElementById('main-zenith-title'); 
             
-            document.addEventListener('keydown', handleKeydown);
-
+            // Sort all assets by title A-Z
+            ALL_ASSETS.sort((a, b) => {
+                const titleA = calculateValue(a.t).toLowerCase();
+                const titleB = calculateValue(b.t).toLowerCase();
+                if (titleA < titleB) return -1;
+                if (titleA > titleB) return 1;
+                return 0;
+            });
+            
+            // Search input setup (using old ID game-search for minimal DOM changes)
             const searchInput = document.getElementById('game-search');
             if (searchInput) {
                 searchInput.placeholder = calculateValue(ENCRYPTED_SEARCH_PLACEHOLDER);
             }
             
+            // Apply full title after decoding
+            document.title = calculateValue(ENCRYPTED_ZENITH_TITLE) + ' - ' + calculateValue(ENCRYPTED_TITLE_SUFFIX);
+
             const decodedHomepage = calculateValue(ENCRYPTED_HOMEPAGE_TITLE);
             if (labelRegistry) labelRegistry.textContent = decodedHomepage;
             if (primaryMarker) primaryMarker.textContent = calculateValue(ENCRYPTED_ZENITH_TITLE);
 
-            renderRandomGames();
+            // Set the logo source directly (as per the provided file)
+            const headerLogo = document.querySelector('header img');
+            if (headerLogo) {
+                // No change needed: src="https://notbingsa.github.io/Zenith/ui/logo.png"
+            }
+            
+            // Render random picks (still only pulling from the 'Game' category)
+            renderRandomAssets();
 
-            toggleCategory('Game');
+            // Render ALL assets (Games and Apps) in one sorted list
+            renderAllAssets();
 
-            const phrases = [
-                "We are doing our work... just not the teachers.",
-                "This is the only thing keeping me in school.",
-                "\"A student's dream\" - some random student that doesn't exist",
-                "We know you didn't get here accidently.",
-                "What game shall you pick?"
-            ];
+            // Removed toggleCategory('Game'); call
+
             const taglineElement = document.getElementById('random-tagline');
             if (taglineElement) {
-                const randomIndex = Math.floor(Math.random() * phrases.length);
-                taglineElement.textContent = phrases[randomIndex];
+                const randomIndex = Math.floor(Math.random() * ENCRYPTED_TAGLINES.length);
+                const encodedPhrase = ENCRYPTED_TAGLINES[randomIndex];
+                taglineElement.textContent = calculateValue(encodedPhrase);
             }
 
             const splashLoader = document.getElementById('website-splash-loader');
@@ -501,17 +488,6 @@
 </head>
 <body class="font-sans dark-gradient-bg text-gray-100">
     
-    <!-- Cloak Overlay (Hidden by default) -->
-    <div id="cloak-overlay" class="flex flex-col items-center justify-center">
-        <h1 class="text-4xl font-bold mb-4 text-gray-800">Annual Financial Report</h1>
-        <p class="text-xl mb-8 text-gray-600">Quarter 4 - 2024 Analysis</p>
-        <div class="w-11/12 md:w-2/3 p-6 bg-white border border-gray-300 rounded-lg shadow-xl text-base leading-relaxed text-gray-700">
-            <h2 class="text-2xl font-semibold mb-3 text-gray-800 border-b pb-2">Executive Summary</h2>
-            <p>During Q4, the company maintained a steady operational pace. Revenue growth was flat year-over-year, largely due to supply chain normalization offset by increased marketing expenditures. Gross margin improved slightly by 45 basis points, demonstrating effective cost management within the product line. Capital expenditures were within forecasted ranges, primarily directed towards infrastructure upgrades and R&D for next-generation products. The outlook for Q1 2025 remains cautiously optimistic, pending favorable macroeconomic conditions.</p>
-            <p class="mt-4 text-sm text-gray-500">To dismiss this document, press the **Escape** key again.</p>
-        </div>
-    </div>
-    
     <!-- Main App Content -->
 
     <div id="website-splash-loader" class="fixed inset-0 z-[10000] bg-zenith-dark flex flex-col items-center justify-center transition-opacity duration-300">
@@ -525,7 +501,7 @@
 
     <header class="p-4 md:p-6 flex items-center fixed top-0 left-0 right-0 z-10 bg-black/30 backdrop-blur-sm">
         <div class="flex items-center space-x-3 cursor-pointer" onclick="resetViewport()">
-            <img src="https://notbingsa.github.io/Zenith/ui/logo.png" class="w-8 h-8 object-contain" />
+            <img src="https://notbingsa.github.io/Zenith/ui/logo.png" alt="Zenith Logo" class="w-8 h-8 object-contain" />
             <h1 id="header-title" class="text-xl md:text-3xl font-bold"></h1>
         </div>
     </header>
@@ -540,32 +516,33 @@
                 <div class="w-full h-0.5 bg-gradient-to-r from-transparent via-zenith-purple/50 to-transparent mb-0"></div>
             </section>
 
-            <div id="random-games-section" class="mb-4">
+            <!-- Updated ID: random-games-section -> random-assets-section -->
+            <div id="random-assets-section" class="mb-4">
             </div>
 
             <section class="text-center">
 
-                <div class="flex justify-center space-x-4 mb-10 pt-8">
-                    <button id="toggle-games" onclick="toggleCategory('Game')" class=""></button>
-                    <button id="toggle-apps" onclick="toggleCategory('App')" class=""></button>
-                </div>
+                <!-- REMOVED: Category buttons block -->
 
-                <div class="mb-10 w-full max-w-xl mx-auto relative flex items-center">
+                <div class="mb-10 w-full max-w-xl mx-auto relative flex items-center pt-8">
+                    <!-- Kept ID game-search but function is now applySearch -->
                     <input type="text" id="game-search" placeholder="" 
                             class="w-full p-3 pl-12 bg-gray-700/50 border border-zenith-purple/50 rounded-lg text-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-zenith-purple"
-                            oninput="filterGames()" />
+                            oninput="applySearch()" />
                     <svg class="absolute left-4 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-4.35-4.35M17 11a6 6 0 11-12 0 6 6 0 0112 0z"></path>
                     </svg>
                 </div>
 
 
+                <!-- Kept ID game-list but it now displays all assets -->
                 <div id="game-list" class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-7 gap-4 lg:gap-6 transition-opacity duration-150">
                 </div>
             </section>
         </div>
 
-        <div id="game-container" class="hidden relative"></div>
+        <!-- Updated ID: game-container -> asset-container -->
+        <div id="asset-container" class="hidden relative"></div>
 
     </main>
 </body>
