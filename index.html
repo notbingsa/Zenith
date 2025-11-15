@@ -72,7 +72,7 @@
             padding: 0; 
             height: 40px; 
             width: 40px; 
-            border-radius: 8px; 
+            border-radius: 8px; /* Keep corners rounded here */
             cursor: pointer;
             transition: background-color 0.2s;
             display: flex; 
@@ -132,31 +132,49 @@
             box-shadow: none !important;
         }
         
+        /* IMPORTANT: Ensure the control bar keeps its full-view style */
         .full-view .game-control-bar {
             border-radius: 0 !important;
         }
-        .full-view .fullscreen-button {
-            border-radius: 0 !important;
+        
+        /* Panic Button Style - Applied via its external fixed container */
+        #panic-button {
+            background-color: #ef4444; /* Red */
+            color: white;
+            font-weight: bold;
+            padding: 8px 16px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(239, 68, 68, 0.4);
+            transition: background-color 0.15s ease, transform 0.15s ease;
+        }
+        #panic-button:hover {
+            background-color: #dc2626; /* Darker Red */
+            transform: scale(1.02);
         }
     </style>
 
     <script>
 
-        let homepageSection, gameContainer, headerTitle, menuButtonText;
+        let homepageSection, gameContainer, headerTitle;
         
-        // --- GAME DATA DEFINITION ---
-        // Refactored game list for dynamic rendering and randomization
+        // --- GAME DATA DEFINITION (with Category) ---
         const ALL_GAMES = [
-            { title: 'Chat', encodedUrl: 'aHR0cHM6Ly9wYWRsZXQuY29tL2xpbmNvbG5oYXJyaXNvbjhwYy96ZW5pdGgta2Nvbzh5eXJ1ZjheNDFmZQ==', placeholderColor: '7c3aed', type: 'loadGame' },
-            { title: 'Coreball', encodedUrl: 'aHR0cHM6Ly9uZWJ1bGFwbGF5LnNpdGUvc3RvcmFnZS9Db3JlYmFsbC5odG1s', placeholderColor: 'f87171', type: 'loadGame' },
-            { title: 'Geometry Dash Lite', encodedUrl: 'aHR0cHM6Ly9uZWJ1bGFwbGF5LnNpdGUvc3RvcmFnZS9HZW9tZXRyeSUyMERhc2glMjBMaXRlLmh0bWw=', placeholderColor: '3b82f6', type: 'loadGame' },
-            { title: 'Crossy Road', encodedUrl: 'aHR0cHM6Ly9uZWJ1bGFwbGF5LnNpdGUvc3RvcmFnZS9Dcm9zc3klMjBSb2FkLmh0bWw=', placeholderColor: '10b981', type: 'loadGame' },
-            { title: 'Bouncemasters', encodedUrl: 'aHR0cHM6Ly9uZWJ1bGFwbGF5LnNpdGUvc3RvcmFnZS9Cb3VuY2VtYXN0ZXJzLmh0bWw=', placeholderColor: 'f97316', type: 'loadGame' },
-            { title: 'Ragdoll Archers', encodedUrl: 'aHR0cHM6Ly9uZWJ1bGFwbGF5LnNpdGUvc3RvcmFnZS9SYWdkb2xsJTIwQXJjaGVycy5odG1s', placeholderColor: 'ef4444', type: 'loadGame' },
-            { title: 'Sandboxels', encodedUrl: 'aHR0cHM6Ly9zaGFsYml0by52ZXJjZWwuYXBwLw==', placeholderColor: 'ef4444', type: 'loadGame' },
-            { title: 'Friday Night Funkin', encodedUrl: '', placeholderColor: 'ef4444', type: 'loadFNFMobileOrPC' }, // Special handler
-            { title: 'Poly Track', encodedUrl: 'aHR0cHM6Ly9odG1sLWNsYXNzaWMuaXRjaC56b25lL2h0bWwvMTU0NTEzMzAvaW5kZXguaHRtbA==', placeholderColor: 'ef4444', type: 'loadGame' },
-            { title: 'Bitlife', encodedUrl: 'aHR0cHM6Ly9uZWJ1bGFwbGF5LnNpdGUvc3RvcmFnZS9iaXRsaWZlLw==', placeholderColor: 'ef4444', type: 'loadGame' },
+            { title: 'Chat', encodedUrl: 'aHR0cHM6Ly9wYWRsZXQuY29tL2xpbmNvbG5oYXJyaXNvbjhwYy96ZW5pdGgta2Nvbzh5eXJ1ZjheNDFmZQ==', placeholderColor: '7c3aed', type: 'loadGame', category: 'App' },
+            // NEW APP: Unblocker
+            { title: 'Unblocker', encodedUrl: 'aHR0cHM6Ly91Yi5lcmV6ZXJ3YWNqYTI0LnBsL3Mv', placeholderColor: 'f97316', type: 'loadGame', category: 'App' },
+            
+            // NEW GAME: Drive Mad
+            { title: 'Drive Mad', encodedUrl: 'aHR0cHM6Ly9uZWJ1bGFwbGF5LnNpdGUvc3RvcmFnZS9Ecml2ZSUyME1hZC5odG1s', placeholderColor: '34d399', type: 'loadGame', category: 'Game' },
+            
+            { title: 'Coreball', encodedUrl: 'aHR0cHM6Ly9uZWJ1bGFwbGF5LnNpdGUvc3RvcmFnZS9Db3JlYmFsbC5odG1s', placeholderColor: 'f87171', type: 'loadGame', category: 'Game' },
+            { title: 'Geometry Dash Lite', encodedUrl: 'aHR0cHM6Ly9uZWJ1bGFwbGF5LnNpdGUvc3RvcmFnZS9HZW9tZXRyeSUyMERhc2glMjBMaXRlLmh0bWw=', placeholderColor: '3b82f6', type: 'loadGame', category: 'Game' },
+            { title: 'Crossy Road', encodedUrl: 'aHR0cHM6Ly9uZWJ1bGFwbGF5LnNpdGUvc3RvcmFnZS9Dcm9zc3klMjBSb2FkLmh0bWw=', placeholderColor: '10b981', type: 'loadGame', category: 'Game' },
+            { title: 'Bouncemasters', encodedUrl: 'aHR0cHM6Ly9uZWJ1bGFwbGF5LnNpdGUvc3RvcmFnZS9Cb3VuY2VtYXN0ZXJzLmh0bWw=', placeholderColor: 'f97316', type: 'loadGame', category: 'Game' },
+            { title: 'Ragdoll Archers', encodedUrl: 'aHR0cHM6Ly9uZWJ1bGFwbGF5LnNpdGUvc3RvcmFnZS9SYWdkb2xsJTIwQXJjaGVycy5odG1s', placeholderColor: 'ef4444', type: 'loadGame', category: 'Game' },
+            { title: 'Sandboxels', encodedUrl: 'aHR0cHM6Ly9zaGFsYml0by52ZXJjZWwuYXBwLw==', placeholderColor: 'ef4444', type: 'loadGame', category: 'Game' },
+            { title: 'Friday Night Funkin', encodedUrl: '', placeholderColor: 'ef4444', type: 'loadFNFMobileOrPC', category: 'Game' }, 
+            { title: 'Poly Track', encodedUrl: 'aHR0cHM6Ly9odG1sLWNsYXNzaWMuaXRjaC56b25lL2h0bWwvMTU0NTEzMzAvaW5kZXguaHRtbA==', placeholderColor: 'ef4444', type: 'loadGame', category: 'Game' },
+            { title: 'Bitlife', encodedUrl: 'aHR0cHM6Ly9uZWJ1bGFwbGF5LnNpdGUvc3RvcmFnZS9iaXRsaWZlLw==', placeholderColor: 'ef4444', type: 'loadGame', category: 'Game' },
         ];
 
         // Helper function to decode Base64 URLs
@@ -167,6 +185,19 @@
                 console.error("Error decoding URL:", e);
                 return "";
             }
+        }
+
+        /**
+         * Closes the current browser tab/window for emergency exit.
+         * Note: Browser security policies may prevent this unless the window was opened by script.
+         */
+        function panicExit() {
+            window.close();
+            // Fallback message if window.close() fails
+            setTimeout(() => {
+                // Using console.error instead of alert due to iframe policy
+                console.error('Closing the tab failed. Please manually close this window.');
+            }, 100); 
         }
 
         // --- GAME RENDERING FUNCTIONS ---
@@ -180,13 +211,15 @@
                 clickHandler = `loadGame('${game.title}', '${game.encodedUrl}')`;
             }
             
-            // Determine placeholder size based on sizeClass (160x160 for w-40, 128x128 for others)
             const isLarge = sizeClass.includes('w-40');
             const placeholderSize = isLarge ? '160x160' : '128x128';
-            
+
+            // Determine the correct image folder based on category (games or apps)
+            const imageFolder = game.category === 'App' ? 'apps' : 'games';
+
             return `
-                <a href="#" onclick="${clickHandler}; return false;" class="block bg-gray-800 rounded-xl overflow-hidden game-card-shadow ${sizeClass}" aria-label="${game.title}">
-                    <img src="https://notbingsa.github.io/Zenith/games/images/${game.title}.png" 
+                <a href="#" onclick="${clickHandler}; return false;" class="block bg-gray-800 rounded-xl overflow-hidden game-card-shadow ${sizeClass}" aria-label="${game.title}" data-category="${game.category}">
+                    <img src="https://notbingsa.github.io/Zenith/${imageFolder}/images/${game.title}.png" 
                          onerror="this.src='https://placehold.co/${placeholderSize}/${game.placeholderColor}/ffffff?text=${game.title.replace(/\s/g, '+')}'" 
                          alt="${game.title}" 
                          class="w-full h-full object-cover" />
@@ -194,24 +227,54 @@
             `;
         }
         
-        /** Populates the main game list section. */
-        function renderAllGames() {
+        /** Populates the main game list section based on category filter. */
+        function renderAllGames(categoryFilter = 'Game') {
             const gameList = document.getElementById('game-list');
             if (gameList) {
-                const allGamesHtml = ALL_GAMES.map(game => createGameCardHtml(game, 'w-40 h-40')).join('');
-                gameList.innerHTML = allGamesHtml;
+                // Filter the global game list based on the requested category
+                const filteredGames = ALL_GAMES.filter(game => game.category === categoryFilter);
+                const allGamesHtml = filteredGames.map(game => createGameCardHtml(game, 'w-40 h-40')).join('');
+                
+                // Use a quick transition for a smoother visual change
+                gameList.style.opacity = 0;
+                setTimeout(() => {
+                    gameList.innerHTML = allGamesHtml;
+                    gameList.style.opacity = 1;
+                }, 150);
             }
+        }
+
+        /** Toggles the view between Games and Apps. */
+        function toggleCategory(category) {
+            // 1. Update button styling
+            const gameButton = document.getElementById('toggle-games');
+            const appButton = document.getElementById('toggle-apps');
+            
+            const inactiveClass = 'bg-gray-700/50 text-gray-400 hover:bg-gray-700';
+            const activeClass = 'bg-zenith-purple text-white shadow-lg shadow-zenith-purple/50';
+
+            if (category === 'Game') {
+                gameButton.className = `px-6 py-2 rounded-lg font-bold transition-all ${activeClass}`;
+                appButton.className = `px-6 py-2 rounded-lg font-bold transition-all ${inactiveClass}`;
+            } else if (category === 'App') {
+                appButton.className = `px-6 py-2 rounded-lg font-bold transition-all ${activeClass}`;
+                gameButton.className = `px-6 py-2 rounded-lg font-bold transition-all ${inactiveClass}`;
+            }
+
+            // 2. Render the filtered list
+            renderAllGames(category);
         }
 
         /** Selects random games and populates the "Random Picks" section. */
         function renderRandomGames() {
             const getRandomGames = (count) => {
-                const shuffled = [...ALL_GAMES].sort(() => 0.5 - Math.random());
+                // Only pick games from the 'Game' category for random picks
+                const gameOnlyList = ALL_GAMES.filter(g => g.category === 'Game');
+                const shuffled = [...gameOnlyList].sort(() => 0.5 - Math.random());
                 return shuffled.slice(0, count);
             }
 
             const randomGames = getRandomGames(5); // Get 5 random games
-            // Smaller cards for the random section
             const randomGamesHtml = randomGames.map(game => createGameCardHtml(game, 'w-28 h-28 md:w-32 md:h-32')).join('');
             
             const randomGamesContainer = document.getElementById('random-games-section');
@@ -250,8 +313,6 @@
         function loadGame(title, encodedUrl) {
             const url = decodeUrl(encodedUrl);
             
-            console.log(`[Zenith Debug] Attempting to load: ${url}`);
-
             if (headerTitle) headerTitle.textContent = title;
             if (homepageSection) homepageSection.classList.add('hidden');
 
@@ -265,7 +326,7 @@
                 return;
             }
 
-            // 1. Create Loading Overlay
+            // 1. Create Loading Overlay 
             const loadingOverlay = document.createElement('div');
             loadingOverlay.id = 'loading-overlay';
             loadingOverlay.className = 'absolute inset-0 bg-zenith-dark/95 flex flex-col items-center justify-center p-8 z-10 rounded-2xl transition-opacity duration-500';
@@ -276,10 +337,10 @@
                         <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                     </svg>
                 </div>
-                <h3 class="text-xl font-semibold mb-2 text-white">Loading Game: ${title}</h3>
-                <p class="text-sm text-gray-400 text-center">
-                    Preparing game environment...
-                </p>
+                <!-- UPDATED LOADING TEXT FORMAT -->
+                <h3 class="text-xl font-semibold mb-1 text-white">Loading:</h3>
+                <p class="text-2xl font-bold text-zenith-purple text-center">${title}</p>
+                
                 <div class="mt-4 w-48 h-2 bg-gray-700 rounded-full overflow-hidden">
                     <div id="loading-bar" class="h-full bg-zenith-purple transition-all duration-300" style="width: 0%"></div>
                 </div>
@@ -288,15 +349,13 @@
             const loadingBar = loadingOverlay.querySelector('#loading-bar');
             let progress = 0;
             
+            // Simplified interval: just load the bar until 70% and then load the iframe
             const interval = setInterval(() => {
-                if (progress < 50) { 
+                if (progress < 70) { 
                     progress += 10; 
                     if (loadingBar) loadingBar.style.width = `${progress}%`; 
                 } else {
                     clearInterval(interval);
-                    loadingOverlay.querySelector('h3').textContent = 'Connecting to Game...';
-                    loadingOverlay.querySelector('p').textContent = 'Waiting for game data to load...';
-                    if (loadingBar) loadingBar.style.width = '70%'; 
                     iframe.src = url; 
                 }
             }, 50);
@@ -328,8 +387,6 @@
 
             // 6. Iframe Load Detection
             iframe.onload = () => {
-                console.log(`[Zenith Debug] Iframe loaded successfully. Hiding overlay.`);
-                
                 clearInterval(interval);
                 if (loadingBar) loadingBar.style.width = '100%';
 
@@ -364,21 +421,14 @@
 
         function toggleGameView(container) {
             const isFullView = container.classList.toggle('full-view');
-            const fsIcon = document.getElementById('fs-icon');
             const fsButton = document.getElementById('fullscreen-toggle-button');
 
             if (isFullView) {
-                if (fsIcon) {
-                    fsIcon.classList.remove('fa-expand');
-                    fsIcon.classList.add('fa-compress');
-                }
-                if (fsButton) fsButton.innerHTML = '<i id="fs-icon" class="fas fa-compress"></i>';
+                // Change button icon to compress
+                fsButton.innerHTML = '<i id="fs-icon" class="fas fa-compress"></i>';
             } else {
-                if (fsIcon) {
-                    fsIcon.classList.remove('fa-compress');
-                    fsIcon.classList.add('fa-expand');
-                }
-                if (fsButton) fsButton.innerHTML = '<i id="fs-icon" class="fas fa-expand"></i>';
+                // Change button icon back to expand
+                fsButton.innerHTML = '<i id="fs-icon" class="fas fa-expand"></i>';
             }
         }
 
@@ -386,7 +436,6 @@
             if (headerTitle) headerTitle.textContent = 'Homepage';
             if (homepageSection) homepageSection.classList.remove('hidden');
             if (gameContainer) gameContainer.className = 'hidden relative';
-            if (menuButtonText) menuButtonText.textContent = 'Menu / Back';
 
             const overlay = document.getElementById('loading-overlay');
             if (overlay) overlay.remove();
@@ -402,11 +451,18 @@
             homepageSection = document.getElementById('homepage-section');
             gameContainer = document.getElementById('game-container');
             headerTitle = document.getElementById('header-title');
-            menuButtonText = document.querySelector('#menu-button span');
             
-            // Render all dynamic content
-            renderAllGames();
+            // 1. Render random content
             renderRandomGames();
+
+            // 2. Set initial button text
+            const gameButton = document.getElementById('toggle-games');
+            const appButton = document.getElementById('toggle-apps');
+            if (gameButton) gameButton.textContent = 'Games';
+            if (appButton) appButton.textContent = 'Apps';
+            
+            // 3. Load the default view (Games)
+            toggleCategory('Game');
 
 
             // Random tagline logic
@@ -437,6 +493,15 @@
 </head>
 <body class="font-sans dark-gradient-bg text-gray-100">
 
+    <!-- PANIC BUTTON - MAX Z-INDEX OVERLAY -->
+    <!-- Positioned fixed top-4 right-4 and set to max Z-index (99999) -->
+    <div id="panic-overlay" class="fixed top-4 right-4 z-[99999]">
+        <button id="panic-button" onclick="panicExit()">
+            <i class="fas fa-exclamation-triangle mr-2"></i>Panic
+        </button>
+    </div>
+    <!-- END PANIC BUTTON OVERLAY -->
+
     <!-- WEBSITE SPLASH LOADER (Visible until DOMContentLoaded fires) -->
     <div id="website-splash-loader" class="fixed inset-0 z-[10000] bg-zenith-dark flex flex-col items-center justify-center transition-opacity duration-300">
         <svg class="w-16 h-16 text-zenith-purple animate-pulse mb-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -448,8 +513,10 @@
     </div>
     <!-- END WEBSITE SPLASH LOADER -->
 
-    <header class="p-4 md:p-6 flex justify-between items-center fixed top-0 left-0 right-0 z-10 bg-black/30 backdrop-blur-sm">
-        <div class="flex items-center space-x-3">
+    <!-- HEADER - Now only contains the logo and title -->
+    <header class="p-4 md:p-6 flex items-center fixed top-0 left-0 right-0 z-10 bg-black/30 backdrop-blur-sm">
+        <!-- HEADER LEFT - CLICKABLE TO RETURN HOME -->
+        <div class="flex items-center space-x-3 cursor-pointer" onclick="showHomepage()">
             <img src="https://notbingsa.github.io/Zenith/ui/logo.png" alt="Zenith Logo" class="w-8 h-8 object-contain" />
             <h1 id="header-title" class="text-3xl font-bold">Homepage</h1>
         </div>
@@ -466,13 +533,22 @@
                 <div class="w-full h-0.5 bg-gradient-to-r from-transparent via-zenith-purple/50 to-transparent mb-0"></div>
             </section>
             
-            <!-- NEW RANDOM GAMES SECTION - Content inserted by renderRandomGames() JS function -->
+            <!-- RANDOM GAMES SECTION -->
             <div id="random-games-section" class="mb-4">
-                <!-- Content will be injected here -->
+                <!-- Content will be injected here by renderRandomGames() -->
             </div>
             <!-- END RANDOM GAMES SECTION -->
 
             <section class="text-center">
+                
+                <!-- NEW CATEGORY TOGGLE BUTTONS (Moved UP) -->
+                <div class="flex justify-center space-x-4 mb-10 pt-8">
+                    <!-- Initial classes will be set by toggleCategory('Game') on load -->
+                    <button id="toggle-games" onclick="toggleCategory('Game')" class=""></button>
+                    <button id="toggle-apps" onclick="toggleCategory('App')" class=""></button>
+                </div>
+                <!-- END CATEGORY TOGGLE BUTTONS -->
+
                 <div class="mb-10 w-full max-w-xl mx-auto relative flex items-center">
                     <input type="text" id="game-search" placeholder="Search for games..." 
                             class="w-full p-3 pl-12 bg-gray-700/50 border border-zenith-purple/50 rounded-lg text-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-zenith-purple"
@@ -481,23 +557,16 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-4.35-4.35M17 11a6 6 0 11-12 0 6 6 0 0112 0z"></path>
                     </svg>
                 </div>
+                
 
-                <!-- MAIN GAME LIST - Content now injected by renderAllGames() JS function -->
-                <h3 class="section-heading-glow text-3xl font-bold mb-6 text-white pt-8">Full Catalog</h3>
-                <div id="game-list" class="flex flex-wrap justify-center gap-6 lg:gap-8">
-                    <!-- Game cards will be dynamically inserted here -->
+                <!-- MAIN GAME LIST - Content now injected and filtered by toggleCategory() -->
+                <div id="game-list" class="flex flex-wrap justify-center gap-6 lg:gap-8 transition-opacity duration-150">
+                    <!-- Game/App cards will be dynamically inserted here -->
                 </div>
             </section>
         </div>
 
         <div id="game-container" class="hidden relative"></div>
-
-        <div class="fixed bottom-0 left-0 p-3 bg-black/50 backdrop-blur-sm rounded-tr-xl z-50">
-            <button onclick="showHomepage()" id="menu-button" class="text-gray-400 hover:text-white transition duration-200 flex items-center space-x-2">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
-                <span class="text-sm hidden sm:inline">Menu / Back</span>
-            </button>
-        </div>
 
     </main>
 </body>
