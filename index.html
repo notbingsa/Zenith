@@ -6,9 +6,7 @@
     <title>Zenith - Unblocked Games</title>
 
     <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-
     <script src="https://cdn.tailwindcss.com"></script>
 
     <script>
@@ -34,27 +32,19 @@
             background: linear-gradient(180deg, #111827 0%, #0c0a09 100%);
             min-height: 100vh;
         }
-
         .zenith-title-glow {
-            /* Gradient for the Zenith title */
-            background-image: linear-gradient(to right, #7c3aed, #3b82f6); /* Purple to Blue */
+            background-image: linear-gradient(to right, #7c3aed, #3b82f6); 
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
             text-fill-color: transparent;
-            /* Keep glow for aesthetic */
-            text-shadow:
-                0 0 5px rgba(59, 130, 246, 0.3),
-                0 0 20px rgba(124, 58, 237, 0.5);
-            color: #ffffff; /* Fallback for browsers not supporting text-fill-color */
+            text-shadow: 0 0 5px rgba(59, 130, 246, 0.3), 0 0 20px rgba(124, 58, 237, 0.5);
+            color: #ffffff;
         }
-
         .section-heading-glow {
-            /* General text glow for headings */
             text-shadow: 0 0 10px #7c3aed;
             color: #d1d5db;
         }
-
         .game-card-shadow {
             box-shadow: 0 10px 15px rgba(124, 58, 237, 0.3), 0 4px 6px rgba(59, 130, 246, 0.1);
             transition: transform 0.2s ease, box-shadow 0.2s ease;
@@ -63,8 +53,6 @@
             transform: translateY(-4px);
             box-shadow: 0 15px 25px rgba(124, 58, 237, 0.5), 0 6px 10px rgba(59, 130, 246, 0.2);
         }
-
-        /* --- Fullscreen Button Style --- */
         .fullscreen-button {
             position: relative; 
             background-color: rgba(107, 114, 128, 0.9);
@@ -72,7 +60,7 @@
             padding: 0; 
             height: 40px; 
             width: 40px; 
-            border-radius: 8px; /* Keep corners rounded here */
+            border-radius: 8px;
             cursor: pointer;
             transition: background-color 0.2s;
             display: flex; 
@@ -82,13 +70,8 @@
             box-shadow: none;
             margin-left: 10px; 
         }
-
-        .fullscreen-button:hover { background-color: rgba(107, 114, 128, 1); }
-
-        /* --- Game View Structure: Control Bar --- */
         .game-control-bar {
             position: absolute;
-            top: auto;
             bottom: 0;
             left: 0;
             right: 0;
@@ -100,12 +83,9 @@
             justify-content: flex-end; 
             padding: 0 10px; 
             box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.4); 
-            
             border-bottom-left-radius: 1rem; 
             border-bottom-right-radius: 1rem; 
         }
-        
-        /* --- Game View Structure: Iframe positioning --- */
         .game-iframe-content {
             position: absolute;
             top: 0;
@@ -114,12 +94,6 @@
             bottom: 50px;
             background-color: black; 
         }
-        
-        #loading-overlay {
-            border-radius: 1rem;
-        }
-
-        /* Full View overrides */
         .full-view {
             position: fixed !important;
             top: 0 !important;
@@ -131,33 +105,141 @@
             max-width: none !important;
             box-shadow: none !important;
         }
-        
-        /* IMPORTANT: Ensure the control bar keeps its full-view style */
         .full-view .game-control-bar {
             border-radius: 0 !important;
         }
-        
-        /* Panic Button Style - Applied via its external fixed container */
-        #panic-button {
-            background-color: #ef4444; /* Red */
-            color: white;
-            font-weight: bold;
-            padding: 8px 16px;
-            border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(239, 68, 68, 0.4);
-            transition: background-color 0.15s ease, transform 0.15s ease;
-        }
-        #panic-button:hover {
-            background-color: #dc2626; /* Darker Red */
-            transform: scale(1.02);
-        }
     </style>
 
-    <script>
-
-        let homepageSection, gameContainer, headerTitle;
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged, signOut, signInWithPopup } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { MicrosoftAuthProvider } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth-microsoft-provider.js";
         
-        // --- GAME DATA DEFINITION (Sorted A-Z within categories) ---
+        // --- FIREBASE SETUP ---
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {};
+
+        let auth, microsoftProvider;
+        const app = Object.keys(firebaseConfig).length > 0 ? initializeApp(firebaseConfig) : null;
+        let isAuthCheckComplete = false; 
+
+        // Function to safely hide the splash screen
+        const hideSplash = () => {
+            const splashLoader = document.getElementById('website-splash-loader');
+            if (splashLoader && splashLoader.style.display !== 'none') {
+                splashLoader.style.opacity = '0';
+                setTimeout(() => {
+                    splashLoader.style.display = 'none';
+                }, 300);
+            }
+        };
+
+        if (app) {
+            auth = getAuth(app);
+            microsoftProvider = new MicrosoftAuthProvider();
+            
+            // 1. Initial sign-in logic (Token or Anonymous)
+            const initialSignIn = async () => {
+                try {
+                    const token = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
+                    if (token) {
+                        await signInWithCustomToken(auth, token);
+                    } else {
+                        await signInAnonymously(auth);
+                    }
+                } catch (error) {
+                    console.error("Initial Firebase sign-in failed:", error);
+                    // Fallback to anonymous sign-in
+                    try { await signInAnonymously(auth); } catch (e) { console.error("Anonymous sign-in failed:", e); }
+                }
+            };
+            initialSignIn();
+
+            // --- AUTH STATE LISTENER (UI MANAGER) ---
+            onAuthStateChanged(auth, (user) => {
+                const loginButton = document.getElementById('login-button');
+                const headerTitle = document.getElementById('header-title');
+                const authGate = document.getElementById('auth-gate-section');
+                const homepageSection = document.getElementById('homepage-section');
+                const gameContainer = document.getElementById('game-container');
+                const authStatusMessage = document.getElementById('auth-status-message');
+
+                // --- HIDE WEBSITE SPLASH LOADER AFTER AUTH IS CHECKED ---
+                if (!isAuthCheckComplete) {
+                    isAuthCheckComplete = true;
+                    hideSplash();
+                }
+                // --------------------------------------------------------
+
+                if (user && !user.isAnonymous) {
+                    // AUTHENTICATED (Microsoft User) - ALLOW ACCESS
+                    const displayName = user.displayName || user.email || "Pilot";
+                    loginButton.innerHTML = `<i class="fas fa-sign-out-alt mr-2"></i>Sign Out`;
+                    loginButton.onclick = window.signOutUser;
+                    headerTitle.textContent = 'Zenith | Games Catalog';
+
+                    authGate.classList.add('hidden');
+                    homepageSection.classList.remove('hidden');
+                    
+                    // Ensure games are rendered after authentication success
+                    if (!document.getElementById('game-list').children.length) {
+                        window.renderInitialContent();
+                    }
+
+                } else {
+                    // UNKNOWN/ANONYMOUS/SIGNED OUT - REQUIRE SIGN IN
+                    loginButton.innerHTML = `<i class="fab fa-microsoft mr-2"></i>Sign In`;
+                    loginButton.onclick = window.signInWithMicrosoft;
+                    headerTitle.textContent = 'Zenith | Sign In Required';
+
+                    authGate.classList.remove('hidden');
+                    homepageSection.classList.add('hidden');
+                    gameContainer.classList.add('hidden');
+                    
+                    authStatusMessage.innerHTML = `Please **Sign In** with your Microsoft account to access the games catalog.`;
+                    
+                    // Clear any previous game state
+                    window.showHomepage(); 
+                }
+            });
+
+        } else {
+            console.error("Firebase not initialized. Cannot connect to user services.");
+            // If Firebase fails to initialize, force hide the splash screen 
+            // and show the auth gate with an error message.
+            document.addEventListener('DOMContentLoaded', () => {
+                document.getElementById('auth-gate-section').classList.remove('hidden');
+                document.getElementById('auth-status-message').innerHTML = `<span class="text-red-400">Error: Authentication services failed to load.</span> Please refresh or check your environment.`;
+                document.getElementById('login-button').disabled = true;
+                hideSplash();
+            });
+        }
+
+
+        // --- EXPOSED AUTH FUNCTIONS ---
+        window.signInWithMicrosoft = async () => {
+            if (!auth) { console.error("Auth not initialized."); return; }
+            try {
+                // This triggers the real Microsoft OAuth popup
+                await signInWithPopup(auth, microsoftProvider);
+            } catch (error) {
+                console.error("Microsoft Sign In failed:", error);
+                const msg = error.message.includes('auth/popup-closed-by-user') ? 'Sign in cancelled by user.' : 'Login failed. Check console.';
+                document.getElementById('auth-status-message').innerHTML = `<span class="text-red-400">${msg}</span>`;
+            }
+        };
+
+        window.signOutUser = async () => {
+            if (!auth) return;
+            try {
+                await signOut(auth);
+            } catch (error) {
+                console.error("Sign Out failed:", error);
+            }
+        };
+
+
+        // --- GAME DATA DEFINITION ---
         const ALL_GAMES = [
             // --- APPS (A-Z) ---
             { title: 'Chat', encodedUrl: 'aHR0cHM6Ly9wYWRsZXQuY29tL2xpbmNvbG5oYXJyaXNvbjhwYy96ZW5pdGgta2Nvbzh5eXJ1ZjheNDFmZQ==', placeholderColor: '7c3aed', type: 'loadGame', category: 'App' },
@@ -183,83 +265,53 @@
 
         // Helper function to decode Base64 URLs
         function decodeUrl(encodedUrl) {
-            try {
-                return atob(encodedUrl);
-            } catch (e) {
-                console.error("Error decoding URL:", e);
-                return "";
-            }
+            try { return atob(encodedUrl); } catch (e) { console.error("Error decoding URL:", e); return ""; }
         }
 
-        /**
-         * Closes the current browser tab/window for emergency exit.
-         * Note: Browser security policies may prevent this unless the window was opened by script.
-         */
-        function panicExit() {
-            window.close();
-            // Fallback message if window.close() fails
-            setTimeout(() => {
-                // Using console.error instead of alert due to iframe policy
-                console.error('Closing the tab failed. Please manually close this window.');
-            }, 100); 
-        }
+        let homepageSection, gameContainer, headerTitle;
 
-        // --- GAME RENDERING FUNCTIONS ---
-        
-        /** Generates the HTML for a single game card. */
-        function createGameCardHtml(game, sizeClass = 'w-full h-auto aspect-square') {
+        // --- GAME RENDERING FUNCTIONS (Exposed to window) ---
+        window.createGameCardHtml = (game, sizeClass = 'w-full h-auto aspect-square') => {
             let clickHandler;
             if (game.type === 'loadFNFMobileOrPC') {
                 clickHandler = `loadFNFMobileOrPC('${game.title}')`;
             } else {
                 clickHandler = `loadGame('${game.title}', '${game.encodedUrl}')`;
             }
-            
-            // Note: sizeClass is now used for the card container's shape (aspect-square)
-            // The image inside will automatically fill the grid cell.
             const placeholderSize = '160x160'; 
-
-            // Determine the correct image folder based on category (games or apps)
             const imageFolder = game.category === 'App' ? 'apps' : 'games';
 
             return `
-                <a href="#" onclick="${clickHandler}; return false;" class="block bg-gray-800 rounded-xl overflow-hidden game-card-shadow ${sizeClass} group" aria-label="${game.title}" data-category="${game.category}">
+                <a href="#" onclick="window.${clickHandler}; return false;" class="block bg-gray-800 rounded-xl overflow-hidden game-card-shadow ${sizeClass} group relative" aria-label="${game.title}" data-category="${game.category}">
                     <img src="https://notbingsa.github.io/Zenith/${imageFolder}/images/${game.title}.png" 
                          onerror="this.src='https://placehold.co/${placeholderSize}/${game.placeholderColor}/ffffff?text=${game.title.replace(/\s/g, '+')}'" 
                          alt="${game.title}" 
                          class="w-full h-full object-cover transition duration-300 group-hover:scale-105" />
-                    <!-- Game Title Overlay for better UX on smaller cards -->
                     <div class="absolute inset-0 bg-black/30 flex items-end justify-center p-2 opacity-0 transition-opacity duration-200 group-hover:opacity-100">
                         <span class="text-sm font-semibold text-white text-center">${game.title}</span>
                     </div>
                 </a>
             `;
-        }
+        };
         
-        /** Populates the main game list section based on category filter. */
-        function renderAllGames(categoryFilter = 'Game') {
+        window.renderAllGames = (categoryFilter = 'Game') => {
             const gameList = document.getElementById('game-list');
             if (gameList) {
-                // Filter the global game list based on the requested category
                 const filteredGames = ALL_GAMES.filter(game => game.category === categoryFilter);
-                
-                // Add class for responsive grid layout
+                // Ensure the grid fills the full width of its parent container
                 gameList.className = 'grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-7 gap-4 lg:gap-6 transition-opacity duration-150';
 
-                const allGamesHtml = filteredGames.map(game => createGameCardHtml(game)).join('');
+                const allGamesHtml = filteredGames.map(game => window.createGameCardHtml(game)).join('');
                 
-                // Use a quick transition for a smoother visual change
                 gameList.style.opacity = 0;
                 setTimeout(() => {
                     gameList.innerHTML = allGamesHtml;
                     gameList.style.opacity = 1;
                 }, 150);
             }
-        }
+        };
 
-        /** Toggles the view between Games and Apps. */
-        function toggleCategory(category) {
-            // 1. Update button styling
+        window.toggleCategory = (category) => {
             const gameButton = document.getElementById('toggle-games');
             const appButton = document.getElementById('toggle-apps');
             
@@ -273,24 +325,17 @@
                 appButton.className = `px-6 py-2 rounded-lg font-bold transition-all ${activeClass}`;
                 gameButton.className = `px-6 py-2 rounded-lg font-bold transition-all ${inactiveClass}`;
             }
+            window.renderAllGames(category);
+        };
 
-            // 2. Render the filtered list
-            renderAllGames(category);
-        }
-
-        /** Selects random games and populates the "Random Picks" section. */
-        function renderRandomGames() {
+        window.renderRandomGames = () => {
             const getRandomGames = (count) => {
-                // Only pick games from the 'Game' category for random picks
                 const gameOnlyList = ALL_GAMES.filter(g => g.category === 'Game');
                 const shuffled = [...gameOnlyList].sort(() => 0.5 - Math.random());
                 return shuffled.slice(0, count);
             }
-
-            const randomGames = getRandomGames(5); // Get 5 random games
-            
-            // Note: Using an explicit w-32/h-32 size for the small 'Random Picks' section to maintain a clean horizontal flow
-            const randomGamesHtml = randomGames.map(game => createGameCardHtml(game, 'w-32 h-32')).join('');
+            const randomGames = getRandomGames(5); 
+            const randomGamesHtml = randomGames.map(game => window.createGameCardHtml(game, 'w-32 h-32')).join('');
             
             const randomGamesContainer = document.getElementById('random-games-section');
             if (randomGamesContainer) {
@@ -298,19 +343,16 @@
                     <h3 class="section-heading-glow text-xl md:text-2xl font-semibold mb-6 text-center pt-8 text-white">
                         <i class="fas fa-dice text-zenith-purple mr-2"></i>Random Picks
                     </h3>
-                    <!-- Random section still uses flex for centered, smaller card display -->
                     <div class="flex flex-wrap justify-center gap-4 lg:gap-6 mb-12">
                         ${randomGamesHtml}
                     </div>
                 `;
             }
-        }
-
-
-        function filterGames() {
+        };
+        
+        window.filterGames = () => {
             const searchInput = document.getElementById('game-search');
             const filter = (searchInput && searchInput.value || '').toLowerCase();
-            // Filter both the main list and the random list
             const cards = document.querySelectorAll('#game-list a, #random-games-section a'); 
             cards.forEach(card => {
                 const img = card.querySelector('img');
@@ -321,12 +363,9 @@
                     card.classList.add('hidden');
                 }
             });
-        }
+        };
 
-        /**
-         * Loads the game into the iframe, structured with a control bar.
-         */
-        function loadGame(title, encodedUrl) {
+        window.loadGame = (title, encodedUrl) => {
             const url = decodeUrl(encodedUrl);
             
             if (headerTitle) headerTitle.textContent = title;
@@ -338,11 +377,9 @@
                 gameContainer.innerHTML = ''; 
                 gameContainer.classList.remove('hidden'); 
             } else {
-                console.error("Game container not found.");
                 return;
             }
 
-            // 1. Create Loading Overlay 
             const loadingOverlay = document.createElement('div');
             loadingOverlay.id = 'loading-overlay';
             loadingOverlay.className = 'absolute inset-0 bg-zenith-dark/95 flex flex-col items-center justify-center p-8 z-10 rounded-2xl transition-opacity duration-500';
@@ -353,7 +390,6 @@
                         <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                     </svg>
                 </div>
-                <!-- UPDATED LOADING TEXT FORMAT -->
                 <h3 class="text-xl font-semibold mb-1 text-white">Loading:</h3>
                 <p class="text-2xl font-bold text-zenith-purple text-center">${title}</p>
                 
@@ -364,8 +400,6 @@
             
             const loadingBar = loadingOverlay.querySelector('#loading-bar');
             let progress = 0;
-            
-            // Simplified interval: just load the bar until 70% and then load the iframe
             const interval = setInterval(() => {
                 if (progress < 70) { 
                     progress += 10; 
@@ -376,19 +410,16 @@
                 }
             }, 50);
 
-            // 2. Create the Control Bar
             const controlBar = document.createElement('div');
             controlBar.className = 'game-control-bar';
             
-            // 3. Create Fullscreen Button
             const fullscreenButton = document.createElement('button');
             fullscreenButton.id = 'fullscreen-toggle-button';
             fullscreenButton.className = 'fullscreen-button'; 
             fullscreenButton.innerHTML = '<i id="fs-icon" class="fas fa-expand"></i>'; 
-            fullscreenButton.onclick = () => toggleGameView(gameContainer);
+            fullscreenButton.onclick = () => window.toggleGameView(gameContainer);
             controlBar.appendChild(fullscreenButton);
 
-            // 4. Create Iframe
             const iframe = document.createElement('iframe');
             iframe.id = 'game-iframe';
             iframe.className = 'game-iframe-content w-full h-full border-none opacity-0 transition-opacity duration-500'; 
@@ -396,12 +427,10 @@
             iframe.setAttribute('allowfullscreen', 'true');
             iframe.setAttribute('loading', 'lazy');
 
-            // 5. Append all structured elements
             gameContainer.appendChild(controlBar);
             gameContainer.appendChild(iframe);
             gameContainer.appendChild(loadingOverlay); 
 
-            // 6. Iframe Load Detection
             iframe.onload = () => {
                 clearInterval(interval);
                 if (loadingBar) loadingBar.style.width = '100%';
@@ -413,42 +442,36 @@
                     loadingOverlay.remove();
                 }, 500);
             };
-        }
+        };
 
-        /** Checks the user agent and loads the appropriate version of Friday Night Funkin. */
-        function loadFNFMobileOrPC(title) {
+        window.loadFNFMobileOrPC = (title) => {
             const userAgent = navigator.userAgent;
-            
             const isMobileDevice = /Mobi|Android|iPhone|iPod|iPad/i.test(userAgent);
             const isSafariBrowser = userAgent.includes('Safari') && !userAgent.includes('Chrome');
 
             const loadMobileVersion = isMobileDevice || isSafariBrowser;
-            
             let encodedUrl;
 
             if (loadMobileVersion) {
                 encodedUrl = 'aHR0cHM6Ly9odG1sLWNsYXNzaWMuaXRjaC56b25lL2h0bWwvNDQ1OTQ5OS9sdWNreWRvZzcuZ2l0aHViLmlvLW1hc3Rlci9mdW5raW5tb2JpbGUvZ2FtZS9pbmRleC5odG1s';
             } else {
-                encodedUrl = 'aHR0cHM6Ly9odG1sLWNsYXNzaWMuaXRjaC56b25lL2h0bWwvMjg3NjM1OS0xMzgzODg2L2luZGV4Lmh0bWw=';
+                encodedUrl = 'aHR0cHM6Ly9odG1sLWNsYXNzaWMuaXRjaC56b25lL2h0bWwvMjg3NjM1NTktMTM4Mzg4Ni9pbmRleC5odG1s=';
             }
+            window.loadGame(title, encodedUrl);
+        };
 
-            loadGame(title, encodedUrl);
-        }
-
-        function toggleGameView(container) {
+        window.toggleGameView = (container) => {
             const isFullView = container.classList.toggle('full-view');
             const fsButton = document.getElementById('fullscreen-toggle-button');
 
             if (isFullView) {
-                // Change button icon to compress
                 fsButton.innerHTML = '<i id="fs-icon" class="fas fa-compress"></i>';
             } else {
-                // Change button icon back to expand
                 fsButton.innerHTML = '<i id="fs-icon" class="fas fa-expand"></i>';
             }
-        }
+        };
 
-        function showHomepage() {
+        window.showHomepage = () => {
             if (headerTitle) headerTitle.textContent = 'Homepage';
             if (homepageSection) homepageSection.classList.remove('hidden');
             if (gameContainer) gameContainer.className = 'hidden relative';
@@ -459,17 +482,11 @@
             if (document.fullscreenElement) {
                 document.exitFullscreen().catch(() => { });
             }
-        }
+        };
 
-        // Initialize DOM-dependent variables only after the page is fully loaded
-        document.addEventListener('DOMContentLoaded', () => {
-            // Assign global references here
-            homepageSection = document.getElementById('homepage-section');
-            gameContainer = document.getElementById('game-container');
-            headerTitle = document.getElementById('header-title');
-            
-            // 1. Render random content
-            renderRandomGames();
+        window.renderInitialContent = () => {
+             // 1. Render random content
+            window.renderRandomGames();
 
             // 2. Set initial button text
             const gameButton = document.getElementById('toggle-games');
@@ -478,8 +495,7 @@
             if (appButton) appButton.textContent = 'Apps';
             
             // 3. Load the default view (Games)
-            toggleCategory('Game');
-
+            window.toggleCategory('Game');
 
             // Random tagline logic
             const phrases = [
@@ -494,88 +510,93 @@
                 const randomIndex = Math.floor(Math.random() * phrases.length);
                 taglineElement.textContent = phrases[randomIndex];
             }
-            
-            // --- HIDE WEBSITE SPLASH LOADER ---
-            const splashLoader = document.getElementById('website-splash-loader');
-            if (splashLoader) {
-                splashLoader.style.opacity = '0';
-                setTimeout(() => {
-                    splashLoader.style.display = 'none';
-                }, 300); // Wait for fade-out transition
-            }
-            // ----------------------------------
+        }
+
+        // Initialize DOM-dependent variables only after the page is fully loaded
+        document.addEventListener('DOMContentLoaded', () => {
+            homepageSection = document.getElementById('homepage-section');
+            gameContainer = document.getElementById('game-container');
+            headerTitle = document.getElementById('header-title');
         });
     </script>
 </head>
 <body class="font-sans dark-gradient-bg text-gray-100">
 
-    <!-- PANIC BUTTON - MAX Z-INDEX OVERLAY -->
-    <!-- Positioned fixed top-4 right-4 and set to max Z-index (99999) -->
-    <div id="panic-overlay" class="fixed top-4 right-4 z-[99999]">
-        <button id="panic-button" onclick="panicExit()">
-            <i class="fas fa-exclamation-triangle mr-2"></i>Panic
-        </button>
-    </div>
-    <!-- END PANIC BUTTON OVERLAY -->
-
-    <!-- WEBSITE SPLASH LOADER (Visible until DOMContentLoaded fires) -->
+    <!-- WEBSITE SPLASH LOADER (Visible until initial Firebase auth check completes) -->
     <div id="website-splash-loader" class="fixed inset-0 z-[10000] bg-zenith-dark flex flex-col items-center justify-center transition-opacity duration-300">
         <svg class="w-16 h-16 text-zenith-purple animate-pulse mb-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
             <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-opacity="0.9"></circle>
             <path d="M12 4v8l5 3" stroke="currentColor"></path>
         </svg>
         <h2 class="text-3xl font-extrabold zenith-title-glow tracking-tighter">Zenith</h2>
-        <p class="text-sm text-gray-400 mt-2">Loading interface...</p>
+        <p class="text-sm text-gray-400 mt-2">Initializing services...</p>
     </div>
     <!-- END WEBSITE SPLASH LOADER -->
 
-    <!-- HEADER - Now only contains the logo and title -->
-    <header class="p-4 md:p-6 flex items-center fixed top-0 left-0 right-0 z-10 bg-black/30 backdrop-blur-sm">
+    <!-- HEADER - Contains logo, title, and Login button -->
+    <header class="p-4 md:p-6 flex items-center justify-between fixed top-0 left-0 right-0 z-10 bg-black/30 backdrop-blur-sm">
         <!-- HEADER LEFT - CLICKABLE TO RETURN HOME -->
-        <div class="flex items-center space-x-3 cursor-pointer" onclick="showHomepage()">
+        <div class="flex items-center space-x-3 cursor-pointer" onclick="window.showHomepage()">
             <img src="https://notbingsa.github.io/Zenith/ui/logo.png" alt="Zenith Logo" class="w-8 h-8 object-contain" />
-            <h1 id="header-title" class="text-3xl font-bold">Homepage</h1>
+            <h1 id="header-title" class="text-xl md:text-3xl font-bold">Zenith | Sign In Required</h1>
         </div>
+
+        <!-- LOGIN/LOGOUT BUTTON (Set dynamically by onAuthStateChanged) -->
+        <button id="login-button" 
+                onclick="window.signInWithMicrosoft()" 
+                class="px-4 py-2 bg-gray-700/50 text-gray-200 hover:bg-zenith-purple transition-colors rounded-lg font-semibold text-sm" 
+                aria-label="Sign In with Microsoft">
+            <i class="fab fa-microsoft mr-2"></i>Sign In
+        </button>
     </header>
 
     <main class="pt-24 md:pt-32 pb-8 px-4 md:px-8 max-w-7xl mx-auto">
+        
+        <!-- AUTHENTICATION GATE SECTION (Visible when not authenticated) -->
+        <div id="auth-gate-section" class="flex flex-col items-center justify-center text-center py-20 bg-gray-900/50 rounded-xl mt-12 hidden">
+            <i class="fas fa-lock text-7xl text-zenith-purple mb-6"></i>
+            <h2 class="text-4xl font-extrabold text-white mb-4">Access Restricted</h2>
+            <p id="auth-status-message" class="text-xl text-gray-300 max-w-lg mb-8">
+                Please **Sign In** with your Microsoft account to access the games catalog.
+            </p>
+            <button onclick="window.signInWithMicrosoft()" 
+                    class="px-8 py-3 bg-zenith-blue text-white font-bold rounded-lg shadow-lg hover:bg-blue-600 transition-colors">
+                <i class="fab fa-microsoft mr-2"></i> Continue with Microsoft
+            </button>
+        </div>
+        <!-- END AUTHENTICATION GATE SECTION -->
 
-        <div id="homepage-section">
+        <div id="homepage-section" class="hidden">
 
             <section class="text-center py-16">
                 <h2 class="text-6xl md:text-8xl font-extrabold zenith-title-glow tracking-tighter mb-4">Zenith</h2>
                 <p id="random-tagline" class="text-xl md:text-2xl font-medium text-white mb-4" style="text-shadow: 0 0 10px #3b82f6;"></p>
-                <!-- Spacer with margin removed (mb-0) -->
                 <div class="w-full h-0.5 bg-gradient-to-r from-transparent via-zenith-purple/50 to-transparent mb-0"></div>
             </section>
             
             <!-- RANDOM GAMES SECTION -->
             <div id="random-games-section" class="mb-4">
-                <!-- Content will be injected here by renderRandomGames() -->
+                <!-- Content injected here -->
             </div>
             <!-- END RANDOM GAMES SECTION -->
 
             <section class="text-center">
                 
-                <!-- NEW CATEGORY TOGGLE BUTTONS (Moved UP) -->
                 <div class="flex justify-center space-x-4 mb-10 pt-8">
-                    <!-- Initial classes will be set by toggleCategory('Game') on load -->
-                    <button id="toggle-games" onclick="toggleCategory('Game')" class=""></button>
-                    <button id="toggle-apps" onclick="toggleCategory('App')" class=""></button>
+                    <button id="toggle-games" onclick="window.toggleCategory('Game')" class=""></button>
+                    <button id="toggle-apps" onclick="window.toggleCategory('App')" class=""></button>
                 </div>
-                <!-- END CATEGORY TOGGLE BUTTONS -->
 
-                <div class="mb-10 w-full max-w-xl mx-auto relative flex items-center">
+                <!-- Increased search bar width to match full container -->
+                <div class="mb-10 w-full mx-auto relative flex items-center">
                     <input type="text" id="game-search" placeholder="Search for games..." 
                             class="w-full p-3 pl-12 bg-gray-700/50 border border-zenith-purple/50 rounded-lg text-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-zenith-purple"
-                            oninput="filterGames()" />
+                            oninput="window.filterGames()" />
                     <svg class="absolute left-4 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-4.35-4.35M17 11a6 6 0 11-12 0 6 6 0 0112 0z"></path>
                     </svg>
                 </div>
                 
-
-                <!-- MAIN GAME LIST - CLASS UPDATED TO RESPONSIVE GRID -->
                 <div id="game-list" class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-7 gap-4 lg:gap-6 transition-opacity duration-150">
                     <!-- Game/App cards will be dynamically inserted here -->
                 </div>
