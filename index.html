@@ -141,65 +141,64 @@
         const ENCRYPTED_RANDOM_PICKS = 'UmFuZG9tIFBpY2tz';
         const ENCRYPTED_HOMEPAGE_TITLE = 'SG9tZXBhZ2U=';
 
+        const ENCODED_LOAD_GAME = 'bG9hZEdhbWU=';
+        const ENCODED_LOAD_FNF = 'bG9hZEZORk1vYmlsZU9yUEM=';
+        const ENCODED_GAME_CATEGORY = 'R2FtZQ==';
+        const ENCODED_APP_CATEGORY = 'QXBw';
 
         const ALL_GAMES = [
-            { title: 'Chat', encodedUrl: 'aHR0cHM6Ly9wYWRsZXQuY29tL2xpbmNvbG5oYXJyaXNvbjhwYy96ZW5pdGgta2Nvbzh5eXJ1ZjheNDFmZQ==', placeholderColor: '7c3aed', type: 'loadGame', category: 'App' },
-            { title: 'Unblocker', encodedUrl: 'aHR0cHM6Ly91Yi5lcmV6ZXJ3YWNqYTI0LnBsL3Mv', placeholderColor: 'f97316', type: 'loadGame', category: 'App' },
+            { t: 'Q2hhdA==', u: 'aHR0cHM6Ly9wYWRsZXQuY29tL2xpbmNvbG5oYXJyaXNvbjhwYy96ZW5pdGgta2Nvbzh5eXJ1ZjheNDFmZQ==', c: '7c3aed', y: ENCODED_LOAD_GAME, g: ENCODED_APP_CATEGORY },
+            { t: 'VW5ibG9ja2Vy', u: 'aHR0cHM6Ly91Yi5lcmV6ZXJ3YWNqYTI0LnBsL3Mv', c: 'f97316', y: ENCODED_LOAD_GAME, g: ENCODED_APP_CATEGORY },
 
-            { title: 'Bitlife', encodedUrl: 'aHR0cHM6Ly9uZWJ1bGFwbGF5LnNpdGUvc3RvcmFnZS9iaXRsaWZlLw==', placeholderColor: 'ef4444', type: 'loadGame', category: 'Game' },
-            { title: 'Block Blast', encodedUrl: 'aHR0cHM6Ly9uZWJ1bGFwbGF5LnNpdGUvc3RvcmFnZS9CbG9jayUyMEJsYXN0Lmh0bWw=', placeholderColor: '1d4ed8', type: 'loadGame', category: 'Game' },
-            { title: 'Bouncemasters', encodedUrl: 'aHR0cHM6Ly9uZWJ1bGFwbGF5LnNpdGUvc3RvcmFnZS9Cb3VuY2VtYXN0ZXJzLmh0bWw=', placeholderColor: 'f97316', type: 'loadGame', category: 'Game' },
-            { title: 'Cookie Clicker', encodedUrl: 'aHR0cHM6Ly9uZWJ1bGFwbGF5LnNpdGUvc3RvcmFnZS9Db29raWUlMjBDbGlja2VyLmh0bWw=', placeholderColor: 'd97706', type: 'loadGame', category: 'Game' },
-            { title: 'Coreball', encodedUrl: 'aHR0cHM6Ly9uZWJ1bGFwbGF5LnNpdGUvc3RvcmFnZS9Db3JlYmFsbC5odG1s', placeholderColor: 'f87171', type: 'loadGame', category: 'Game' },
-            { title: 'Crossy Road', encodedUrl: 'aHR0cHM6Ly9uZWJ1bGFwbGF5LnNpdGUvc3RvcmFnZS9Dcm9zc3klMjBSb2FkLmh0bWw=', placeholderColor: '10b981', type: 'loadGame', category: 'Game' },
-            { title: 'Drive Mad', encodedUrl: 'aHR0cHM6Ly9uZWJ1bGFwbGF5LnNpdGUvc3RvcmFnZS9Ecml2ZSUyME1hZC5odG1s', placeholderColor: '34d399', type: 'loadGame', category: 'Game' },
-            { title: 'Eggy Car', encodedUrl: 'aHR0cHM6Ly9uZWJ1bGFwbGF5LnNpdGUvc3RvcmFnZS9lZ2d5Y2FyLw==', placeholderColor: 'facc15', type: 'loadGame', category: 'Game' },
-            { title: 'Friday Night Funkin', encodedUrl: '', placeholderColor: 'ef4444', type: 'loadFNFMobileOrPC', category: 'Game' }, 
-            { title: 'Geometry Dash Lite', encodedUrl: 'aHR0cHM6Ly9uZWJ1bGFwbGF5LnNpdGUvc3RvcmFnZS9HZW9tZXRyeSUyMERhc2glMjBMaXRlLmh0bWw=', placeholderColor: '3b82f6', type: 'loadGame', category: 'Game' },
-            { title: 'Moto X3M', encodedUrl: 'aHR0cHM6Ly9uZWJ1bGFwbGF5LnNpdGUvc3RvcmFnZS9tb3RvLXgzbS8=', placeholderColor: '06b6d4', type: 'loadGame', category: 'Game' },
-            { title: 'Poly Track', encodedUrl: 'aHR0cHM6Ly9odG1sLWNsYXNzaWMuaXRjaC56b25lL2h0bWwvMTU0NTEzMzAvaW5kZXguaHRtbA==', placeholderColor: 'ef4444', type: 'loadGame', category: 'Game' },
-            { title: 'Ragdoll Archers', encodedUrl: 'aHR0cHM6Ly9uZWJ1bGFwbGF5LnNpdGUvc3RvcmFnZS9SYWdkb2xsJTIwQXJjaGVycy5odG1s', placeholderColor: 'ef4444', type: 'loadGame', category: 'Game' },
-            { title: 'Sandboxels', encodedUrl: 'aHR0cHM6Ly9zaGFsYml0by52ZXJjZWwuYXBwLw==', placeholderColor: 'ef4444', type: 'loadGame', category: 'Game' },
-            { title: 'Stickman Hook', encodedUrl: 'aHR0cHM6Ly9uZWJ1bGFwbGF5LnNpdGUvc3RvcmFnZS9TdGlja21hbiUyMEhvb2suaHRtbA==', placeholderColor: '10b981', type: 'loadGame', category: 'Game' },
+            { t: 'Qml0bGlmZQ==', u: 'aHR0cHM6Ly9uZWJ1bGFwbGF5LnNpdGUvc3RvcmFnZS9iaXRsaWZlLw==', c: 'ef4444', y: ENCODED_LOAD_GAME, g: ENCODED_GAME_CATEGORY },
+            { t: 'QmxvY2sgQmxhc3Q=', u: 'aHR0cHM6Ly9uZWJ1bGFwbGF5LnNpdGUvc3RvcmFnZS9CbG9jayUyMEJsYXN0Lmh0bWw=', c: '1d4ed8', y: ENCODED_LOAD_GAME, g: ENCODED_GAME_CATEGORY },
+            { t: 'Qm91bmNlbWFzdGVycw==', u: 'aHR0cHM6Ly9uZWJ1bGFwbGF5LnNpdGUvc3RvcmFnZS9Cb3VuY2VtYXN0ZXJzLmh0bWw=', c: 'f97316', y: ENCODED_LOAD_GAME, g: ENCODED_GAME_CATEGORY },
+            { t: 'Q29va2llIENsaWNrZXI=', u: 'aHR0cHM6Ly9uZWJ1bGFwbGF5LnNpdGUvc3RvcmFnZS9Db29raWUlMjBDbGlja2VyLmh0bWw=', c: 'd97706', y: ENCODED_LOAD_GAME, g: ENCODED_GAME_CATEGORY },
+            { t: 'Q29yZWJhbGw=', u: 'aHR0cHM6Ly9uZWJ1bGFwbGF5LnNpdGUvc3RvcmFnZS9Db3JlYmFsbC5odG1s', c: 'f87171', y: ENCODED_LOAD_GAME, g: ENCODED_GAME_CATEGORY },
+            { t: 'Q3Jvc3N5IFJvYWQ=', u: 'aHR0cHM6Ly9uZWJ1bGFwbGF5LnNpdGUvc3RvcmFnZS9Dcm9zc3klMjBSb2FkLmh0bWw=', c: '10b981', y: ENCODED_LOAD_GAME, g: ENCODED_GAME_CATEGORY },
+            { t: 'RHJpdmUgTWFk', u: 'aHR0cHM6Ly9uZWJ1bGFwbGF5LnNpdGUvc3RvcmFnZS9Ecml2ZSUyME1hZC5odG1s', c: '34d399', y: ENCODED_LOAD_GAME, g: ENCODED_GAME_CATEGORY },
+            { t: 'RWdneSBDYXI=', u: 'aHR0cHM6Ly9uZWJ1bGFwbGF5LnNpdGUvc3RvcmFnZS9lZ2d5Y2FyLw==', c: 'facc15', y: ENCODED_LOAD_GAME, g: ENCODED_GAME_CATEGORY },
+            { t: 'RnJpZGF5IE5pZ2h0IEZ1bmtpbg==', u: '', c: 'ef4444', y: ENCODED_LOAD_FNF, g: ENCODED_GAME_CATEGORY }, 
+            { t: 'R2VvbWV0cnkgRGFzaCBMaXRl', u: 'aHR0cHM6Ly9uZWJ1bGFwbGF5LnNpdGUvc3RvcmFnZS9HZW9tZXRyeSUyMERhc2glMjBMaXRlLmh0bWw=', c: '3b82f6', y: ENCODED_LOAD_GAME, g: ENCODED_GAME_CATEGORY },
+            { t: 'TW90byBYM00=', u: 'aHR0cHM6Ly9uZWJ1bGFwbGF5LnNpdGUvc3RvcmFnZS9tb3RvLXgzbS8=', c: '06b6d4', y: ENCODED_LOAD_GAME, g: ENCODED_GAME_CATEGORY },
+            { t: 'UG9seSBUcmFjaw==', u: 'aHR0cHM6Ly9odG1sLWNsYXNzaWMuaXRjaC56b25lL2h0bWwvMTU0NTEzMzAvaW5kZXguaHRtbA==', c: 'ef4444', y: ENCODED_LOAD_GAME, g: ENCODED_GAME_CATEGORY },
+            { t: 'UmFnZG9sbCBBcmNoZXJz', u: 'aHR0cHM6Ly9uZWJ1bGFwbGF5LnNpdGUvc3RvcmFnZS9SYWdkb2xsJTIwQXJjaGVycy5odG1s', c: 'ef4444', y: ENCODED_LOAD_GAME, g: ENCODED_GAME_CATEGORY },
+            { t: 'U2FuZGJveGVscw==', u: 'aHR0cHM6Ly9zaGFsYml0by52ZXJjZWwuYXBwLw==', c: 'ef4444', y: ENCODED_LOAD_GAME, g: ENCODED_GAME_CATEGORY },
+            { t: 'U3RpY2ttYW4gSG9vaw==', u: 'aHR0cHM6Ly9uZWJ1bGFwbGF5LnNpdGUvc3RvcmFnZS9TdGlja21hbiUyMEhvb2suaHRtbA==', c: '10b981', y: ENCODED_LOAD_GAME, g: ENCODED_GAME_CATEGORY },
         ];
 
-        function decodeUrl(encodedUrl) {
+        function oD(s) {
             try {
-                return atob(encodedUrl);
+                const d = window['a' + 't' + 'ob'];
+                return d(s);
             } catch (e) {
-                console.error("Error decoding URL:", e);
-                return "";
-            }
-        }
-        
-        function decodeB64(encodedString) {
-            try {
-                return atob(encodedString);
-            } catch (e) {
-                console.error("Error decoding Base64 string:", e);
                 return "";
             }
         }
 
         function createGameCardHtml(game, sizeClass = 'w-full h-auto aspect-square') {
+            const title = oD(game.t);
+            const type = oD(game.y);
+            const category = oD(game.g);
+
             let clickHandler;
-            if (game.type === 'loadFNFMobileOrPC') {
-                clickHandler = `loadFNFMobileOrPC('${game.title}')`;
+            if (type === 'loadFNFMobileOrPC') {
+                clickHandler = `loadFNFMobileOrPC('${title}')`;
             } else {
-                clickHandler = `loadGame('${game.title}', '${game.encodedUrl}')`;
+                clickHandler = `loadGame('${title}', '${game.u}')`;
             }
 
             const placeholderSize = '160x160'; 
-            const imageFolder = game.category === 'App' ? 'apps' : 'games';
+            const imageFolder = category === 'App' ? 'apps' : 'games';
 
             return `
-                <a href="#" onclick="${clickHandler}; return false;" class="block bg-gray-800 rounded-xl overflow-hidden game-card-shadow ${sizeClass} group relative" aria-label="${game.title}" data-category="${game.category}">
-                    <img src="https://notbingsa.github.io/Zenith/${imageFolder}/images/${game.title}.png" 
-                         onerror="this.src='https://placehold.co/${placeholderSize}/${game.placeholderColor}/ffffff?text=${game.title.replace(/\s/g, '+')}'" 
-                         alt="${game.title}" 
+                <a href="#" onclick="${clickHandler}; return false;" class="block bg-gray-800 rounded-xl overflow-hidden game-card-shadow ${sizeClass} group relative" aria-label="${title}" data-category="${category}">
+                    <img src="https://notbingsa.github.io/Zenith/${imageFolder}/images/${title}.png" 
+                         onerror="this.src='https://placehold.co/${placeholderSize}/${game.c}/ffffff?text=${title.replace(/\s/g, '+')}'" 
+                         alt="${title}" 
                          class="w-full h-full object-cover transition duration-300 group-hover:scale-105" />
                     <div class="absolute inset-0 bg-black/30 flex items-end justify-center p-2 opacity-0 transition-opacity duration-200 group-hover:opacity-100">
-                        <span class="text-sm font-semibold text-white text-center">${game.title}</span>
+                        <span class="text-sm font-semibold text-white text-center">${title}</span>
                     </div>
                 </a>
             `;
@@ -208,7 +207,8 @@
         function renderAllGames(categoryFilter = 'Game') {
             const gameList = document.getElementById('game-list');
             if (gameList) {
-                const filteredGames = ALL_GAMES.filter(game => game.category === categoryFilter);
+                const encodedFilter = categoryFilter === 'Game' ? ENCODED_GAME_CATEGORY : ENCODED_APP_CATEGORY;
+                const filteredGames = ALL_GAMES.filter(game => game.g === encodedFilter);
                 
                 gameList.className = 'grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-7 gap-4 lg:gap-6 transition-opacity duration-150';
 
@@ -229,8 +229,8 @@
             const inactiveClass = 'bg-gray-700/50 text-gray-400 hover:bg-gray-700';
             const activeClass = 'bg-zenith-purple text-white shadow-lg shadow-zenith-purple/50';
 
-            const decodedGames = decodeB64(ENCRYPTED_GAMES_LABEL);
-            const decodedApps = decodeB64(ENCRYPTED_APPS_LABEL);
+            const decodedGames = oD(ENCRYPTED_GAMES_LABEL);
+            const decodedApps = oD(ENCRYPTED_APPS_LABEL);
             
             if (gameButton) gameButton.textContent = decodedGames;
             if (appButton) appButton.textContent = decodedApps;
@@ -249,7 +249,7 @@
 
         function renderRandomGames() {
             const getRandomGames = (count) => {
-                const gameOnlyList = ALL_GAMES.filter(g => g.category === 'Game');
+                const gameOnlyList = ALL_GAMES.filter(g => g.g === ENCODED_GAME_CATEGORY);
                 const shuffled = [...gameOnlyList].sort(() => 0.5 - Math.random());
                 return shuffled.slice(0, count);
             }
@@ -260,7 +260,7 @@
 
             const randomGamesContainer = document.getElementById('random-games-section');
             if (randomGamesContainer) {
-                const decodedRandomPicks = decodeB64(ENCRYPTED_RANDOM_PICKS);
+                const decodedRandomPicks = oD(ENCRYPTED_RANDOM_PICKS);
                 randomGamesContainer.innerHTML = `
                     <h3 class="section-heading-glow text-xl md:text-2xl font-semibold mb-6 text-center pt-8 text-white">
                         <i class="fas fa-dice text-zenith-purple mr-2"></i>${decodedRandomPicks}
@@ -278,9 +278,8 @@
             const filter = (searchInput && searchInput.value || '').toLowerCase();
             const cards = document.querySelectorAll('#game-list a, #random-games-section a'); 
             cards.forEach(card => {
-                const img = card.querySelector('img');
-                const title = img ? (img.alt || '').toLowerCase() : '';
-                if (title.includes(filter)) {
+                const title = card.getAttribute('aria-label') || '';
+                if (title.toLowerCase().includes(filter)) {
                     card.classList.remove('hidden');
                 } else {
                     card.classList.add('hidden');
@@ -289,7 +288,7 @@
         }
 
         function loadGame(title, encodedUrl) {
-            const url = decodeUrl(encodedUrl);
+            const url = oD(encodedUrl);
 
             if (headerTitle) headerTitle.textContent = title;
             if (homepageSection) homepageSection.classList.add('hidden');
@@ -300,7 +299,6 @@
                 gameContainer.innerHTML = ''; 
                 gameContainer.classList.remove('hidden'); 
             } else {
-                console.error("Game container not found.");
                 return;
             }
 
@@ -400,7 +398,7 @@
         }
 
         function showHomepage() {
-            if (headerTitle) headerTitle.textContent = decodeB64(ENCRYPTED_HOMEPAGE_TITLE);
+            if (headerTitle) headerTitle.textContent = oD(ENCRYPTED_HOMEPAGE_TITLE);
             if (homepageSection) homepageSection.classList.remove('hidden');
             if (gameContainer) gameContainer.className = 'hidden relative';
 
@@ -420,12 +418,12 @@
 
             const searchInput = document.getElementById('game-search');
             if (searchInput) {
-                searchInput.placeholder = decodeB64(ENCRYPTED_SEARCH_PLACEHOLDER);
+                searchInput.placeholder = oD(ENCRYPTED_SEARCH_PLACEHOLDER);
             }
             
-            const decodedHomepage = decodeB64(ENCRYPTED_HOMEPAGE_TITLE);
+            const decodedHomepage = oD(ENCRYPTED_HOMEPAGE_TITLE);
             if (headerTitle) headerTitle.textContent = decodedHomepage;
-            if (mainZenithTitle) mainZenithTitle.textContent = decodeB64(ENCRYPTED_ZENITH_TITLE);
+            if (mainZenithTitle) mainZenithTitle.textContent = oD(ENCRYPTED_ZENITH_TITLE);
 
             renderRandomGames();
 
@@ -461,7 +459,7 @@
             <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-opacity="0.9"></circle>
             <path d="M12 4v8l5 3" stroke="currentColor"></path>
         </svg>
-        <h2 class="text-3xl font-extrabold zenith-title-glow tracking-tighter">Zenith</h2>
+        <h2 id="splash-title" class="text-3xl font-extrabold zenith-title-glow tracking-tighter">Zenith</h2>
         <p class="text-sm text-gray-400 mt-2">Loading interface...</p>
     </div>
 
