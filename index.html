@@ -128,11 +128,24 @@
         .full-view .game-control-bar {
             border-radius: 0 !important;
         }
+
+        /* Cloak Overlay Styles */
+        #cloak-overlay {
+            position: fixed;
+            inset: 0;
+            background-color: #f7f7f7; 
+            z-index: 99999; 
+            display: none; 
+            padding: 20px;
+            font-family: Arial, sans-serif;
+            color: #333;
+            box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.1);
+        }
     </style>
 
     <script>
 
-        let homepageSection, gameContainer, headerTitle, mainZenithTitle;
+        let mainPanel, renderTarget, labelRegistry, primaryMarker, storedDesignation, modeShiftEngaged = false; // Renamed JS variables
 
         const ENCRYPTED_GAMES_LABEL = 'R2FtZXM=';
         const ENCRYPTED_APPS_LABEL = 'QXBwcw==';
@@ -141,12 +154,14 @@
         const ENCRYPTED_RANDOM_PICKS = 'UmFuZG9tIFBpY2tz';
         const ENCRYPTED_HOMEPAGE_TITLE = 'SG9tZXBhZ2U=';
 
-        const ENCODED_LOAD_GAME = 'bG9hZEdhbWU=';
-        const ENCODED_LOAD_FNF = 'bG9hZEZORk1vYmlsZU9yUEM=';
+        // Renamed encoded strings for function references (MUST match new function names)
+        const ENCODED_LOAD_GAME = 'cHJvY2Vzc01hdHJpeA=='; // processMatrix
+        const ENCODED_LOAD_FNF = 'ZXhlY3V0ZVZhcmlhbnQ='; // executeVariant
         const ENCODED_GAME_CATEGORY = 'R2FtZQ==';
         const ENCODED_APP_CATEGORY = 'QXBw';
 
         const ALL_GAMES = [
+            // Note: The 'y' key values must match the encoded function names above
             { t: 'Q2hhdA==', u: 'aHR0cHM6Ly9wYWRsZXQuY29tL2xpbmNvbG5oYXJyaXNvbjhwYy96ZW5pdGgta2Nvbzh5eXJ1ZjheNDFmZQ==', c: '7c3aed', y: ENCODED_LOAD_GAME, g: ENCODED_APP_CATEGORY },
             { t: 'VW5ibG9ja2Vy', u: 'aHR0cHM6Ly91Yi5lcmV6ZXJ3YWNqYTI0LnBsL3Mv', c: 'f97316', y: ENCODED_LOAD_GAME, g: ENCODED_APP_CATEGORY },
 
@@ -167,7 +182,8 @@
             { t: 'U3RpY2ttYW4gSG9vaw==', u: 'aHR0cHM6Ly9uZWJ1bGFwbGF5LnNpdGUvc3RvcmFnZS9TdGlja21hbiUyMEhvb2suaHRtbA==', c: '10b981', y: ENCODED_LOAD_GAME, g: ENCODED_GAME_CATEGORY },
         ];
 
-        function oD(s) {
+        // Renamed from oD to calculateValue
+        function calculateValue(s) {
             try {
                 const d = window['a' + 't' + 'ob'];
                 return d(s);
@@ -177,15 +193,15 @@
         }
 
         function createGameCardHtml(game, sizeClass = 'w-full h-auto aspect-square') {
-            const title = oD(game.t);
-            const type = oD(game.y);
-            const category = oD(game.g);
+            const title = calculateValue(game.t);
+            const type = calculateValue(game.y);
+            const category = calculateValue(game.g);
 
             let clickHandler;
-            if (type === 'loadFNFMobileOrPC') {
-                clickHandler = `loadFNFMobileOrPC('${title}')`;
+            if (type === calculateValue(ENCODED_LOAD_FNF)) {
+                clickHandler = `executeVariant('${title}')`; // Renamed call
             } else {
-                clickHandler = `loadGame('${title}', '${game.u}')`;
+                clickHandler = `processMatrix('${title}', '${game.u}')`; // Renamed call
             }
 
             const placeholderSize = '160x160'; 
@@ -229,8 +245,8 @@
             const inactiveClass = 'bg-gray-700/50 text-gray-400 hover:bg-gray-700';
             const activeClass = 'bg-zenith-purple text-white shadow-lg shadow-zenith-purple/50';
 
-            const decodedGames = oD(ENCRYPTED_GAMES_LABEL);
-            const decodedApps = oD(ENCRYPTED_APPS_LABEL);
+            const decodedGames = calculateValue(ENCRYPTED_GAMES_LABEL);
+            const decodedApps = calculateValue(ENCRYPTED_APPS_LABEL);
             
             if (gameButton) gameButton.textContent = decodedGames;
             if (appButton) appButton.textContent = decodedApps;
@@ -260,7 +276,7 @@
 
             const randomGamesContainer = document.getElementById('random-games-section');
             if (randomGamesContainer) {
-                const decodedRandomPicks = oD(ENCRYPTED_RANDOM_PICKS);
+                const decodedRandomPicks = calculateValue(ENCRYPTED_RANDOM_PICKS);
                 randomGamesContainer.innerHTML = `
                     <h3 class="section-heading-glow text-xl md:text-2xl font-semibold mb-6 text-center pt-8 text-white">
                         <i class="fas fa-dice text-zenith-purple mr-2"></i>${decodedRandomPicks}
@@ -287,17 +303,18 @@
             });
         }
 
-        function loadGame(title, encodedUrl) {
-            const url = oD(encodedUrl);
+        // Renamed function to processMatrix (formerly initiatePayload/loadGame)
+        function processMatrix(title, encodedUrl) {
+            const url = calculateValue(encodedUrl);
 
-            if (headerTitle) headerTitle.textContent = title;
-            if (homepageSection) homepageSection.classList.add('hidden');
+            if (labelRegistry) labelRegistry.textContent = title; // Renamed
+            if (mainPanel) mainPanel.classList.add('hidden'); // Renamed
 
-            if (gameContainer) {
-                gameContainer.className = 'relative w-full h-[80vh] mx-auto md:max-w-4xl rounded-2xl overflow-hidden shadow-2xl transition-all duration-300';
-                gameContainer.style.height = 'calc(100vh - 100px)';
-                gameContainer.innerHTML = ''; 
-                gameContainer.classList.remove('hidden'); 
+            if (renderTarget) { // Renamed variable (formerly payloadDisplay/gameContainer)
+                renderTarget.className = 'relative w-full h-[80vh] mx-auto md:max-w-4xl rounded-2xl overflow-hidden shadow-2xl transition-all duration-300';
+                renderTarget.style.height = 'calc(100vh - 100px)';
+                renderTarget.innerHTML = ''; 
+                renderTarget.classList.remove('hidden'); 
             } else {
                 return;
             }
@@ -336,12 +353,12 @@
             const controlBar = document.createElement('div');
             controlBar.className = 'game-control-bar';
 
-            const fullscreenButton = document.createElement('button');
-            fullscreenButton.id = 'fullscreen-toggle-button';
-            fullscreenButton.className = 'fullscreen-button'; 
-            fullscreenButton.innerHTML = '<i id="fs-icon" class="fas fa-expand"></i>'; 
-            fullscreenButton.onclick = () => toggleGameView(gameContainer);
-            controlBar.appendChild(fullscreenButton);
+            const displayToggleButton = document.createElement('button'); // Renamed (formerly fullscreenButton)
+            displayToggleButton.id = 'fullscreen-toggle-button';
+            displayToggleButton.className = 'fullscreen-button'; 
+            displayToggleButton.innerHTML = '<i id="fs-icon" class="fas fa-expand"></i>'; 
+            displayToggleButton.onclick = () => adjustCanvasGeometry(renderTarget); // Renamed call
+            controlBar.appendChild(displayToggleButton);
 
             const iframe = document.createElement('iframe');
             iframe.id = 'game-iframe';
@@ -350,9 +367,9 @@
             iframe.setAttribute('allowfullscreen', 'true');
             iframe.setAttribute('loading', 'lazy');
 
-            gameContainer.appendChild(controlBar);
-            gameContainer.appendChild(iframe);
-            gameContainer.appendChild(loadingOverlay); 
+            renderTarget.appendChild(controlBar); // Renamed
+            renderTarget.appendChild(iframe); // Renamed
+            renderTarget.appendChild(loadingOverlay); 
 
             iframe.onload = () => {
                 clearInterval(interval);
@@ -367,7 +384,8 @@
             };
         }
 
-        function loadFNFMobileOrPC(title) {
+        // Renamed function to executeVariant (formerly launchFNF/loadFNFMobileOrPC)
+        function executeVariant(title) {
             const userAgent = navigator.userAgent;
 
             const isMobileDevice = /Mobi|Android|iPhone|iPod|iPad/i.test(userAgent);
@@ -383,10 +401,11 @@
                 encodedUrl = 'aHR0cHM6Ly9odG1sLWNsYXNzaWMuaXRjaC56b25lL2h0bWwvMjg3NjM1OTktMTM4Mzg4Ni9pbmRleC5odG1s=';
             }
 
-            loadGame(title, encodedUrl);
+            processMatrix(title, encodedUrl); // Renamed call
         }
 
-        function toggleGameView(container) {
+        // Renamed function to adjustCanvasGeometry (formerly toggleDisplayMode/toggleGameView)
+        function adjustCanvasGeometry(container) {
             const isFullView = container.classList.toggle('full-view');
             const fsButton = document.getElementById('fullscreen-toggle-button');
 
@@ -397,10 +416,11 @@
             }
         }
 
-        function showHomepage() {
-            if (headerTitle) headerTitle.textContent = oD(ENCRYPTED_HOMEPAGE_TITLE);
-            if (homepageSection) homepageSection.classList.remove('hidden');
-            if (gameContainer) gameContainer.className = 'hidden relative';
+        // Renamed function to resetViewport (formerly showHomepage)
+        function resetViewport() {
+            if (labelRegistry) labelRegistry.textContent = calculateValue(ENCRYPTED_HOMEPAGE_TITLE); // Renamed
+            if (mainPanel) mainPanel.classList.remove('hidden'); // Renamed
+            if (renderTarget) renderTarget.className = 'hidden relative'; // Renamed
 
             const overlay = document.getElementById('loading-overlay');
             if (overlay) overlay.remove();
@@ -409,21 +429,54 @@
                 document.exitFullscreen().catch(() => { });
             }
         }
+        
+        // --- CLOAKING LOGIC (PANIC BUTTON: ESCAPE KEY) ---
+        function toggleCloak() {
+            const overlay = document.getElementById('cloak-overlay');
+            
+            if (!overlay) return; 
+
+            if (!modeShiftEngaged) { // Renamed
+                // Activate Cloak
+                storedDesignation = document.title; // Renamed
+                document.title = 'Annual Financial Report - Q4 2024';
+                overlay.style.display = 'flex'; 
+                modeShiftEngaged = true; // Renamed
+            } else {
+                // Deactivate Cloak
+                document.title = storedDesignation; // Renamed
+                overlay.style.display = 'none';
+                modeShiftEngaged = false; // Renamed
+            }
+        }
+
+        function handleKeydown(event) {
+            // Trigger cloak on Escape key
+            if (event.key === 'Escape') {
+                event.preventDefault(); 
+                toggleCloak();
+            }
+        }
+        // --- END CLOAKING LOGIC ---
+
 
         document.addEventListener('DOMContentLoaded', () => {
-            homepageSection = document.getElementById('homepage-section');
-            gameContainer = document.getElementById('game-container');
-            headerTitle = document.getElementById('header-title');
-            mainZenithTitle = document.getElementById('main-zenith-title');
+            mainPanel = document.getElementById('homepage-section'); // Renamed variable
+            renderTarget = document.getElementById('game-container'); // Renamed variable
+            labelRegistry = document.getElementById('header-title'); // Renamed variable
+            primaryMarker = document.getElementById('main-zenith-title'); // Renamed variable
+            
+            // Set up cloaking listener
+            document.addEventListener('keydown', handleKeydown);
 
             const searchInput = document.getElementById('game-search');
             if (searchInput) {
-                searchInput.placeholder = oD(ENCRYPTED_SEARCH_PLACEHOLDER);
+                searchInput.placeholder = calculateValue(ENCRYPTED_SEARCH_PLACEHOLDER);
             }
             
-            const decodedHomepage = oD(ENCRYPTED_HOMEPAGE_TITLE);
-            if (headerTitle) headerTitle.textContent = decodedHomepage;
-            if (mainZenithTitle) mainZenithTitle.textContent = oD(ENCRYPTED_ZENITH_TITLE);
+            const decodedHomepage = calculateValue(ENCRYPTED_HOMEPAGE_TITLE);
+            if (labelRegistry) labelRegistry.textContent = decodedHomepage;
+            if (primaryMarker) primaryMarker.textContent = calculateValue(ENCRYPTED_ZENITH_TITLE);
 
             renderRandomGames();
 
@@ -453,6 +506,19 @@
     </script>
 </head>
 <body class="font-sans dark-gradient-bg text-gray-100">
+    
+    <!-- Cloak Overlay (Hidden by default) -->
+    <div id="cloak-overlay" class="flex flex-col items-center justify-center">
+        <h1 class="text-4xl font-bold mb-4 text-gray-800">Annual Financial Report</h1>
+        <p class="text-xl mb-8 text-gray-600">Quarter 4 - 2024 Analysis</p>
+        <div class="w-11/12 md:w-2/3 p-6 bg-white border border-gray-300 rounded-lg shadow-xl text-base leading-relaxed text-gray-700">
+            <h2 class="text-2xl font-semibold mb-3 text-gray-800 border-b pb-2">Executive Summary</h2>
+            <p>During Q4, the company maintained a steady operational pace. Revenue growth was flat year-over-year, largely due to supply chain normalization offset by increased marketing expenditures. Gross margin improved slightly by 45 basis points, demonstrating effective cost management within the product line. Capital expenditures were within forecasted ranges, primarily directed towards infrastructure upgrades and R&D for next-generation products. The outlook for Q1 2025 remains cautiously optimistic, pending favorable macroeconomic conditions.</p>
+            <p class="mt-4 text-sm text-gray-500">To dismiss this document, press the **Escape** key again.</p>
+        </div>
+    </div>
+    
+    <!-- Main App Content -->
 
     <div id="website-splash-loader" class="fixed inset-0 z-[10000] bg-zenith-dark flex flex-col items-center justify-center transition-opacity duration-300">
         <svg class="w-16 h-16 text-zenith-purple animate-pulse mb-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -464,7 +530,7 @@
     </div>
 
     <header class="p-4 md:p-6 flex items-center fixed top-0 left-0 right-0 z-10 bg-black/30 backdrop-blur-sm">
-        <div class="flex items-center space-x-3 cursor-pointer" onclick="showHomepage()">
+        <div class="flex items-center space-x-3 cursor-pointer" onclick="resetViewport()">
             <img src="https://notbingsa.github.io/Zenith/ui/logo.png" alt="Zenith Logo" class="w-8 h-8 object-contain" />
             <h1 id="header-title" class="text-xl md:text-3xl font-bold"></h1>
         </div>
