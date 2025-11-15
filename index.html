@@ -157,24 +157,28 @@
 
         let homepageSection, gameContainer, headerTitle;
         
-        // --- GAME DATA DEFINITION (with Category) ---
+        // --- GAME DATA DEFINITION (Sorted A-Z within categories) ---
         const ALL_GAMES = [
+            // --- APPS (A-Z) ---
             { title: 'Chat', encodedUrl: 'aHR0cHM6Ly9wYWRsZXQuY29tL2xpbmNvbG5oYXJyaXNvbjhwYy96ZW5pdGgta2Nvbzh5eXJ1ZjheNDFmZQ==', placeholderColor: '7c3aed', type: 'loadGame', category: 'App' },
-            // NEW APP: Unblocker
             { title: 'Unblocker', encodedUrl: 'aHR0cHM6Ly91Yi5lcmV6ZXJ3YWNqYTI0LnBsL3Mv', placeholderColor: 'f97316', type: 'loadGame', category: 'App' },
             
-            // NEW GAME: Drive Mad
-            { title: 'Drive Mad', encodedUrl: 'aHR0cHM6Ly9uZWJ1bGFwbGF5LnNpdGUvc3RvcmFnZS9Ecml2ZSUyME1hZC5odG1s', placeholderColor: '34d399', type: 'loadGame', category: 'Game' },
-            
-            { title: 'Coreball', encodedUrl: 'aHR0cHM6Ly9uZWJ1bGFwbGF5LnNpdGUvc3RvcmFnZS9Db3JlYmFsbC5odG1s', placeholderColor: 'f87171', type: 'loadGame', category: 'Game' },
-            { title: 'Geometry Dash Lite', encodedUrl: 'aHR0cHM6Ly9uZWJ1bGFwbGF5LnNpdGUvc3RvcmFnZS9HZW9tZXRyeSUyMERhc2glMjBMaXRlLmh0bWw=', placeholderColor: '3b82f6', type: 'loadGame', category: 'Game' },
-            { title: 'Crossy Road', encodedUrl: 'aHR0cHM6Ly9uZWJ1bGFwbGF5LnNpdGUvc3RvcmFnZS9Dcm9zc3klMjBSb2FkLmh0bWw=', placeholderColor: '10b981', type: 'loadGame', category: 'Game' },
+            // --- GAMES (A-Z) ---
+            { title: 'Bitlife', encodedUrl: 'aHR0cHM6Ly9uZWJ1bGFwbGF5LnNpdGUvc3RvcmFnZS9iaXRsaWZlLw==', placeholderColor: 'ef4444', type: 'loadGame', category: 'Game' },
+            { title: 'Block Blast', encodedUrl: 'aHR0cHM6Ly9uZWJ1bGFwbGF5LnNpdGUvc3RvcmFnZS9CbG9jayUyMEJsYXN0Lmh0bWw=', placeholderColor: '1d4ed8', type: 'loadGame', category: 'Game' },
             { title: 'Bouncemasters', encodedUrl: 'aHR0cHM6Ly9uZWJ1bGFwbGF5LnNpdGUvc3RvcmFnZS9Cb3VuY2VtYXN0ZXJzLmh0bWw=', placeholderColor: 'f97316', type: 'loadGame', category: 'Game' },
+            { title: 'Cookie Clicker', encodedUrl: 'aHR0cHM6Ly9uZWJ1bGFwbGF5LnNpdGUvc3RvcmFnZS9Db29raWUlMjBDbGlja2VyLmh0bWw=', placeholderColor: 'd97706', type: 'loadGame', category: 'Game' },
+            { title: 'Coreball', encodedUrl: 'aHR0cHM6Ly9uZWJ1bGFwbGF5LnNpdGUvc3RvcmFnZS9Db3JlYmFsbC5odG1s', placeholderColor: 'f87171', type: 'loadGame', category: 'Game' },
+            { title: 'Crossy Road', encodedUrl: 'aHR0cHM6Ly9uZWJ1bGFwbGF5LnNpdGUvc3RvcmFnZS9Dcm9zc3klMjBSb2FkLmh0bWw=', placeholderColor: '10b981', type: 'loadGame', category: 'Game' },
+            { title: 'Drive Mad', encodedUrl: 'aHR0cHM6Ly9uZWJ1bGFwbGF5LnNpdGUvc3RvcmFnZS9Ecml2ZSUyME1hZC5odG1s', placeholderColor: '34d399', type: 'loadGame', category: 'Game' },
+            { title: 'Eggy Car', encodedUrl: 'aHR0cHM6Ly9uZWJ1bGFwbGF5LnNpdGUvc3RvcmFnZS9lZ2d5Y2FyLw==', placeholderColor: 'facc15', type: 'loadGame', category: 'Game' },
+            { title: 'Friday Night Funkin', encodedUrl: '', placeholderColor: 'ef4444', type: 'loadFNFMobileOrPC', category: 'Game' }, 
+            { title: 'Geometry Dash Lite', encodedUrl: 'aHR0cHM6Ly9uZWJ1bGFwbGF5LnNpdGUvc3RvcmFnZS9HZW9tZXRyeSUyMERhc2glMjBMaXRlLmh0bWw=', placeholderColor: '3b82f6', type: 'loadGame', category: 'Game' },
+            { title: 'Moto X3M', encodedUrl: 'aHR0cHM6Ly9uZWJ1bGFwbGF5LnNpdGUvc3RvcmFnZS9tb3RvLXgzbS8=', placeholderColor: '06b6d4', type: 'loadGame', category: 'Game' },
+            { title: 'Poly Track', encodedUrl: 'aHR0cHM6Ly9odG1sLWNsYXNzaWMuaXRjaC56b25lL2h0bWwvMTU0NTEzMzAvaW5kZXguaHRtbA==', placeholderColor: 'ef4444', type: 'loadGame', category: 'Game' },
             { title: 'Ragdoll Archers', encodedUrl: 'aHR0cHM6Ly9uZWJ1bGFwbGF5LnNpdGUvc3RvcmFnZS9SYWdkb2xsJTIwQXJjaGVycy5odG1s', placeholderColor: 'ef4444', type: 'loadGame', category: 'Game' },
             { title: 'Sandboxels', encodedUrl: 'aHR0cHM6Ly9zaGFsYml0by52ZXJjZWwuYXBwLw==', placeholderColor: 'ef4444', type: 'loadGame', category: 'Game' },
-            { title: 'Friday Night Funkin', encodedUrl: '', placeholderColor: 'ef4444', type: 'loadFNFMobileOrPC', category: 'Game' }, 
-            { title: 'Poly Track', encodedUrl: 'aHR0cHM6Ly9odG1sLWNsYXNzaWMuaXRjaC56b25lL2h0bWwvMTU0NTEzMzAvaW5kZXguaHRtbA==', placeholderColor: 'ef4444', type: 'loadGame', category: 'Game' },
-            { title: 'Bitlife', encodedUrl: 'aHR0cHM6Ly9uZWJ1bGFwbGF5LnNpdGUvc3RvcmFnZS9iaXRsaWZlLw==', placeholderColor: 'ef4444', type: 'loadGame', category: 'Game' },
+            { title: 'Stickman Hook', encodedUrl: 'aHR0cHM6Ly9uZWJ1bGFwbGF5LnNpdGUvc3RvcmFnZS9TdGlja21hbiUyMEhvb2suaHRtbA==', placeholderColor: '10b981', type: 'loadGame', category: 'Game' },
         ];
 
         // Helper function to decode Base64 URLs
