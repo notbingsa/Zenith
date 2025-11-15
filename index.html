@@ -36,21 +36,18 @@
         }
 
         .zenith-title-glow {
-            /* Gradient for the Zenith title */
-            background-image: linear-gradient(to right, #7c3aed, #3b82f6); /* Purple to Blue */
+            background-image: linear-gradient(to right, #7c3aed, #3b82f6);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
             text-fill-color: transparent;
-            /* Keep glow for aesthetic */
             text-shadow:
                 0 0 5px rgba(59, 130, 246, 0.3),
                 0 0 20px rgba(124, 58, 237, 0.5);
-            color: #ffffff; /* Fallback for browsers not supporting text-fill-color */
+            color: #ffffff;
         }
 
         .section-heading-glow {
-            /* General text glow for headings */
             text-shadow: 0 0 10px #7c3aed;
             color: #d1d5db;
         }
@@ -64,7 +61,6 @@
             box-shadow: 0 15px 25px rgba(124, 58, 237, 0.5), 0 6px 10px rgba(59, 130, 246, 0.2);
         }
 
-        /* --- Fullscreen Button Style --- */
         .fullscreen-button {
             position: relative; 
             background-color: rgba(107, 114, 128, 0.9);
@@ -72,7 +68,7 @@
             padding: 0; 
             height: 40px; 
             width: 40px; 
-            border-radius: 8px; /* Keep corners rounded here */
+            border-radius: 8px;
             cursor: pointer;
             transition: background-color 0.2s;
             display: flex; 
@@ -85,7 +81,6 @@
 
         .fullscreen-button:hover { background-color: rgba(107, 114, 128, 1); }
 
-        /* --- Game View Structure: Control Bar --- */
         .game-control-bar {
             position: absolute;
             top: auto;
@@ -105,7 +100,6 @@
             border-bottom-right-radius: 1rem; 
         }
 
-        /* --- Game View Structure: Iframe positioning --- */
         .game-iframe-content {
             position: absolute;
             top: 0;
@@ -119,7 +113,6 @@
             border-radius: 1rem;
         }
 
-        /* Full View overrides */
         .full-view {
             position: fixed !important;
             top: 0 !important;
@@ -132,7 +125,6 @@
             box-shadow: none !important;
         }
 
-        /* IMPORTANT: Ensure the control bar keeps its full-view style */
         .full-view .game-control-bar {
             border-radius: 0 !important;
         }
@@ -140,20 +132,20 @@
 
     <script>
 
-        let homepageSection, gameContainer, headerTitle;
+        let homepageSection, gameContainer, headerTitle, mainZenithTitle;
 
-        // --- ENCRYPTED UI LABELS ---
-        const ENCRYPTED_GAMES_LABEL = 'R2FtZXM='; // "Games"
-        const ENCRYPTED_APPS_LABEL = 'QXBwcw=='; // "Apps"
-        const ENCRYPTED_SEARCH_PLACEHOLDER = 'U2VhcmNoIGZvciBnYW1lcy4uLg=='; // "Search for games..."
+        const ENCRYPTED_GAMES_LABEL = 'R2FtZXM=';
+        const ENCRYPTED_APPS_LABEL = 'QXBwcw==';
+        const ENCRYPTED_SEARCH_PLACEHOLDER = 'U2VhcmNoIGZvciBnYW1lcy4uLg==';
+        const ENCRYPTED_ZENITH_TITLE = 'WmVuaXRo';
+        const ENCRYPTED_RANDOM_PICKS = 'UmFuZG9tIFBpY2tz';
+        const ENCRYPTED_HOMEPAGE_TITLE = 'SG9tZXBhZ2U=';
 
-        // --- GAME DATA DEFINITION (Sorted A-Z within categories) ---
+
         const ALL_GAMES = [
-            // --- APPS (A-Z) ---
             { title: 'Chat', encodedUrl: 'aHR0cHM6Ly9wYWRsZXQuY29tL2xpbmNvbG5oYXJyaXNvbjhwYy96ZW5pdGgta2Nvbzh5eXJ1ZjheNDFmZQ==', placeholderColor: '7c3aed', type: 'loadGame', category: 'App' },
             { title: 'Unblocker', encodedUrl: 'aHR0cHM6Ly91Yi5lcmV6ZXJ3YWNqYTI0LnBsL3Mv', placeholderColor: 'f97316', type: 'loadGame', category: 'App' },
 
-            // --- GAMES (A-Z) ---
             { title: 'Bitlife', encodedUrl: 'aHR0cHM6Ly9uZWJ1bGFwbGF5LnNpdGUvc3RvcmFnZS9iaXRsaWZlLw==', placeholderColor: 'ef4444', type: 'loadGame', category: 'Game' },
             { title: 'Block Blast', encodedUrl: 'aHR0cHM6Ly9uZWJ1bGFwbGF5LnNpdGUvc3RvcmFnZS9CbG9jayUyMEJsYXN0Lmh0bWw=', placeholderColor: '1d4ed8', type: 'loadGame', category: 'Game' },
             { title: 'Bouncemasters', encodedUrl: 'aHR0cHM6Ly9uZWJ1bGFwbGF5LnNpdGUvc3RvcmFnZS9Cb3VuY2VtYXN0ZXJzLmh0bWw=', placeholderColor: 'f97316', type: 'loadGame', category: 'Game' },
@@ -171,7 +163,6 @@
             { title: 'Stickman Hook', encodedUrl: 'aHR0cHM6Ly9uZWJ1bGFwbGF5LnNpdGUvc3RvcmFnZS9TdGlja21hbiUyMEhvb2suaHRtbA==', placeholderColor: '10b981', type: 'loadGame', category: 'Game' },
         ];
 
-        // Helper function to decode Base64 URLs
         function decodeUrl(encodedUrl) {
             try {
                 return atob(encodedUrl);
@@ -181,7 +172,6 @@
             }
         }
         
-        // Helper function to decode general Base64 strings for UI labels
         function decodeB64(encodedString) {
             try {
                 return atob(encodedString);
@@ -191,9 +181,6 @@
             }
         }
 
-        // --- GAME RENDERING FUNCTIONS ---
-
-        /** Generates the HTML for a single game card. */
         function createGameCardHtml(game, sizeClass = 'w-full h-auto aspect-square') {
             let clickHandler;
             if (game.type === 'loadFNFMobileOrPC') {
@@ -211,7 +198,6 @@
                          onerror="this.src='https://placehold.co/${placeholderSize}/${game.placeholderColor}/ffffff?text=${game.title.replace(/\s/g, '+')}'" 
                          alt="${game.title}" 
                          class="w-full h-full object-cover transition duration-300 group-hover:scale-105" />
-                    <!-- Game Title Overlay for better UX on smaller cards -->
                     <div class="absolute inset-0 bg-black/30 flex items-end justify-center p-2 opacity-0 transition-opacity duration-200 group-hover:opacity-100">
                         <span class="text-sm font-semibold text-white text-center">${game.title}</span>
                     </div>
@@ -219,19 +205,15 @@
             `;
         }
 
-        /** Populates the main game list section based on category filter. */
         function renderAllGames(categoryFilter = 'Game') {
             const gameList = document.getElementById('game-list');
             if (gameList) {
-                // Filter the global game list based on the requested category
                 const filteredGames = ALL_GAMES.filter(game => game.category === categoryFilter);
                 
-                // Add class for responsive grid layout
                 gameList.className = 'grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-7 gap-4 lg:gap-6 transition-opacity duration-150';
 
                 const allGamesHtml = filteredGames.map(game => createGameCardHtml(game)).join('');
 
-                // Use a quick transition for a smoother visual change
                 gameList.style.opacity = 0;
                 setTimeout(() => {
                     gameList.innerHTML = allGamesHtml;
@@ -240,20 +222,16 @@
             }
         }
 
-        /** Toggles the view between Games and Apps. */
         function toggleCategory(category) {
-            // 1. Update button styling
             const gameButton = document.getElementById('toggle-games');
             const appButton = document.getElementById('toggle-apps');
 
             const inactiveClass = 'bg-gray-700/50 text-gray-400 hover:bg-gray-700';
             const activeClass = 'bg-zenith-purple text-white shadow-lg shadow-zenith-purple/50';
 
-            // Decode labels for buttons
             const decodedGames = decodeB64(ENCRYPTED_GAMES_LABEL);
             const decodedApps = decodeB64(ENCRYPTED_APPS_LABEL);
             
-            // Set button text
             if (gameButton) gameButton.textContent = decodedGames;
             if (appButton) appButton.textContent = decodedApps;
 
@@ -266,31 +244,27 @@
                 gameButton.className = `px-6 py-2 rounded-lg font-bold transition-all ${inactiveClass}`;
             }
 
-            // 2. Render the filtered list
             renderAllGames(category);
         }
 
-        /** Selects random games and populates the "Random Picks" section. */
         function renderRandomGames() {
             const getRandomGames = (count) => {
-                // Only pick games from the 'Game' category for random picks
                 const gameOnlyList = ALL_GAMES.filter(g => g.category === 'Game');
                 const shuffled = [...gameOnlyList].sort(() => 0.5 - Math.random());
                 return shuffled.slice(0, count);
             }
 
-            const randomGames = getRandomGames(5); // Get 5 random games
+            const randomGames = getRandomGames(5);
             
-            // *** CHANGE: Removed the fixed size class 'w-32 h-32' to use the default full-size card (w-full h-auto aspect-square) ***
             const randomGamesHtml = randomGames.map(game => createGameCardHtml(game)).join('');
 
             const randomGamesContainer = document.getElementById('random-games-section');
             if (randomGamesContainer) {
+                const decodedRandomPicks = decodeB64(ENCRYPTED_RANDOM_PICKS);
                 randomGamesContainer.innerHTML = `
                     <h3 class="section-heading-glow text-xl md:text-2xl font-semibold mb-6 text-center pt-8 text-white">
-                        <i class="fas fa-dice text-zenith-purple mr-2"></i>Random Picks
+                        <i class="fas fa-dice text-zenith-purple mr-2"></i>${decodedRandomPicks}
                     </h3>
-                    <!-- *** CHANGE: Using a responsive grid (md:grid-cols-5 for 5 items) for consistent layout *** -->
                     <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4 lg:gap-6 mb-12">
                         ${randomGamesHtml}
                     </div>
@@ -302,7 +276,6 @@
         function filterGames() {
             const searchInput = document.getElementById('game-search');
             const filter = (searchInput && searchInput.value || '').toLowerCase();
-            // Filter both the main list and the random list
             const cards = document.querySelectorAll('#game-list a, #random-games-section a'); 
             cards.forEach(card => {
                 const img = card.querySelector('img');
@@ -315,9 +288,6 @@
             });
         }
 
-        /**
-         * Loads the game into the iframe, structured with a control bar.
-         */
         function loadGame(title, encodedUrl) {
             const url = decodeUrl(encodedUrl);
 
@@ -334,7 +304,6 @@
                 return;
             }
 
-            // 1. Create Loading Overlay 
             const loadingOverlay = document.createElement('div');
             loadingOverlay.id = 'loading-overlay';
             loadingOverlay.className = 'absolute inset-0 bg-zenith-dark/95 flex flex-col items-center justify-center p-8 z-10 rounded-2xl transition-opacity duration-500';
@@ -345,7 +314,6 @@
                         <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                     </svg>
                 </div>
-                <!-- UPDATED LOADING TEXT FORMAT -->
                 <h3 class="text-xl font-semibold mb-1 text-white">Loading:</h3>
                 <p class="text-2xl font-bold text-zenith-purple text-center">${title}</p>
                 
@@ -357,7 +325,6 @@
             const loadingBar = loadingOverlay.querySelector('#loading-bar');
             let progress = 0;
 
-            // Simplified interval: just load the bar until 70% and then load the iframe
             const interval = setInterval(() => {
                 if (progress < 70) { 
                     progress += 10; 
@@ -368,11 +335,9 @@
                 }
             }, 50);
 
-            // 2. Create the Control Bar
             const controlBar = document.createElement('div');
             controlBar.className = 'game-control-bar';
 
-            // 3. Create Fullscreen Button
             const fullscreenButton = document.createElement('button');
             fullscreenButton.id = 'fullscreen-toggle-button';
             fullscreenButton.className = 'fullscreen-button'; 
@@ -380,7 +345,6 @@
             fullscreenButton.onclick = () => toggleGameView(gameContainer);
             controlBar.appendChild(fullscreenButton);
 
-            // 4. Create Iframe
             const iframe = document.createElement('iframe');
             iframe.id = 'game-iframe';
             iframe.className = 'game-iframe-content w-full h-full border-none opacity-0 transition-opacity duration-500'; 
@@ -388,12 +352,10 @@
             iframe.setAttribute('allowfullscreen', 'true');
             iframe.setAttribute('loading', 'lazy');
 
-            // 5. Append all structured elements
             gameContainer.appendChild(controlBar);
             gameContainer.appendChild(iframe);
             gameContainer.appendChild(loadingOverlay); 
 
-            // 6. Iframe Load Detection
             iframe.onload = () => {
                 clearInterval(interval);
                 if (loadingBar) loadingBar.style.width = '100%';
@@ -407,7 +369,6 @@
             };
         }
 
-        /** Checks the user agent and loads the appropriate version of Friday Night Funkin. */
         function loadFNFMobileOrPC(title) {
             const userAgent = navigator.userAgent;
 
@@ -432,16 +393,14 @@
             const fsButton = document.getElementById('fullscreen-toggle-button');
 
             if (isFullView) {
-                // Change button icon to compress
                 fsButton.innerHTML = '<i id="fs-icon" class="fas fa-compress"></i>';
             } else {
-                // Change button icon back to expand
                 fsButton.innerHTML = '<i id="fs-icon" class="fas fa-expand"></i>';
             }
         }
 
         function showHomepage() {
-            if (headerTitle) headerTitle.textContent = 'Homepage';
+            if (headerTitle) headerTitle.textContent = decodeB64(ENCRYPTED_HOMEPAGE_TITLE);
             if (homepageSection) homepageSection.classList.remove('hidden');
             if (gameContainer) gameContainer.className = 'hidden relative';
 
@@ -453,27 +412,25 @@
             }
         }
 
-        // Initialize DOM-dependent variables only after the page is fully loaded
         document.addEventListener('DOMContentLoaded', () => {
-            // Assign global references here
             homepageSection = document.getElementById('homepage-section');
             gameContainer = document.getElementById('game-container');
             headerTitle = document.getElementById('header-title');
+            mainZenithTitle = document.getElementById('main-zenith-title');
 
-            // 0. Set encrypted placeholder text for search bar
             const searchInput = document.getElementById('game-search');
             if (searchInput) {
                 searchInput.placeholder = decodeB64(ENCRYPTED_SEARCH_PLACEHOLDER);
             }
+            
+            const decodedHomepage = decodeB64(ENCRYPTED_HOMEPAGE_TITLE);
+            if (headerTitle) headerTitle.textContent = decodedHomepage;
+            if (mainZenithTitle) mainZenithTitle.textContent = decodeB64(ENCRYPTED_ZENITH_TITLE);
 
-            // 1. Render random content
             renderRandomGames();
 
-            // 2. Load the default view (Games) - This call also sets the button labels using the decoded strings
             toggleCategory('Game');
 
-
-            // Random tagline logic
             const phrases = [
                 "We are doing our work... just not the teachers.",
                 "This is the only thing keeping me in school.",
@@ -487,21 +444,18 @@
                 taglineElement.textContent = phrases[randomIndex];
             }
 
-            // --- HIDE WEBSITE SPLASH LOADER ---
             const splashLoader = document.getElementById('website-splash-loader');
             if (splashLoader) {
                 splashLoader.style.opacity = '0';
                 setTimeout(() => {
                     splashLoader.style.display = 'none';
-                }, 300); // Wait for fade-out transition
+                }, 300);
             }
-            // ----------------------------------
         });
     </script>
 </head>
 <body class="font-sans dark-gradient-bg text-gray-100">
 
-    <!-- WEBSITE SPLASH LOADER (Visible until DOMContentLoaded fires) -->
     <div id="website-splash-loader" class="fixed inset-0 z-[10000] bg-zenith-dark flex flex-col items-center justify-center transition-opacity duration-300">
         <svg class="w-16 h-16 text-zenith-purple animate-pulse mb-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
             <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-opacity="0.9"></circle>
@@ -510,14 +464,11 @@
         <h2 class="text-3xl font-extrabold zenith-title-glow tracking-tighter">Zenith</h2>
         <p class="text-sm text-gray-400 mt-2">Loading interface...</p>
     </div>
-    <!-- END WEBSITE SPLASH LOADER -->
 
-    <!-- HEADER - Now only contains the logo and title -->
     <header class="p-4 md:p-6 flex items-center fixed top-0 left-0 right-0 z-10 bg-black/30 backdrop-blur-sm">
-        <!-- HEADER LEFT - CLICKABLE TO RETURN HOME -->
         <div class="flex items-center space-x-3 cursor-pointer" onclick="showHomepage()">
             <img src="https://notbingsa.github.io/Zenith/ui/logo.png" alt="Zenith Logo" class="w-8 h-8 object-contain" />
-            <h1 id="header-title" class="text-xl md:text-3xl font-bold">Homepage</h1>
+            <h1 id="header-title" class="text-xl md:text-3xl font-bold"></h1>
         </div>
     </header>
 
@@ -526,30 +477,22 @@
         <div id="homepage-section">
 
             <section class="text-center py-16">
-                <h2 class="text-6xl md:text-8xl font-extrabold zenith-title-glow tracking-tighter mb-4">Zenith</h2>
+                <h2 id="main-zenith-title" class="text-6xl md:text-8xl font-extrabold zenith-title-glow tracking-tighter mb-4"></h2>
                 <p id="random-tagline" class="text-xl md:text-2xl font-medium text-white mb-4" style="text-shadow: 0 0 10px #3b82f6;"></p>
-                <!-- Spacer with margin removed (mb-0) -->
                 <div class="w-full h-0.5 bg-gradient-to-r from-transparent via-zenith-purple/50 to-transparent mb-0"></div>
             </section>
 
-            <!-- RANDOM GAMES SECTION -->
             <div id="random-games-section" class="mb-4">
-                <!-- Content will be injected here by renderRandomGames() -->
             </div>
-            <!-- END RANDOM GAMES SECTION -->
 
             <section class="text-center">
 
-                <!-- NEW CATEGORY TOGGLE BUTTONS (Moved UP) -->
                 <div class="flex justify-center space-x-4 mb-10 pt-8">
-                    <!-- Initial classes will be set by toggleCategory('Game') on load -->
                     <button id="toggle-games" onclick="toggleCategory('Game')" class=""></button>
                     <button id="toggle-apps" onclick="toggleCategory('App')" class=""></button>
                 </div>
-                <!-- END CATEGORY TOGGLE BUTTONS -->
 
                 <div class="mb-10 w-full max-w-xl mx-auto relative flex items-center">
-                    <!-- Placeholder attribute is now empty in HTML and set via JS using the decoded Base64 string -->
                     <input type="text" id="game-search" placeholder="" 
                             class="w-full p-3 pl-12 bg-gray-700/50 border border-zenith-purple/50 rounded-lg text-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-zenith-purple"
                             oninput="filterGames()" />
@@ -559,9 +502,7 @@
                 </div>
 
 
-                <!-- MAIN GAME LIST - CLASS UPDATED TO RESPONSIVE GRID -->
                 <div id="game-list" class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-7 gap-4 lg:gap-6 transition-opacity duration-150">
-                    <!-- Game/App cards will be dynamically inserted here -->
                 </div>
             </section>
         </div>
