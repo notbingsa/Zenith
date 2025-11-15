@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Full-Screen Iframe</title>
+    <style>
+        /* Essential CSS to make the iframe fill the entire viewport */
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            overflow: hidden; 
+        }
+        #fullscreen-iframe {
+            display: block;
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+    </style>
+</head>
+<body>
+    <!-- The iframe fills the entire body, which fills the entire viewport -->
+    <iframe 
+        id="fullscreen-iframe"
+        src="https://notbingsa.github.io/Zenith/website.html"
+        title="Zenith Embedded Content"
+        allowfullscreen
+    >
+        Your browser does not support iframes.
+    </iframe>
+</body>
+</html>
