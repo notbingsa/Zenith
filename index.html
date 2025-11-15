@@ -207,7 +207,7 @@
         // --- GAME RENDERING FUNCTIONS ---
         
         /** Generates the HTML for a single game card. */
-        function createGameCardHtml(game, sizeClass = 'w-40 h-40') {
+        function createGameCardHtml(game, sizeClass = 'w-full h-auto aspect-square') {
             let clickHandler;
             if (game.type === 'loadFNFMobileOrPC') {
                 clickHandler = `loadFNFMobileOrPC('${game.title}')`;
@@ -215,18 +215,23 @@
                 clickHandler = `loadGame('${game.title}', '${game.encodedUrl}')`;
             }
             
-            const isLarge = sizeClass.includes('w-40');
-            const placeholderSize = isLarge ? '160x160' : '128x128';
+            // Note: sizeClass is now used for the card container's shape (aspect-square)
+            // The image inside will automatically fill the grid cell.
+            const placeholderSize = '160x160'; 
 
             // Determine the correct image folder based on category (games or apps)
             const imageFolder = game.category === 'App' ? 'apps' : 'games';
 
             return `
-                <a href="#" onclick="${clickHandler}; return false;" class="block bg-gray-800 rounded-xl overflow-hidden game-card-shadow ${sizeClass}" aria-label="${game.title}" data-category="${game.category}">
+                <a href="#" onclick="${clickHandler}; return false;" class="block bg-gray-800 rounded-xl overflow-hidden game-card-shadow ${sizeClass} group" aria-label="${game.title}" data-category="${game.category}">
                     <img src="https://notbingsa.github.io/Zenith/${imageFolder}/images/${game.title}.png" 
                          onerror="this.src='https://placehold.co/${placeholderSize}/${game.placeholderColor}/ffffff?text=${game.title.replace(/\s/g, '+')}'" 
                          alt="${game.title}" 
-                         class="w-full h-full object-cover" />
+                         class="w-full h-full object-cover transition duration-300 group-hover:scale-105" />
+                    <!-- Game Title Overlay for better UX on smaller cards -->
+                    <div class="absolute inset-0 bg-black/30 flex items-end justify-center p-2 opacity-0 transition-opacity duration-200 group-hover:opacity-100">
+                        <span class="text-sm font-semibold text-white text-center">${game.title}</span>
+                    </div>
                 </a>
             `;
         }
@@ -237,7 +242,11 @@
             if (gameList) {
                 // Filter the global game list based on the requested category
                 const filteredGames = ALL_GAMES.filter(game => game.category === categoryFilter);
-                const allGamesHtml = filteredGames.map(game => createGameCardHtml(game, 'w-40 h-40')).join('');
+                
+                // Add class for responsive grid layout
+                gameList.className = 'grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-7 gap-4 lg:gap-6 transition-opacity duration-150';
+
+                const allGamesHtml = filteredGames.map(game => createGameCardHtml(game)).join('');
                 
                 // Use a quick transition for a smoother visual change
                 gameList.style.opacity = 0;
@@ -279,7 +288,9 @@
             }
 
             const randomGames = getRandomGames(5); // Get 5 random games
-            const randomGamesHtml = randomGames.map(game => createGameCardHtml(game, 'w-28 h-28 md:w-32 md:h-32')).join('');
+            
+            // Note: Using an explicit w-32/h-32 size for the small 'Random Picks' section to maintain a clean horizontal flow
+            const randomGamesHtml = randomGames.map(game => createGameCardHtml(game, 'w-32 h-32')).join('');
             
             const randomGamesContainer = document.getElementById('random-games-section');
             if (randomGamesContainer) {
@@ -287,6 +298,7 @@
                     <h3 class="section-heading-glow text-xl md:text-2xl font-semibold mb-6 text-center pt-8 text-white">
                         <i class="fas fa-dice text-zenith-purple mr-2"></i>Random Picks
                     </h3>
+                    <!-- Random section still uses flex for centered, smaller card display -->
                     <div class="flex flex-wrap justify-center gap-4 lg:gap-6 mb-12">
                         ${randomGamesHtml}
                     </div>
@@ -563,8 +575,8 @@
                 </div>
                 
 
-                <!-- MAIN GAME LIST - Content now injected and filtered by toggleCategory() -->
-                <div id="game-list" class="flex flex-wrap justify-center gap-6 lg:gap-8 transition-opacity duration-150">
+                <!-- MAIN GAME LIST - CLASS UPDATED TO RESPONSIVE GRID -->
+                <div id="game-list" class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-7 gap-4 lg:gap-6 transition-opacity duration-150">
                     <!-- Game/App cards will be dynamically inserted here -->
                 </div>
             </section>
