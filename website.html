@@ -175,9 +175,10 @@
             { t: 'Q3Jvc3N5IFJvYWQ=', u: 'aHR0cHM6Ly9uZWJ1bGFwbGF5LnNpdGUvc3RvcmFnZS9Dcm9zc3klMjBSb2FkLmh0bWw=', c: '10b981', y: ENCODED_LOAD_ASSET, g: ENCODED_PLAYABLE_CATEGORY },
             { t: 'RHJpdmUgTWFk', u: 'aHR0cHM6Ly9uZWJ1bGFwbGF5LnNpdGUvc3RvcmFnZS9Ecml2ZSUyME1hZC5odG1s', c: '34d399', y: ENCODED_LOAD_ASSET, g: ENCODED_PLAYABLE_CATEGORY },
             { t: 'RWdneSBDYXI=', u: 'aHR0cHM6Ly9uZWJ1bGFwbGF5LnNpdGUvc3RvcmFnZS9lZ2d5Y2FyLw==', c: 'facc15', y: ENCODED_LOAD_ASSET, g: ENCODED_PLAYABLE_CATEGORY },
+            // ADDED Flappy Bird
+            { t: 'RmxhcHB5IEJpcmQ=', u: 'aHR0cHM6Ly9wbGF5Y2Fudi5hcy9pbmRleC9LalN2MWZGaA==', c: 'facc15', y: ENCODED_LOAD_ASSET, g: ENCODED_PLAYABLE_CATEGORY },
             { t: 'RnJpZGF5IE5pZ2h0IEZ1bmtpbg==', u: '', c: 'ef4444', y: ENCODED_LOAD_FNF, g: ENCODED_PLAYABLE_CATEGORY }, 
             { t: 'R2VvbWV0cnkgRGFzaCBMaXRl', u: 'aHR0cHM6Ly9uZWJ1bGFwbGF5LnNpdGUvc3RvcmFnZS9HZW9tZXRyeSUyMERhc2glMjBMaXRlLmh0bWw=', c: '3b82f6', y: ENCODED_LOAD_ASSET, g: ENCODED_PLAYABLE_CATEGORY },
-            { t: 'TW90byBYM00=', u: 'aHR0cHM6Ly9uZWJ1bGFwbGF5LnNpdGUvc3RvcmFnZS9tb3RvLXgzbS8=', c: '06b6d4', y: ENCODED_LOAD_ASSET, g: ENCODED_PLAYABLE_CATEGORY },
             { t: 'UG9seSBUcmFjax==', u: 'aHR0cHM6Ly9odG1sLWNsYXNzaWMuaXRjaC56b25lL2h0bWwvMTU0NTEzMzAvaW5kZXguaHRtbA==', c: 'ef4444', y: ENCODED_LOAD_ASSET, g: ENCODED_PLAYABLE_CATEGORY },
             { t: 'UmFnZG9sbCBBcmNoZXJz', u: 'aHR0cHM6Ly9uZWJ1bGFwbGF5LnNpdGUvc3RvcmFnZS9SYWdkb2xsJTIwQXJjaGVycy5odG1s', c: 'ef4444', y: ENCODED_PLAYABLE_CATEGORY },
             { t: 'U2FuZGJveGVscw==', u: 'aHR0cHM6Ly9zaGFsYml0by52ZXJjZWwuYXBwLw==', c: 'ef4444', y: ENCODED_LOAD_ASSET, g: ENCODED_PLAYABLE_CATEGORY },
@@ -320,10 +321,7 @@
             loadingOverlay.className = 'absolute inset-0 bg-zenith-dark/95 flex flex-col items-center justify-center p-8 z-10 rounded-2xl transition-opacity duration-500';
             loadingOverlay.innerHTML = `
                 <div class="animate-pulse mb-4">
-                    <svg class="w-12 h-12 animate-spin text-zenith-purple" viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                        <circle class="opacity-25" cx="12" cy="12" r="10" fill="currentColor"></circle>
-                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                    </svg>
+                    <img src="https://notbingsa.github.io/Zenith/ui/logo.png" alt="Zenith Logo" class="w-12 h-12 mb-4 animate-spin object-contain" />
                 </div>
                 <h3 class="text-xl font-semibold mb-1 text-white">Loading:</h3>
                 <p class="text-2xl font-bold text-zenith-purple text-center">${title}</p>
@@ -395,7 +393,7 @@
             if (loadMobileVersion) {
                 encodedUrl = 'aHR0cHM6Ly9odG1sLWNsYXNzaWMuaXRjaC56b25lL2h0bWwvNDQ1OTQ5OS9sdWNreWRvZzcuZ2l0aHViLmlvLW1hc3Rlci9mdW5raW5tb2JpbGUvZ2FtZS9pbmRleC5odG1s';
             } else {
-                encodedUrl = 'aHR0cHM6Ly9odG1sLWNsYXNzaWMuaXRjaC56b25lL2h0bWwvMjg3NjM1OTktMTM4Mzg4Ni9pbmRleC5odG1s=';
+                encodedUrl = 'aHR0cHM6Ly9odG1sLWNsYXNzaWMuaXRjaC56b25lL2h0bWwvMjg3NjM1OS0xMzgzODg2L2luZGV4Lmh0bWw=';
             }
 
             processMatrix(title, encodedUrl); 
@@ -492,10 +490,8 @@
     <!-- Main App Content -->
 
     <div id="website-splash-loader" class="fixed inset-0 z-[10000] bg-zenith-dark flex flex-col items-center justify-center transition-opacity duration-300">
-        <svg class="w-16 h-16 text-zenith-purple animate-pulse mb-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-opacity="0.9"></circle>
-            <path d="M12 4v8l5 3" stroke="currentColor"></path>
-        </svg>
+        <!-- Replaced SVG with the Zenith logo image and kept the pulsing animation -->
+        <img src="https://notbingsa.github.io/Zenith/ui/logo.png" alt="Zenith Logo" class="w-16 h-16 mb-4 animate-pulse object-contain" />
         <h2 id="splash-title" class="text-3xl font-extrabold zenith-title-glow tracking-tighter">Zenith</h2>
         <p class="text-sm text-gray-400 mt-2">Loading interface...</p>
     </div>
