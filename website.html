@@ -7,7 +7,7 @@
 
     <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
     <script src="https://cdn.tailwindcss.com"></script>
 
@@ -164,7 +164,7 @@
         const ENCRYPTED_TAGLINES = [
             'V2UgYXJlIGRvaW5nIG91ciB3b3JrLi4uIGp1c3Qgbm90IHRoZSB0ZWFjaGVycy4=', 
             'VGhpcyBpcyB0aGUgb25seSB0aGluZyBrZWVwaW5nIG1lIGluIHNjaG9vbC4=', 
-            'IkEgc3R1ZGVudCdzIGRyZWFtIiAtIHNvbWUgcmFuZG9tIHN0dWRlbnQgdGhhdCBkb2Vzbid0IGV4aXN0', 
+            'IkEgc3R1ZGVudCdzIGRyZWFtIiAtIHNvbWUgcmFuZG9tIHN0dWRlbnQgdGhh dCBkb2Vzbid0IGV4aXN0', 
             'V2Uga25vdyB5b3UgZGlkbid0IGdldCBoZXJlIGFjY2lkZW50bHku', 
             'V2hhdCBhc3NldCBzaGFsbCB5b3UgcGljaz8=', 
         ];
@@ -175,7 +175,8 @@
         const ENCODED_APP_CATEGORY = 'QXBw';
 
         const ALL_ASSETS = [
-            { id: 1, t: 'Q2hhdA==', u: 'aHR0cHM6Ly9wYWRsZXQuY29tL2xpbmNvbG5oYXJyaXNvbjhwYy96ZW5pdGgta2Nvbzh5eXJ1ZjheNDFmZQ==', c: '7c3aed', y: ENCODED_LOAD_ASSET, g: ENCODED_APP_CATEGORY },
+            // UPDATED: Chat URL uses the exact base64 string provided by the user.
+            { id: 1, t: 'Q2hhdA==', u: 'aHR0cHM6Ly9wYWRsZXQuY29tL2xpbmNvbG5oYXJyaXNvbjhwYy96ZW5pdGgta2Nvbzh5eXJ1Zjh5NDE2ZQ==', c: '7c3aed', y: ENCODED_LOAD_ASSET, g: ENCODED_APP_CATEGORY },
             { id: 2, t: 'VW5ibG9ja2Vy', u: 'aHR0cHM6Ly91Yi5lcmV6ZXJ3YWNqYTI0LnBsL3Mv', c: 'f97316', y: ENCODED_LOAD_ASSET, g: ENCODED_APP_CATEGORY },
 
             { id: 3, t: 'QSBEYW5jZSBvZiBGaXJlIGFuZCBJY2U=', u: 'aHR0cHM6Ly9rZGF0YTEuY29tLzIwMTkvMTAvMTE3NTQwMS8=', c: 'ef4444', y: ENCODED_LOAD_ASSET, g: ENCODED_PLAYABLE_CATEGORY },
@@ -191,7 +192,7 @@
             { id: 13, t: 'RnJpZGF5IE5pZ2h0IEZ1bmtpbg==', u: '', c: 'ef4444', y: ENCODED_LOAD_FNF, g: ENCODED_PLAYABLE_CATEGORY }, 
             { id: 14, t: 'R2VvbWV0cnkgRGFzaCBMaXRl', u: 'aHR0cHM6Ly9uZWJ1bGFnYW1lcy51cy9zdG9yYWdlL0dlb21ldHJ5JTIwRGFzaCUyMExpdGUuaHRtbA==', c: '3b82f6', y: ENCODED_LOAD_ASSET, g: ENCODED_PLAYABLE_CATEGORY },
             { id: 15, t: 'UG9seSBUcmFjax==', u: 'aHR0cHM6Ly9odG1sLWNsYXNzaWMuaXRjaC56b25lL2h0bWwvMTU0NTEzMzAvaW5kZXguaHRtbA==', c: 'ef4444', y: ENCODED_LOAD_ASSET, g: ENCODED_PLAYABLE_CATEGORY },
-            { id: 16, t: 'UmFnZG9sbCBBcmNoZXJz', u: 'aHR0cHM6Ly9uZWJ1bGFwbGF5LnVzL3N0b3JhZ2UvUmFnZG9sbCUyMEFyY2hlcnMuaHRtbA==', c: 'ef4444', y: ENCODED_PLAYABLE_CATEGORY },
+            { id: 16, t: 'UmFnZG9sbCBBcmNoZXJz', u: 'aHR0cHM6Ly9uZWJ1bGFwbGF5LnVzL3N0b3JhZ2UvUmFnZG9sbCUyMEFyY2hlcnMuaHRtbA==', c: 'ef4444', y: ENCODED_LOAD_ASSET, g: ENCODED_PLAYABLE_CATEGORY },
             { id: 17, t: 'U2FuZGJveGVscw==', u: 'aHR0cHM6Ly9zaGFsYml0by52ZXJjZWwuYXBwLw==', c: 'ef4444', y: ENCODED_LOAD_ASSET, g: ENCODED_PLAYABLE_CATEGORY },
             { id: 18, t: 'U3RpY2ttYW4gSG9vaw==', u: 'aHR0cHM6Ly9uZWJ1bGFnYW1lcy51cy9zdG9yYWdlL1N0aWNrbWFuJTIwSG9vay5odG1s', c: '10b981', y: ENCODED_LOAD_ASSET, g: ENCODED_PLAYABLE_CATEGORY },
         ];
@@ -332,13 +333,20 @@
             const isTargetGame = title === targetTitle; 
 
             if (labelRegistry) labelRegistry.textContent = title; 
-            if (mainPanel) mainPanel.classList.add('hidden'); 
+            
+            // --- FIX/DEBUG: Ensure homepage is hidden before continuing ---
+            if (mainPanel) {
+                console.log("DEBUG: processMatrix - Hiding homepage section.");
+                mainPanel.classList.add('hidden'); 
+            }
 
             if (renderTarget) { 
                 // Increased max-width for modern display and adjusted height
                 renderTarget.className = 'relative w-full h-[80vh] mx-auto md:max-w-5xl rounded-2xl overflow-hidden shadow-2xl transition-all duration-300';
                 renderTarget.style.height = 'calc(100vh - 100px)';
                 renderTarget.innerHTML = ''; 
+                // --- FIX/DEBUG: Ensure asset container is visible ---
+                console.log("DEBUG: processMatrix - Showing asset container.");
                 renderTarget.classList.remove('hidden'); 
             } else {
                 return;
@@ -548,7 +556,7 @@
                         processMatrix(assetIdFromUrl);
                     }
                 } else {
-                    // DEBUG LOG: Asset not found
+                    // DEBUG LOG: Invalid Asset - ID not registered.
                     console.warn(`DEBUG: Invalid Asset - ID ${assetIdFromUrl} is not registered. Returning to homepage.`);
                     
                     // Invalid ID, load homepage and clear the URL parameter
