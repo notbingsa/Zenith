@@ -208,7 +208,7 @@
             }
         }
 
-        // NEW: Function to get asset ID from URL query parameters
+        // Checks the URL for an 'id' parameter
         function getAssetIdFromUrl() {
             const params = new URLSearchParams(window.location.search);
             const id = params.get('id');
@@ -223,10 +223,10 @@
 
             let clickHandler;
             if (type === calculateValue(ENCODED_LOAD_FNF)) {
-                // MODIFIED: Pass ID for FNF
+                // Pass ID for FNF
                 clickHandler = `executeVariant(${asset.id})`; 
             } else {
-                // MODIFIED: Pass ID for standard assets
+                // Pass ID for standard assets
                 clickHandler = `processMatrix(${asset.id})`; 
             }
 
@@ -240,7 +240,7 @@
             }
 
             return `
-                <!-- Added ?id=${asset.id} to href for deep linking -->
+                <!-- href allows for right-click 'Open in new tab' functionality -->
                 <a href="?id=${asset.id}" onclick="${clickHandler}; return false;" class="block bg-gray-800 rounded-xl overflow-hidden asset-card-shadow ${sizeClass} group relative" data-category="${category}">
                     <img src="${imagePathPrefix}${title}.png" 
                          onerror="this.src='https://placehold.co/${placeholderSize}/${asset.c}/ffffff?text=${title.replace(/\s/g, '+')}'" 
@@ -311,13 +311,12 @@
             });
         }
 
-        // MODIFIED: Now accepts assetId and updates URL history (with try/catch)
+        // Handles loading a standard asset.
         function processMatrix(assetId) {
             const asset = ALL_ASSETS.find(a => a.id === assetId);
             if (!asset) return console.error('Asset not found for ID:', assetId);
 
-            // NEW: Update URL to reflect the launched asset ID
-            // Wrapped in try/catch to handle SecurityError when running in an iframe/Canvas
+            // TRY/CATCH BLOCK: Essential for Canvas environment to prevent SecurityError
             try {
                 history.pushState(null, calculateValue(asset.t), `?id=${assetId}`);
             } catch (e) {
@@ -422,14 +421,13 @@
             };
         }
 
-        // MODIFIED: Now accepts assetId and updates URL history (with try/catch)
+        // Handles loading the FNF asset, which has conditional URLs.
         function executeVariant(assetId) {
             const asset = ALL_ASSETS.find(a => a.id === assetId);
             if (!asset) return console.error('Asset not found for ID:', assetId);
             const title = calculateValue(asset.t);
 
-            // NEW: Update URL to reflect the launched asset ID
-            // Wrapped in try/catch to handle SecurityError when running in an iframe/Canvas
+            // TRY/CATCH BLOCK: Essential for Canvas environment to prevent SecurityError
             try {
                 history.pushState(null, title, `?id=${assetId}`);
             } catch (e) {
@@ -452,7 +450,6 @@
             }
             
             // Re-use processMatrix, passing the new temporary URL data in a new asset object
-            // to prevent overwriting the master asset list's URL (asset.u is empty for FNF)
             processMatrix({ id: assetId, t: asset.t, u: encodedUrl }); 
         }
 
@@ -467,10 +464,14 @@
             }
         }
 
-        // MODIFIED: Resets the viewport AND clears the ID from the URL
+        // Resets the viewport AND clears the ID from the URL
         function resetViewport() {
-            // NEW: Remove the query string when going back to the home page
-            history.pushState(null, calculateValue(ENCRYPTED_HOMEPAGE_TITLE), window.location.pathname);
+            // Remove the query string when going back to the home page
+            try {
+                history.pushState(null, calculateValue(ENCRYPTED_HOMEPAGE_TITLE), window.location.pathname);
+            } catch (e) {
+                console.error("History update failed on reset, continuing normally.");
+            }
             
             if (labelRegistry) labelRegistry.textContent = calculateValue(ENCRYPTED_HOMEPAGE_TITLE); 
             if (mainPanel) mainPanel.classList.remove('hidden'); 
@@ -485,7 +486,7 @@
             }
         }
 
-        // NEW: Handles direct navigation back/forward in the browser history (popstate)
+        // Handles direct navigation back/forward in the browser history (popstate)
         window.addEventListener('popstate', (event) => {
             const assetId = getAssetIdFromUrl();
             if (assetId) {
@@ -493,10 +494,10 @@
                 const asset = ALL_ASSETS.find(a => a.id === assetId);
                 if (asset) {
                     const decodedType = calculateValue(asset.y);
+                    // Check if it's FNF or a standard asset and call the correct loader
                     if (decodedType === calculateValue(ENCODED_LOAD_FNF)) {
                         executeVariant(assetId);
                     } else {
-                        // Use the existing processMatrix, which now updates the URL correctly.
                         processMatrix(assetId);
                     }
                 } else {
@@ -509,7 +510,7 @@
             }
         });
 
-
+        // The main initialization function that runs when the page loads
         document.addEventListener('DOMContentLoaded', () => {
             mainPanel = document.getElementById('homepage-section'); 
             renderTarget = document.getElementById('asset-container'); 
@@ -526,26 +527,31 @@
             
             const assetIdFromUrl = getAssetIdFromUrl();
             
+            // --- CORE LOGIC FOR CHECKING URL ON PAGE LOAD ---
             if (assetIdFromUrl) {
-                // LAUNCH GAME DIRECTLY IF ID IS IN URL
+                // 1. ID IS IN URL: LAUNCH GAME DIRECTLY
                 const asset = ALL_ASSETS.find(a => a.id === assetIdFromUrl);
                 if (asset) {
                     const decodedType = calculateValue(asset.y);
                     if (decodedType === calculateValue(ENCODED_LOAD_FNF)) {
                         executeVariant(assetIdFromUrl);
                     } else {
-                        // Use the existing processMatrix, which now updates the URL correctly.
                         processMatrix(assetIdFromUrl);
                     }
                 } else {
-                    // If ID is in URL but invalid, load homepage normally and clear URL
-                    history.replaceState(null, '', window.location.pathname); 
+                    // Invalid ID, load homepage and clear the URL parameter
+                    try {
+                        history.replaceState(null, '', window.location.pathname); 
+                    } catch (e) {
+                        console.error("History replace failed on invalid ID, continuing normally.");
+                    }
                     loadHomePage();
                 }
             } else {
-                // NO ID IN URL, LOAD HOMEPAGE NORMALLY
+                // 2. NO ID IN URL: LOAD HOMEPAGE NORMALLY
                 loadHomePage();
             }
+            // --------------------------------------------------
             
             function loadHomePage() {
                 const searchInput = document.getElementById('game-search');
