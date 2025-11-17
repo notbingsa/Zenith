@@ -311,13 +311,18 @@
             });
         }
 
-        // MODIFIED: Now accepts assetId and updates URL history
+        // MODIFIED: Now accepts assetId and updates URL history (with try/catch)
         function processMatrix(assetId) {
             const asset = ALL_ASSETS.find(a => a.id === assetId);
             if (!asset) return console.error('Asset not found for ID:', assetId);
 
             // NEW: Update URL to reflect the launched asset ID
-            history.pushState(null, calculateValue(asset.t), `?id=${assetId}`);
+            // Wrapped in try/catch to handle SecurityError when running in an iframe/Canvas
+            try {
+                history.pushState(null, calculateValue(asset.t), `?id=${assetId}`);
+            } catch (e) {
+                console.error("History update failed in iframe, continuing normally.");
+            }
 
             const title = calculateValue(asset.t);
             const encodedUrl = asset.u; 
@@ -417,14 +422,19 @@
             };
         }
 
-        // MODIFIED: Now accepts assetId and updates URL history
+        // MODIFIED: Now accepts assetId and updates URL history (with try/catch)
         function executeVariant(assetId) {
             const asset = ALL_ASSETS.find(a => a.id === assetId);
             if (!asset) return console.error('Asset not found for ID:', assetId);
             const title = calculateValue(asset.t);
 
             // NEW: Update URL to reflect the launched asset ID
-            history.pushState(null, title, `?id=${assetId}`);
+            // Wrapped in try/catch to handle SecurityError when running in an iframe/Canvas
+            try {
+                history.pushState(null, title, `?id=${assetId}`);
+            } catch (e) {
+                console.error("History update failed in iframe, continuing normally.");
+            }
 
             const userAgent = navigator.userAgent;
 
@@ -486,6 +496,7 @@
                     if (decodedType === calculateValue(ENCODED_LOAD_FNF)) {
                         executeVariant(assetId);
                     } else {
+                        // Use the existing processMatrix, which now updates the URL correctly.
                         processMatrix(assetId);
                     }
                 } else {
@@ -583,10 +594,11 @@
     </div>
 
     <header class="p-4 md:p-6 flex items-center fixed top-0 left-0 right-0 z-10 bg-black/30 backdrop-blur-sm">
-        <div class="flex items-center space-x-3 cursor-pointer" onclick="resetViewport()">
+        <!-- MODIFIED: Changed div to a proper <a> tag with href and onclick to handle history/navigation -->
+        <a href="./" class="flex items-center space-x-3" onclick="resetViewport(); return false;">
             <img src="https://notbingsa.github.io/Zenith/ui/logo.png" alt="Zenith Logo" class="w-8 h-8 object-contain" />
             <h1 id="header-title" class="text-xl md:text-3xl font-bold"></h1>
-        </div>
+        </a>
     </header>
 
     <main class="pt-24 md:pt-32 pb-8 px-4 md:px-8 max-w-7xl mx-auto">
