@@ -174,27 +174,29 @@
         const ENCODED_PLAYABLE_CATEGORY = 'QXNzZXQ='; 
         const ENCODED_APP_CATEGORY = 'QXBw';
 
+        // START OF MODIFIED ALL_ASSETS: Added unique ID to each asset.
         const ALL_ASSETS = [
-            { t: 'Q2hhdA==', u: 'aHR0cHM6Ly9wYWRsZXQuY29tL2xpbmNvbG5oYXJyaXNvbjhwYy96ZW5pdGgta2Nvbzh5eXJ1ZjheNDFmZQ==', c: '7c3aed', y: ENCODED_LOAD_ASSET, g: ENCODED_APP_CATEGORY },
-            { t: 'VW5ibG9ja2Vy', u: 'aHR0cHM6Ly91Yi5lcmV6ZXJ3YWNqYTI0LnBsL3Mv', c: 'f97316', y: ENCODED_LOAD_ASSET, g: ENCODED_APP_CATEGORY },
+            { id: 1, t: 'Q2hhdA==', u: 'aHR0cHM6Ly9wYWRsZXQuY29tL2xpbmNvbG5oYXJyaXNvbjhwYy96ZW5pdGgta2Nvbzh5eXJ1ZjheNDFmZQ==', c: '7c3aed', y: ENCODED_LOAD_ASSET, g: ENCODED_APP_CATEGORY },
+            { id: 2, t: 'VW5ibG9ja2Vy', u: 'aHR0cHM6Ly91Yi5lcmV6ZXJ3YWNqYTI0LnBsL3Mv', c: 'f97316', y: ENCODED_LOAD_ASSET, g: ENCODED_APP_CATEGORY },
 
-            { t: 'QSBEYW5jZSBvZiBGaXJlIGFuZCBJY2U=', u: 'aHR0cHM6Ly9rZGF0YTEuY29tLzIwMTkvMTAvMTE3NTQwMS8=', c: 'ef4444', y: ENCODED_LOAD_ASSET, g: ENCODED_PLAYABLE_CATEGORY },
-            { t: 'Qml0bGlmZQ==', u: 'aHR0cHM6Ly9uZWJ1bGFnYW1lcy51cy9zdG9yYWdlL2JpdGxpZmUv', c: 'ef4444', y: ENCODED_LOAD_ASSET, g: ENCODED_PLAYABLE_CATEGORY },
-            { t: 'QmxvY2sgQmxhc3Q=', u: 'aHR0cHM6Ly9uZWJ1bGFnYW1lcy51cy9zdG9yYWdlL0Jsb2NrJTIwQmxhc3QuaHRtbA==', c: '1d4ed8', y: ENCODED_LOAD_ASSET, g: ENCODED_PLAYABLE_CATEGORY },
-            { t: 'Qm91bmNlbWFzdGVycw==', u: 'aHR0cHM6Ly9uZWJ1bGFnYW1lcy51cy9zdG9yYWdlL0JvdW5jZW1hc3RlcnMuaHRtbA==', c: 'f97316', y: ENCODED_LOAD_ASSET, g: ENCODED_PLAYABLE_CATEGORY },
-            { t: 'Q29va2llIENsaWNrZXI=', u: 'aHR0cHM6Ly9uZWJ1bGFnYW1lcy51cy9zdG9yYWdlL0Nvb2tpZSUyMENsaWNrZXIuaHRtbA==', c: 'd97706', y: ENCODED_LOAD_ASSET, g: ENCODED_PLAYABLE_CATEGORY },
-            { t: 'Q29yZWJhbGw=', u: 'aHR0cHM6Ly9uZWJ1bGFnYW1lcy51cy9zdG9yYWdlL0NvcmViYWxsLmh0bWw=', c: 'f87171', y: ENCODED_LOAD_ASSET, g: ENCODED_PLAYABLE_CATEGORY },
-            { t: 'Q3Jvc3N5IFJvYWQ=', u: 'aHR0cHM6Ly9uZWJ1bGFnYW1lcy51cy9zdG9yYWdlL0Nyb3NzeSUyMFJvYWQuaHRtbA==', c: '10b981', y: ENCODED_LOAD_ASSET, g: ENCODED_PLAYABLE_CATEGORY },
-            { t: 'RHJpdmUgTWFk', u: 'aHR0cHM6Ly9uZWJ1bGFnYW1lcy51cy9zdG9yYWdlL0RyaXZlJTIwTWFkLmh0bWw=', c: '34d399', y: ENCODED_LOAD_ASSET, g: ENCODED_PLAYABLE_CATEGORY },
-            { t: 'RWdneSBDYXI=', u: 'aHR0cHM6Ly9uZWJ1bGFnYW1lcy51cy9zdG9yYWdlL2VnZ3ljYXIv', c: 'facc15', y: ENCODED_LOAD_ASSET, g: ENCODED_PLAYABLE_CATEGORY },
-            { t: 'RmxhcHB5IEJpcmQ=', u: 'aHR0cHM6Ly9uZWJ1bGFnYW1lcy51cy9zdG9yYWdlL0ZsYXBweSUyMEJpcmQuaHRtbA==', c: 'facc15', y: ENCODED_LOAD_ASSET, g: ENCODED_PLAYABLE_CATEGORY },
-            { t: 'RnJpZGF5IE5pZ2h0IEZ1bmtpbg==', u: '', c: 'ef4444', y: ENCODED_LOAD_FNF, g: ENCODED_PLAYABLE_CATEGORY }, 
-            { t: 'R2VvbWV0cnkgRGFzaCBMaXRl', u: 'aHR0cHM6Ly9uZWJ1bGFnYW1lcy51cy9zdG9yYWdlL0dlb21ldHJ5JTIwRGFzaCUyMExpdGUuaHRtbA==', c: '3b82f6', y: ENCODED_LOAD_ASSET, g: ENCODED_PLAYABLE_CATEGORY },
-            { t: 'UG9seSBUcmFjax==', u: 'aHR0cHM6Ly9odG1sLWNsYXNzaWMuaXRjaC56b25lL2h0bWwvMTU0NTEzMzAvaW5kZXguaHRtbA==', c: 'ef4444', y: ENCODED_LOAD_ASSET, g: ENCODED_PLAYABLE_CATEGORY },
-            { t: 'UmFnZG9sbCBBcmNoZXJz', u: 'aHR0cHM6Ly9uZWJ1bGFwbGF5LnVzL3N0b3JhZ2UvUmFnZG9sbCUyMEFyY2hlcnMuaHRtbA==', c: 'ef4444', y: ENCODED_PLAYABLE_CATEGORY },
-            { t: 'U2FuZGJveGVscw==', u: 'aHR0cHM6Ly9zaGFsYml0by52ZXJjZWwuYXBwLw==', c: 'ef4444', y: ENCODED_LOAD_ASSET, g: ENCODED_PLAYABLE_CATEGORY },
-            { t: 'U3RpY2ttYW4gSG9vaw==', u: 'aHR0cHM6Ly9uZWJ1bGFnYW1lcy51cy9zdG9yYWdlL1N0aWNrbWFuJTIwSG9vay5odG1s', c: '10b981', y: ENCODED_LOAD_ASSET, g: ENCODED_PLAYABLE_CATEGORY },
+            { id: 3, t: 'QSBEYW5jZSBvZiBGaXJlIGFuZCBJY2U=', u: 'aHR0cHM6Ly9rZGF0YTEuY29tLzIwMTkvMTAvMTE3NTQwMS8=', c: 'ef4444', y: ENCODED_LOAD_ASSET, g: ENCODED_PLAYABLE_CATEGORY },
+            { id: 4, t: 'Qml0bGlmZQ==', u: 'aHR0cHM6Ly9uZWJ1bGFnYW1lcy51cy9zdG9yYWdlL2JpdGxpZmUv', c: 'ef4444', y: ENCODED_LOAD_ASSET, g: ENCODED_PLAYABLE_CATEGORY },
+            { id: 5, t: 'QmxvY2sgQmxhc3Q=', u: 'aHR0cHM6Ly9uZWJ1bGFnYW1lcy51cy9zdG9yYWdlL0Jsb2NrJTIwQmxhc3QuaHRtbA==', c: '1d4ed8', y: ENCODED_LOAD_ASSET, g: ENCODED_PLAYABLE_CATEGORY },
+            { id: 6, t: 'Qm91bmNlbWFzdGVycw==', u: 'aHR0cHM6Ly9uZWJ1bGFnYW1lcy51cy9zdG9yYWdlL0JvdW5jZW1hc3RlcnMuaHRtbA==', c: 'f97316', y: ENCODED_LOAD_ASSET, g: ENCODED_PLAYABLE_CATEGORY },
+            { id: 7, t: 'Q29va2llIENsaWNrZXI=', u: 'aHR0cHM6Ly9uZWJ1bGFnYW1lcy51cy9zdG9yYWdlL0Nvb2tpZSUyMENsaWNrZXIuaHRtbA==', c: 'd97706', y: ENCODED_LOAD_ASSET, g: ENCODED_PLAYABLE_CATEGORY },
+            { id: 8, t: 'Q29yZWJhbGw=', u: 'aHR0cHM6Ly9uZWJ1bGFnYW1lcy51cy9zdG9yYWdlL0NvcmViYWxsLmh0bWw=', c: 'f87171', y: ENCODED_LOAD_ASSET, g: ENCODED_PLAYABLE_CATEGORY },
+            { id: 9, t: 'Q3Jvc3N5IFJvYWQ=', u: 'aHR0cHM6Ly9uZWJ1bGFnYW1lcy51cy9zdG9yYWdlL0Nyb3NzeSUyMFJvYWQuaHRtbA==', c: '10b981', y: ENCODED_LOAD_ASSET, g: ENCODED_PLAYABLE_CATEGORY },
+            { id: 10, t: 'RHJpdmUgTWFk', u: 'aHR0cHM6Ly9uZWJ1bGFnYW1lcy51cy9zdG9yYWdlL0RyaXZlJTIwTWFkLmh0bWw=', c: '34d399', y: ENCODED_LOAD_ASSET, g: ENCODED_PLAYABLE_CATEGORY },
+            { id: 11, t: 'RWdneSBDYXI=', u: 'aHR0cHM6Ly9uZWJ1bGFnYW1lcy51cy9zdG9yYWdlL2VnZ3ljYXIv', c: 'facc15', y: ENCODED_LOAD_ASSET, g: ENCODED_PLAYABLE_CATEGORY },
+            { id: 12, t: 'RmxhcHB5IEJpcmQ=', u: 'aHR0cHM6Ly9uZWJ1bGFnYW1lcy51cy9zdG9yYWdlL0ZsYXBweSUyMEJpcmQuaHRtbA==', c: 'facc15', y: ENCODED_LOAD_ASSET, g: ENCODED_PLAYABLE_CATEGORY },
+            { id: 13, t: 'RnJpZGF5IE5pZ2h0IEZ1bmtpbg==', u: '', c: 'ef4444', y: ENCODED_LOAD_FNF, g: ENCODED_PLAYABLE_CATEGORY }, 
+            { id: 14, t: 'R2VvbWV0cnkgRGFzaCBMaXRl', u: 'aHR0cHM6Ly9uZWJ1bGFnYW1lcy51cy9zdG9yYWdlL0dlb21ldHJ5JTIwRGFzaCUyMExpdGUuaHRtbA==', c: '3b82f6', y: ENCODED_LOAD_ASSET, g: ENCODED_PLAYABLE_CATEGORY },
+            { id: 15, t: 'UG9seSBUcmFjax==', u: 'aHR0cHM6Ly9odG1sLWNsYXNzaWMuaXRjaC56b25lL2h0bWwvMTU0NTEzMzAvaW5kZXguaHRtbA==', c: 'ef4444', y: ENCODED_LOAD_ASSET, g: ENCODED_PLAYABLE_CATEGORY },
+            { id: 16, t: 'UmFnZG9sbCBBcmNoZXJz', u: 'aHR0cHM6Ly9uZWJ1bGFwbGF5LnVzL3N0b3JhZ2UvUmFnZG9sbCUyMEFyY2hlcnMuaHRtbA==', c: 'ef4444', y: ENCODED_PLAYABLE_CATEGORY },
+            { id: 17, t: 'U2FuZGJveGVscw==', u: 'aHR0cHM6Ly9zaGFsYml0by52ZXJjZWwuYXBwLw==', c: 'ef4444', y: ENCODED_LOAD_ASSET, g: ENCODED_PLAYABLE_CATEGORY },
+            { id: 18, t: 'U3RpY2ttYW4gSG9vaw==', u: 'aHR0cHM6Ly9uZWJ1bGFnYW1lcy51cy9zdG9yYWdlL1N0aWNrbWFuJTIwSG9vay5odG1s', c: '10b981', y: ENCODED_LOAD_ASSET, g: ENCODED_PLAYABLE_CATEGORY },
         ];
+        // END OF MODIFIED ALL_ASSETS
 
         function calculateValue(s) {
             try {
@@ -206,6 +208,14 @@
             }
         }
 
+        // NEW: Function to get asset ID from URL query parameters
+        function getAssetIdFromUrl() {
+            const params = new URLSearchParams(window.location.search);
+            const id = params.get('id');
+            // Ensure the ID is a valid number before returning it
+            return id ? parseInt(id, 10) : null;
+        }
+
         function createAssetCardHtml(asset, sizeClass = 'w-full h-auto aspect-square') {
             const title = calculateValue(asset.t);
             const type = calculateValue(asset.y);
@@ -213,9 +223,11 @@
 
             let clickHandler;
             if (type === calculateValue(ENCODED_LOAD_FNF)) {
-                clickHandler = `executeVariant('${title}')`; 
+                // MODIFIED: Pass ID for FNF
+                clickHandler = `executeVariant(${asset.id})`; 
             } else {
-                clickHandler = `processMatrix('${title}', '${asset.u}')`; 
+                // MODIFIED: Pass ID for standard assets
+                clickHandler = `processMatrix(${asset.id})`; 
             }
 
             const placeholderSize = '160x160'; 
@@ -228,7 +240,8 @@
             }
 
             return `
-                <a href="#" onclick="${clickHandler}; return false;" class="block bg-gray-800 rounded-xl overflow-hidden asset-card-shadow ${sizeClass} group relative" data-category="${category}">
+                <!-- Added ?id=${asset.id} to href for deep linking -->
+                <a href="?id=${asset.id}" onclick="${clickHandler}; return false;" class="block bg-gray-800 rounded-xl overflow-hidden asset-card-shadow ${sizeClass} group relative" data-category="${category}">
                     <img src="${imagePathPrefix}${title}.png" 
                          onerror="this.src='https://placehold.co/${placeholderSize}/${asset.c}/ffffff?text=${title.replace(/\s/g, '+')}'" 
                          class="w-full h-full object-cover transition duration-300 group-hover:scale-105" />
@@ -244,7 +257,7 @@
             if (assetList) {
                 const allAssetsHtml = ALL_ASSETS.map(asset => createAssetCardHtml(asset)).join('');
 
-                // MODIFIED: Enforce a grid of 5 columns on large screens
+                // Enforce a grid of 5 columns on large screens
                 assetList.className = 'grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 lg:gap-6 transition-opacity duration-150';
 
                 assetList.style.opacity = 0;
@@ -298,7 +311,16 @@
             });
         }
 
-        function processMatrix(title, encodedUrl) {
+        // MODIFIED: Now accepts assetId and updates URL history
+        function processMatrix(assetId) {
+            const asset = ALL_ASSETS.find(a => a.id === assetId);
+            if (!asset) return console.error('Asset not found for ID:', assetId);
+
+            // NEW: Update URL to reflect the launched asset ID
+            history.pushState(null, calculateValue(asset.t), `?id=${assetId}`);
+
+            const title = calculateValue(asset.t);
+            const encodedUrl = asset.u; 
             const url = calculateValue(encodedUrl);
 
             // Determine if the current game is "A Dance of Fire and Ice"
@@ -395,7 +417,15 @@
             };
         }
 
-        function executeVariant(title) {
+        // MODIFIED: Now accepts assetId and updates URL history
+        function executeVariant(assetId) {
+            const asset = ALL_ASSETS.find(a => a.id === assetId);
+            if (!asset) return console.error('Asset not found for ID:', assetId);
+            const title = calculateValue(asset.t);
+
+            // NEW: Update URL to reflect the launched asset ID
+            history.pushState(null, title, `?id=${assetId}`);
+
             const userAgent = navigator.userAgent;
 
             const isMobileDevice = /Mobi|Android|iPhone|iPod|iPad/i.test(userAgent);
@@ -410,8 +440,10 @@
             } else {
                 encodedUrl = 'aHR0cHM6Ly9odG1sLWNsYXNzaWMuaXRjaC56b25lL2h0bWwvMjg3NjM1OS0xMzgzODg2L2luZGV4Lmh0bWw=';
             }
-
-            processMatrix(title, encodedUrl); 
+            
+            // Re-use processMatrix, passing the new temporary URL data in a new asset object
+            // to prevent overwriting the master asset list's URL (asset.u is empty for FNF)
+            processMatrix({ id: assetId, t: asset.t, u: encodedUrl }); 
         }
 
         function adjustCanvasGeometry(container) {
@@ -425,7 +457,11 @@
             }
         }
 
+        // MODIFIED: Resets the viewport AND clears the ID from the URL
         function resetViewport() {
+            // NEW: Remove the query string when going back to the home page
+            history.pushState(null, calculateValue(ENCRYPTED_HOMEPAGE_TITLE), window.location.pathname);
+            
             if (labelRegistry) labelRegistry.textContent = calculateValue(ENCRYPTED_HOMEPAGE_TITLE); 
             if (mainPanel) mainPanel.classList.remove('hidden'); 
             if (renderTarget) renderTarget.innerHTML = ''; 
@@ -438,6 +474,29 @@
                 document.exitFullscreen().catch(() => { });
             }
         }
+
+        // NEW: Handles direct navigation back/forward in the browser history (popstate)
+        window.addEventListener('popstate', (event) => {
+            const assetId = getAssetIdFromUrl();
+            if (assetId) {
+                // If ID is found on popstate, launch the game
+                const asset = ALL_ASSETS.find(a => a.id === assetId);
+                if (asset) {
+                    const decodedType = calculateValue(asset.y);
+                    if (decodedType === calculateValue(ENCODED_LOAD_FNF)) {
+                        executeVariant(assetId);
+                    } else {
+                        processMatrix(assetId);
+                    }
+                } else {
+                    // ID is in URL but asset doesn't exist, go to home
+                    resetViewport();
+                }
+            } else {
+                // No ID in URL on popstate, go to home
+                resetViewport();
+            }
+        });
 
 
         document.addEventListener('DOMContentLoaded', () => {
@@ -454,38 +513,63 @@
                 return 0;
             });
             
-            const searchInput = document.getElementById('game-search');
-            if (searchInput) {
-                searchInput.placeholder = calculateValue(ENCRYPTED_SEARCH_PLACEHOLDER);
+            const assetIdFromUrl = getAssetIdFromUrl();
+            
+            if (assetIdFromUrl) {
+                // LAUNCH GAME DIRECTLY IF ID IS IN URL
+                const asset = ALL_ASSETS.find(a => a.id === assetIdFromUrl);
+                if (asset) {
+                    const decodedType = calculateValue(asset.y);
+                    if (decodedType === calculateValue(ENCODED_LOAD_FNF)) {
+                        executeVariant(assetIdFromUrl);
+                    } else {
+                        // Use the existing processMatrix, which now updates the URL correctly.
+                        processMatrix(assetIdFromUrl);
+                    }
+                } else {
+                    // If ID is in URL but invalid, load homepage normally and clear URL
+                    history.replaceState(null, '', window.location.pathname); 
+                    loadHomePage();
+                }
+            } else {
+                // NO ID IN URL, LOAD HOMEPAGE NORMALLY
+                loadHomePage();
             }
             
-            document.title = calculateValue(ENCRYPTED_ZENITH_TITLE) + ' - ' + calculateValue(ENCRYPTED_TITLE_SUFFIX);
+            function loadHomePage() {
+                const searchInput = document.getElementById('game-search');
+                if (searchInput) {
+                    searchInput.placeholder = calculateValue(ENCRYPTED_SEARCH_PLACEHOLDER);
+                }
+                
+                document.title = calculateValue(ENCRYPTED_ZENITH_TITLE) + ' - ' + calculateValue(ENCRYPTED_TITLE_SUFFIX);
 
-            const decodedHomepage = calculateValue(ENCRYPTED_HOMEPAGE_TITLE);
-            if (labelRegistry) labelRegistry.textContent = decodedHomepage;
-            if (primaryMarker) primaryMarker.textContent = calculateValue(ENCRYPTED_ZENITH_TITLE);
+                const decodedHomepage = calculateValue(ENCRYPTED_HOMEPAGE_TITLE);
+                if (labelRegistry) labelRegistry.textContent = decodedHomepage;
+                if (primaryMarker) primaryMarker.textContent = calculateValue(ENCRYPTED_ZENITH_TITLE);
 
-            const headerLogo = document.querySelector('header img');
-            if (headerLogo) {
-            }
-            
-            renderRandomAssets();
+                const headerLogo = document.querySelector('header img');
+                if (headerLogo) {
+                }
+                
+                renderRandomAssets();
 
-            renderAllAssets();
+                renderAllAssets();
 
-            const taglineElement = document.getElementById('random-tagline');
-            if (taglineElement) {
-                const randomIndex = Math.floor(Math.random() * ENCRYPTED_TAGLINES.length);
-                const encodedPhrase = ENCRYPTED_TAGLINES[randomIndex];
-                taglineElement.textContent = calculateValue(encodedPhrase);
-            }
+                const taglineElement = document.getElementById('random-tagline');
+                if (taglineElement) {
+                    const randomIndex = Math.floor(Math.random() * ENCRYPTED_TAGLINES.length);
+                    const encodedPhrase = ENCRYPTED_TAGLINES[randomIndex];
+                    taglineElement.textContent = calculateValue(encodedPhrase);
+                }
 
-            const splashLoader = document.getElementById('website-splash-loader');
-            if (splashLoader) {
-                splashLoader.style.opacity = '0';
-                setTimeout(() => {
-                    splashLoader.style.display = 'none';
-                }, 300);
+                const splashLoader = document.getElementById('website-splash-loader');
+                if (splashLoader) {
+                    splashLoader.style.opacity = '0';
+                    setTimeout(() => {
+                        splashLoader.style.display = 'none';
+                    }, 300);
+                }
             }
         });
     </script>
@@ -530,7 +614,7 @@
                 </div>
 
 
-                <div id="game-list" class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-7 gap-4 lg:gap-6 transition-opacity duration-150">
+                <div id="game-list" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 lg:gap-6 transition-opacity duration-150">
                 </div>
             </section>
         </div>
