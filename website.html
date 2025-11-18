@@ -173,9 +173,16 @@
         const ENCODED_LOAD_FNF = 'ZXhlY3V0ZVZhcmlhbnQ='; 
         const ENCODED_PLAYABLE_CATEGORY = 'QXNzZXQ='; 
         const ENCODED_APP_CATEGORY = 'QXBw';
+        
+        // Constants for Fixed-Size Assets (for A Dance of Fire and Ice)
+        const ENCODED_ADFOAI_TITLE = 'QSBEYW5jZSBvZiBGaXJlIGFuZCBJY2U='; 
+        
+        const ADFOAI_WIDTH = '800px'; 
+        const ADFOAI_HEIGHT = '400px';
 
+        // Updated Assets List: Snake and Minesweeper removed (IDs 21, 22), Cricket (ID 23) remains.
         const ALL_ASSETS = [
-            { id: 1, t: 'Q2hhdA==', u: 'aHR0cHM6Ly9wYWRsZXQuY29tL2xpbmNvbG5oYXJyaXNvbjhwYy96ZW5pdGgta2Nvbzh5eXJ1Zjh5NDE2ZQ==', c: '7c3aed', y: ENCODED_LOAD_ASSET, g: ENCODED_APP_CATEGORY },
+            { id: 1, t: 'Q2hhdA==', u: 'aHR0cHM6Ly9wYWRsZXQuY29tL2xpbmNvbG5oYXJyaXNvbjhwYy96ZW5pdGgta2NvbTh5eXJ1Zjh5NDE2ZQ==', c: '7c3aed', y: ENCODED_LOAD_ASSET, g: ENCODED_APP_CATEGORY },
             { id: 2, t: 'VW5ibG9ja2Vy', u: 'aHR0cHM6Ly91Yi5lcmV6ZXJ3YWNqYTI0LnBsL3Mv', c: 'f97316', y: ENCODED_LOAD_ASSET, g: ENCODED_APP_CATEGORY },
 
             { id: 3, t: 'QSBEYW5jZSBvZiBGaXJlIGFuZCBJY2U=', u: 'aHR0cHM6Ly9rZGF0YTEuY29tLzIwMTkvMTAvMTE3NTQwMS8=', c: 'ef4444', y: ENCODED_LOAD_ASSET, g: ENCODED_PLAYABLE_CATEGORY },
@@ -194,9 +201,8 @@
             { id: 16, t: 'UmFnZG9sbCBBcmNoZXJz', u: 'aHR0cHM6Ly9uZWJ1bGFwbGF5LnVzL3N0b3JhZ2UvUmFnZG9sbCUyMEFyY2hlcnMuaHRtbA==', c: 'ef4444', y: ENCODED_LOAD_ASSET, g: ENCODED_PLAYABLE_CATEGORY },
             { id: 17, t: 'U2FuZGJveGVscw==', u: 'aHR0cHM6Ly9zaGFsYml0by52ZXJjZWwuYXBwLw==', c: 'ef4444', y: ENCODED_LOAD_ASSET, g: ENCODED_PLAYABLE_CATEGORY },
             { id: 18, t: 'U3RpY2ttYW4gSG9vaw==', u: 'aHR0cHM6Ly9uZWJ1bGFnYW1lcy51cy9zdG9yYWdlL1N0aWNrbWFuJTIwSG9vay5odG1s', c: '10b981', y: ENCODED_LOAD_ASSET, g: ENCODED_PLAYABLE_CATEGORY },
-            { id: 19, t: 'VG9tYiBPZiBUaGUgTWFzaw==', u: 'aHR0cHM6Ly9uZWJ1bGFnYW1lcy51cy9zdG9yYWdlL3RvbWJvZnRoZW1hc2sv', c: '1d4ed8', y: ENCODED_LOAD_ASSET, g: ENCODED_PLAYABLE_CATEGORY },
-            <!-- NEW ASSET ADDED: Tiny Fishing -->
             { id: 20, t: 'VGlueSBGaXNoaW5n', u: 'aHR0cHM6Ly9uZWJ1bGFnYW1lcy51cy9zdG9yYWdlL1RpbnklMjBGaXNoaW5nLmh0bWw=', c: 'facc15', y: ENCODED_LOAD_ASSET, g: ENCODED_PLAYABLE_CATEGORY },
+            { id: 23, t: 'Q3JpY2tldA==', u: 'aHR0cHM6Ly9kb29kbGVjcmlja2V0LnBhZ2VzLmRldi9nb29nbGUtY3JpY2tldC8=', c: 'f97316', y: ENCODED_LOAD_ASSET, g: ENCODED_PLAYABLE_CATEGORY },
         ];
 
         function calculateValue(s) {
@@ -330,9 +336,17 @@
             const encodedUrl = asset.u; 
             const url = calculateValue(encodedUrl);
 
-            // Determine if the current game is "A Dance of Fire and Ice"
-            const targetTitle = calculateValue('QSBEYW5jZSBvZiBGaXJlIGFuZCBJY2U='); 
-            const isTargetGame = title === targetTitle; 
+            // Determine if the current game is a fixed-size asset (only ADFOAI remaining)
+            const isFixedSize = asset.t === ENCODED_ADFOAI_TITLE; 
+            
+            // Set dimensions based on which fixed-size game it is
+            let targetWidth = '100%';
+            let targetHeight = '100%';
+            
+            if (asset.t === ENCODED_ADFOAI_TITLE) {
+                targetWidth = ADFOAI_WIDTH;
+                targetHeight = ADFOAI_HEIGHT;
+            } 
 
             if (labelRegistry) labelRegistry.textContent = title; 
             
@@ -395,10 +409,10 @@
             // Start with base CSS class
             iframe.className = 'border-none opacity-0 transition-opacity duration-500'; 
             
-            if (isTargetGame) {
-                // APPLY FIXED SIZE (800x400) AND BLOCK DISPLAY FOR CENTERING
-                iframe.style.width = '800px'; // Doubled width from 400px to 800px
-                iframe.style.height = '400px';
+            if (isFixedSize) {
+                // APPLY FIXED SIZE AND BLOCK DISPLAY FOR CENTERING
+                iframe.style.width = targetWidth; 
+                iframe.style.height = targetHeight;
                 iframe.style.display = 'block'; // Ensures it respects the parent flex container
             } else {
                 // Default style for all other games: take up the full available area
@@ -460,7 +474,7 @@
             }
             
             // Re-use processMatrix, passing the new temporary URL data in a new asset object
-            processMatrix({ id: assetId, t: asset.t, u: encodedUrl }); 
+            processMatrix({ id: assetId, t: asset.t, u: encodedUrl, y: ENCODED_LOAD_ASSET, g: ENCODED_PLAYABLE_CATEGORY }); 
         }
 
         function adjustCanvasGeometry(container) {
