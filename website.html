@@ -151,7 +151,7 @@
     </style>
 
     <script>
-
+        
         let mainPanel, renderTarget, labelRegistry, primaryMarker; 
 
         const ENCRYPTED_SEARCH_PLACEHOLDER = 'IA=='; 
@@ -163,7 +163,7 @@
         const ENCRYPTED_TITLE_SUFFIX = 'VW5ibG9ja2VkIEdhbWVz'; 
         const ENCRYPTED_TAGLINES = [
             'V2UgYXJlIGRvaW5nIG91ciB3b3JrLi4uIGp1c3Qgbm90IHRoZSB0ZWFjaGVycy4=', 
-            'VGhpcyBpcyB0aGUgb25seSB0aGluZyBrZWVwaW5nIG1lIGluIHNjaG9vbC4=', 
+            'VGhpcyBpcyB0aGUgb25seSByZWFzb24ga2VlcGluZyBtZSBpbiBzY2hvb2wu', 
             'IkEgc3R1ZGVudCdzIGRyZWFtIiAtIHNvbWUgcmFuZG9tIHN0dWRlbnQgdGhhdCBkb2Vzbid0IGV4aXN0', 
             'V2Uga25vdyB5b3UgZGlkbid0IGdldCBoZXJlIGFjY2lkZW50bHku', 
             'V2hhdCBhc3NldCBzaGFsbCB5b3UgcGljaz8=', 
@@ -180,18 +180,24 @@
         const ADFOAI_WIDTH = '800px'; 
         const ADFOAI_HEIGHT = '400px';
 
+        // NEW: Constants for Secret Mode
+        const SECRET_CODE = 'tester';
+        const SECRET_STORAGE_KEY = 'zenith_secret_mode';
+
         // Assets List: 
         const ALL_ASSETS = [
             { id: 1, t: 'Q2hhdA==', u: 'aHR0cHM6Ly9wYWRsZXQuY29tL2xpbmNvbG5oYXJyaXNvbjhwYy96ZW5pdGgta2NvbTh5eXJ1Zjh5NDE2ZQ==', c: '7c3aed', y: ENCODED_LOAD_ASSET, g: ENCODED_APP_CATEGORY },
-            // NEW ASSET ADDED HERE: ChatGPT
             { id: 28, t: 'Q2hhdEdQVA==', u: 'aHR0cHM6Ly93d3cuaG90Ym90LmNvbS9mcmVlLWNoYXRncHQ=', c: '16a34a', y: ENCODED_LOAD_ASSET, g: ENCODED_APP_CATEGORY },
+            { id: 29, t: 'RnJ1aXQgTmluamE=', u: 'aHR0cHM6Ly9uZWJ1bGFnYW1lcy51cy9zdG9yYWdlL0ZydWl0JTIwTmluamEuaHRtbA==', c: '10b981', y: ENCODED_LOAD_ASSET, g: ENCODED_PLAYABLE_CATEGORY },
+            { id: 30, t: 'U3Vydml2YWwgUmFjZQ==', u: 'aHR0cHM6Ly9uZWJ1bGFnYW1lcy51cy9zdG9yYWdlL2Nsc3Vydml2YWxyYWNldjIuaHRtbA==', c: '7c3aed', y: ENCODED_LOAD_ASSET, g: ENCODED_PLAYABLE_CATEGORY },
+            { id: 31, t: 'WW9ob2hvLmlv', u: 'aHR0cHM6Ly9uZWJ1bGFnYW1lcy51cy9zdG9yYWdlL3lvaG9oby8=', c: '2563eb', y: ENCODED_LOAD_ASSET, g: ENCODED_PLAYABLE_CATEGORY },
+
 
             { id: 2, t: 'VW5ibG9ja2Vy', u: 'aHR0cHM6Ly91Yi5lcmV6ZXJ3YWNqYTI0LnBsL3Mv', c: 'f97316', y: ENCODED_LOAD_ASSET, g: ENCODED_APP_CATEGORY },
             { id: 24, t: 'Rmx1aWQgU2ltdWxhdGlvbg==', u: 'aHR0cHM6Ly9oYXhpb21pYy5naXRodWIuaW8vcHJvamVjdHMvd2ViZ2wtZmx1aWQtYW5kLXBhcnRpY2xlcw==', c: '3b82f6', y: ENCODED_LOAD_ASSET, g: ENCODED_APP_CATEGORY },
             
             { id: 26, t: 'QmFzZWJhbGw=', u: 'aHR0cHM6Ly9uZWJ1bGFnYW1lcy51cy9zdG9yYWdlL0dvb2dsZSUyMEJhc2ViYWxsLmh0bWw=', c: '10b981', y: ENCODED_LOAD_ASSET, g: ENCODED_PLAYABLE_CATEGORY },
             
-            // Thirty Dollar Website (ID 27)
             { id: 27, t: 'VGhpcnR5IERvbGxhciBXZWJzaXRl', u: 'aHR0cHM6Ly91bml0ZWQtdW5ibG9ja2VyLnBhZ2VzLmRldi8zMGR3Lw==', c: '34d399', y: ENCODED_LOAD_ASSET, g: ENCODED_PLAYABLE_CATEGORY },
 
             { id: 3, t: 'QSBEYW5jZSBvZiBGaXJlIGFuZCBJY2U=', u: 'aHR0cHM6Ly9rZGF0YTEuY29tLzIwMTkvMTAvMTE3NTMwMS8=', c: 'ef4444', y: ENCODED_LOAD_ASSET, g: ENCODED_PLAYABLE_CATEGORY },
@@ -208,10 +214,10 @@
             { id: 13, t: 'RnJpZGF5IE5pZ2h0IEZ1bmtpbg==', u: '', c: 'ef4444', y: ENCODED_LOAD_FNF, g: ENCODED_PLAYABLE_CATEGORY }, 
             { id: 14, t: 'R2VvbWV0cnkgRGFzaCBMaXRl', u: 'aHR0cHM6Ly9uZWJ1bGFnYW1lcy51cy9zdG9yYWdlL0dlb21ldHJ5JTIwRGFzaCUyMExpdGUuaHRtbA==', c: '3b82f6', y: ENCODED_LOAD_ASSET, g: ENCODED_PLAYABLE_CATEGORY },
             { id: 15, t: 'UG9seSBUcmFjax==', u: 'aHR0cHM6Ly9odG1sLWNsYXNzaWMuaXRjaC56b25lL2h0bWwvMTU0NTEzMzAvaW5kZXguaHRtbA==', c: 'ef4444', y: ENCODED_LOAD_ASSET, g: ENCODED_PLAYABLE_CATEGORY },
-            { id: 16, t: 'UmFnZG9sbCBBcmNoZXJz', u: 'aHR0cHM6Ly9uZWJ1bGFwbGF5LnVzL3N0b3JhZ2UvUmFnZG9sbCUyMEFyY2hlcnMuaHRtbA==', c: 'ef4444', y: ENCODED_LOAD_ASSET, g: ENCODED_PLAYABLE_CATEGORY },
+            { id: 16, t: 'UmFnZG9sbCBBcmNoZXJz', u: 'aHR0cHM6Ly9uZWJ1bGFnYW1lcy51cy9zdG9yYWdlL1JhZ2RvbGwlMjBBcmNoZXJzLmh0bWw=', c: 'ef4444', y: ENCODED_LOAD_ASSET, g: ENCODED_PLAYABLE_CATEGORY },
             { id: 17, t: 'U2FuZGJveGVscw==', u: 'aHR0cHM6Ly9zaGFsYml0by52ZXJjZWwuYXBwLw==', c: 'ef4444', y: ENCODED_LOAD_ASSET, g: ENCODED_PLAYABLE_CATEGORY },
             { id: 18, t: 'U3RpY2ttYW4gSG9vaw==', u: 'aHR0cHM6Ly9uZWJ1bGFnYW1lcy51cy9zdG9yYWdlL1N0aWNrbWFuJTIwSG9vay5odG1s', c: '10b981', y: ENCODED_LOAD_ASSET, g: ENCODED_PLAYABLE_CATEGORY },
-            { id: 20, t: 'VGlueSBGaXNoaW5n', u: 'aHR0cHM6Ly9uZWJ1bGFnYW1lcy51cy9zdG9yYWdlL1RpbnklMjBGaXNoaW5nLmh0bWw=', c: 'facc15', y: ENCODED_LOAD_ASSET, g: ENCODED_PLAYABLE_CATEGORY },
+            { id: 20, t: 'VGlueSBYaXNoaW5n', u: 'aHR0cHM6Ly9uZWJ1bGFnYW1lcy51cy9zdG9yYWdlL1RpbnklMjBGaXNoaW5nLmh0bWw=', c: 'facc15', y: ENCODED_LOAD_ASSET, g: ENCODED_PLAYABLE_CATEGORY },
             { id: 23, t: 'Q3JpY2tldA==', u: 'aHR0cHM6Ly9kb29kbGVjcmlja2V0LnBhZ2VzLmRldi9nb29nbGUtY3JpY2tldC8=', c: 'f97316', y: ENCODED_LOAD_ASSET, g: ENCODED_PLAYABLE_CATEGORY },
         ];
 
@@ -256,13 +262,15 @@
 
             // Determine image source based on title, with overrides for specific assets
             if (title === 'Thirty Dollar Website') {
-                // Explicit path for Thirty Dollar Website
                 imageSrc = 'https://notbingsa.github.io/Zenith/games/images/Thirty%20Dollar%20Website.png'; 
             } else if (title === 'Fluid Simulation') {
-                // Explicit path for Fluid Simulation, as requested by the user
                 imageSrc = 'https://notbingsa.github.io/Zenith/games/images/Fluid%20Simulation.png';
-            } else if (title === 'ChatGPT') { // <-- NEW LOGIC HERE
+            } else if (title === 'ChatGPT') { 
                 imageSrc = 'https://notbingsa.github.io/Zenith/apps/images/ChatGPT.png';
+            } else if (title === 'Fruit Ninja') { 
+                imageSrc = 'https://notbingsa.github.io/Zenith/games/images/Fruit%20Ninja.png';
+            } else if (title === 'Yohoho.io') { 
+                imageSrc = 'https://notbingsa.github.io/Zenith/games/images/Yohoho.io.png';
             } else {
                 // Standard path construction: Use 'apps' or 'games' based on category
                 const pathSegment = calculateValue(asset.g) === calculateValue(ENCODED_APP_CATEGORY) ? 'apps' : 'games';
@@ -270,8 +278,9 @@
             }
 
             return `
-                <!-- href allows for right-click 'Open in new tab' functionality -->
-                <a href="?id=${asset.id}" onclick="${clickHandler}; return false;" class="block bg-gray-800 rounded-xl overflow-hidden asset-card-shadow ${sizeClass} group relative" data-category="${category}">
+                
+
+<a href="?id=${asset.id}" onclick="${clickHandler}; return false;" class="block bg-gray-800 rounded-xl overflow-hidden asset-card-shadow ${sizeClass} group relative" data-category="${category}">
                     <img src="${imageSrc}" 
                          onerror="this.onerror=null;this.src='https://placehold.co/${placeholderSize}/${asset.c}/ffffff?text=${title.replace(/\s/g, '+')}'" 
                          class="w-full h-full object-cover transition duration-300 group-hover:scale-105" />
@@ -317,8 +326,9 @@
                     <h3 class="section-heading-glow text-xl md:text-2xl font-semibold mb-6 text-center pt-8 text-white">
                         <i class="fas fa-dice text-zenith-purple mr-2"></i>${decodedRandomPicks}
                     </h3>
-                    <!-- This grid is already configured for 5 columns (md:grid-cols-5) and uses square cards, fulfilling the requests. -->
-                    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4 lg:gap-6 mb-12">
+                    
+
+<div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4 lg:gap-6 mb-12">
                         ${randomAssetsHtml}
                     </div>
                 `;
@@ -380,11 +390,16 @@
 
             if (labelRegistry) labelRegistry.textContent = title; 
             
-            // --- FIX/DEBUG: Ensure homepage is hidden before continuing ---
+            // --- Hiding homepage and secret content before loading asset ---
             if (mainPanel) {
                 console.log("DEBUG: processMatrix - Hiding homepage section.");
                 mainPanel.classList.add('hidden'); 
             }
+            const secretContent = document.getElementById('secret-mode-content');
+            if (secretContent) {
+                secretContent.classList.add('hidden'); 
+            }
+
 
             if (renderTarget) { 
                 // Increased max-width for modern display and adjusted height
@@ -503,17 +518,7 @@
                 encodedUrl = 'aHR0cHM6Ly9odG1sLWNsYXNzaWMuaXRjaC56b25lL2h0bWwvMjg3NjM1OS0xMzgzODg2L2luZGV4Lmh0bWw=';
             }
             
-            // MODIFIED: Create a temporary asset object with the resolved URL and pass its ID to processMatrix.
-            const tempAsset = { 
-                id: assetId, 
-                t: asset.t, 
-                u: encodedUrl, 
-                y: ENCODED_LOAD_ASSET, // Re-use the standard load type for processMatrix
-                g: ENCODED_PLAYABLE_CATEGORY 
-            };
-            
             // CRITICAL FIX: Update the original ALL_ASSETS entry with the resolved URL for processMatrix to find it.
-            // This prevents the error where processMatrix looks up the asset again and finds an empty URL.
             asset.u = encodedUrl; 
 
             // Now call the standard loader with the correct ID.
@@ -537,11 +542,19 @@
             try {
                 history.pushState(null, calculateValue(ENCRYPTED_HOMEPAGE_TITLE), window.location.pathname);
             } catch (e) {
-                console.error("History update failed on reset, continuing normally.");
+                console.error("History update failed in iframe, continuing normally."); // BENIGN ERROR
             }
             
             if (labelRegistry) labelRegistry.textContent = calculateValue(ENCRYPTED_HOMEPAGE_TITLE); 
             if (mainPanel) mainPanel.classList.remove('hidden'); 
+            const secretContent = document.getElementById('secret-mode-content');
+            if (secretContent) {
+                secretContent.classList.add('hidden'); // Ensure secret content is hidden on reset
+                document.getElementById('tester-catalog-grid').classList.add('hidden'); // Hide catalog too
+                document.getElementById('testAllGamesButton').textContent = 'Test All Games';
+                document.getElementById('game-cards-container').innerHTML = ''; // Clear iframes
+            }
+
             if (renderTarget) renderTarget.innerHTML = ''; 
             if (renderTarget) renderTarget.className = 'hidden relative'; 
 
@@ -552,6 +565,323 @@
                 document.exitFullscreen().catch(() => { });
             }
         }
+
+        // NEW: Functions for Secret Mode
+        function toggleSecretModal(show) {
+            const modal = document.getElementById('secret-modal');
+            const input = document.getElementById('secret-input');
+            const message = document.getElementById('secret-message');
+            
+            if (show) {
+                modal.classList.remove('hidden');
+                modal.classList.add('flex');
+                input.value = ''; // Clear input on open
+                message.classList.add('hidden'); // Clear previous messages
+                // Set up listener for Enter key
+                input.onkeydown = (e) => {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        checkSecretCode();
+                    }
+                };
+                setTimeout(() => input.focus(), 100); 
+            } else {
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+                input.onkeydown = null; // Remove listener on close
+            }
+        }
+
+        function checkSecretCode() {
+            const input = document.getElementById('secret-input');
+            const message = document.getElementById('secret-message');
+            const code = input.value.trim();
+
+            if (code === SECRET_CODE) {
+                // Success: Activate secret mode and save state
+                applySecretMode(true);
+                localStorage.setItem(SECRET_STORAGE_KEY, 'active');
+                toggleSecretModal(false);
+            } else {
+                // Failure: Show error message
+                message.textContent = "Invalid key. Access denied.";
+                message.classList.remove('hidden');
+                input.value = '';
+                input.focus();
+            }
+        }
+        
+        function applySecretMode(activate) {
+            const homepage = document.getElementById('homepage-section');
+            const assetContainer = document.getElementById('asset-container');
+            const secretContent = document.getElementById('secret-mode-content');
+            const headerTitle = document.getElementById('header-title');
+            const secretToggle = document.getElementById('secret-mode-toggle');
+            const primaryMarker = document.getElementById('main-zenith-title'); 
+            const taglineElement = document.getElementById('random-tagline');
+
+            if (activate) {
+                // Switch to Tester Mode
+                homepage.classList.add('hidden');
+                assetContainer.classList.add('hidden'); 
+                secretContent.classList.remove('hidden');
+                
+                // --- USER REQUEST: Set header title to 'Tester' ---
+                headerTitle.textContent = 'Tester'; 
+                primaryMarker.textContent = 'Tester';
+                taglineElement.textContent = 'Test Everything.';
+
+                secretToggle.innerHTML = '<i class="fas fa-lock-open"></i>'; // Change icon to open lock
+                secretToggle.classList.remove('hover:bg-zenith-purple/50');
+                secretToggle.classList.add('text-zenith-purple'); // Highlight when active
+                // Ensure no accidental scroll from homepage content
+                window.scrollTo(0, 0); 
+
+            } else {
+                // Switch back to Normal Mode
+                homepage.classList.remove('hidden');
+                secretContent.classList.add('hidden');
+                
+                // --- Reset Header Title to Home ---
+                if (labelRegistry) labelRegistry.textContent = calculateValue(ENCRYPTED_HOMEPAGE_TITLE);
+                if (primaryMarker) primaryMarker.textContent = calculateValue(ENCRYPTED_ZENITH_TITLE);
+                
+                secretToggle.innerHTML = '<i class="fas fa-lock"></i>'; // Change icon back
+                secretToggle.classList.add('hover:bg-zenith-purple/50');
+                secretToggle.classList.remove('text-zenith-purple');
+                localStorage.removeItem(SECRET_STORAGE_KEY);
+                resetViewport(); // Also reset the URL and header title
+            }
+        }
+
+        // --- NEW: Tester Catalog Functions ---
+
+        /**
+         * Generates the HTML for a single live iframe card in the Tester grid.
+         */
+        function createTesterIframe(title, url, category, color) {
+            const safeTitle = title.replace(/[^a-zA-Z0-9]/g, '-').toLowerCase(); // Unique ID for the container
+
+            let imageSrc;
+            const encodedTitle = encodeURIComponent(title.replace(/ *\([^)]*\) */g, ""));
+            const pathSegment = category === calculateValue(ENCODED_APP_CATEGORY) ? 'apps' : 'games';
+            imageSrc = `https://notbingsa.github.io/Zenith/${pathSegment}/images/${encodedTitle}.png`;
+            
+            // FNF image override (for the explicit FNF variants)
+            if (title.includes('Funkin')) {
+                imageSrc = 'https://notbingsa.github.io/Zenith/games/images/Friday%20Night%20Funkin.png';
+            }
+
+            // The entire card now contains the iframe and loading states
+            return `
+                <div id="tester-card-${safeTitle}" class="bg-gray-800 rounded-xl overflow-hidden shadow-2xl relative border border-zenith-purple/50 aspect-video group">
+                    
+                    <!-- Header for title/category -->
+                    <div class="absolute top-0 left-0 right-0 bg-black/70 p-1 flex justify-between items-center z-20">
+                        <span class="text-xs font-semibold text-white truncate px-1">${title}</span>
+                        <span class="text-xs font-medium text-zenith-blue bg-blue-900/70 px-1.5 py-0.5 rounded-full">${category}</span>
+                    </div>
+
+                    <!-- Loading/Placeholder Area -->
+                    <div id="tester-loading-${safeTitle}" class="absolute inset-0 bg-zenith-dark/95 flex flex-col items-center justify-center z-10 p-4 transition-opacity duration-500">
+                        <div class="rounded-spinner w-8 h-8 mb-2"></div>
+                        <p class="text-xs text-gray-400">Loading...</p>
+                        <!-- Low-opacity image placeholder -->
+                        <img src="${imageSrc}" 
+                            onerror="this.onerror=null;this.src='https://placehold.co/160x160/${color}/ffffff?text=${title.replace(/ *\([^)]*\) */g, "").replace(/\s/g, '+').substring(0, 15)}'" 
+                            class="absolute inset-0 w-full h-full object-cover opacity-10 blur-sm" />
+                    </div>
+
+                    <!-- Iframe Container -->
+                    <iframe 
+                        id="tester-iframe-${safeTitle}"
+                        data-src="${url}"
+                        class="absolute inset-0 w-full h-full border-none opacity-0 transition-opacity duration-500"
+                        loading="lazy"
+                        sandbox="allow-scripts allow-same-origin allow-popups allow-forms"
+                        allowfullscreen="true">
+                    </iframe>
+
+                    <!-- Fullscreen/Maximize Button (Launches into main view) -->
+                    <button onclick="launchTesterAsset('${url}', '${title.replace(/'/g, "\\'")}', '${color}')" 
+                            class="absolute bottom-2 right-2 p-1.5 bg-black/50 text-white rounded-full opacity-0 group-hover:opacity-100 transition duration-300 z-30 hover:bg-zenith-purple/70">
+                        <i class="fas fa-expand text-sm"></i>
+                    </button>
+                </div>
+            `;
+        }
+
+        /**
+         * Renders all game cards into the Tester grid and triggers the iframe loading.
+         */
+        function loadAllTesterIframes() {
+            const iframes = document.querySelectorAll('#game-cards-container iframe');
+            iframes.forEach(iframe => {
+                const src = iframe.getAttribute('data-src');
+                const assetId = iframe.id.replace('tester-iframe-', '');
+                const loadingOverlay = document.getElementById(`tester-loading-${assetId}`);
+                
+                if (src) {
+                    iframe.onload = () => {
+                        // When iframe loads, hide the overlay and show the iframe
+                        if (loadingOverlay) loadingOverlay.style.opacity = '0';
+                        iframe.classList.remove('opacity-0');
+                    };
+                    // Set the src to start loading
+                    iframe.src = src;
+                }
+            });
+        }
+
+
+        /**
+         * Builds the comprehensive list of all assets for the tester grid, including FNF variants.
+         */
+        function generateTesterCatalog() {
+            let fullCatalog = [];
+            
+            // 1. Process all assets
+            for (const asset of ALL_ASSETS) {
+                if (calculateValue(asset.y) === calculateValue(ENCODED_LOAD_FNF)) { 
+                    // FNF variants (Desktop and Mobile)
+                    const desktopUrl = 'aHR0cHM6Ly9odG1sLWNsYXNzaWMuaXRjaC56b25lL2h0bWwvMjg3NjM1OS0xMzgzODg2L2luZGV4Lmh0bWw=';
+                    const mobileUrl = 'aHR0cHM6Ly9odG1sLWNsYXNzaWMuaXRjaC56b25lL2h0bWwvNDQ1OTQ5OS9sdWNreWRvZzcuZ2l0aHViLmlvLW1hc3Rlci9mdW5raW5tb2JpbGUvZ2FtZS9pbmRleC5odG1s';
+
+                    const fnfTitle = calculateValue(asset.t);
+                    const category = calculateValue(asset.g);
+                    
+                    fullCatalog.push({ t: `${fnfTitle} (Desktop)`, u: desktopUrl, g: category, c: asset.c }); 
+                    fullCatalog.push({ t: `${fnfTitle} (Mobile)`, u: mobileUrl, g: category, c: asset.c }); 
+                } else {
+                    // Standard assets
+                    fullCatalog.push(asset);
+                }
+            }
+
+            // 2. Map to HTML cards
+            const cardsHtml = fullCatalog.map(asset => {
+                const title = asset.t.includes(' ') ? asset.t : calculateValue(asset.t); 
+                const url = asset.u;
+                const category = asset.g.includes(' ') ? asset.g : calculateValue(asset.g);
+                return createTesterIframe(title, calculateValue(url), category, asset.c);
+            }).join('');
+            
+            return cardsHtml;
+        }
+
+
+        /**
+         * Toggles the visibility of the Tester Catalog grid.
+         */
+        function toggleTesterCatalog() {
+            const grid = document.getElementById('tester-catalog-grid');
+            const button = document.getElementById('testAllGamesButton');
+            const container = document.getElementById('game-cards-container');
+
+            if (grid.classList.contains('hidden')) {
+                // Render and Show
+                container.innerHTML = generateTesterCatalog();
+                grid.classList.remove('hidden');
+                button.textContent = 'Hide Live Grid';
+                
+                // Load the Iframes
+                loadAllTesterIframes();
+            } else {
+                // Hide
+                grid.classList.add('hidden');
+                button.textContent = 'Test All Games';
+                // Clear content to save memory
+                container.innerHTML = '';
+            }
+        }
+
+
+        /**
+         * Dedicated function to launch an asset by URL directly from the Tester view into the main container.
+         */
+        function launchTesterAsset(encodedUrl, title, color) {
+            // Hide Tester UI
+            const secretContent = document.getElementById('secret-mode-content');
+            if (secretContent) {
+                secretContent.classList.add('hidden'); 
+            }
+            
+            // Set header label
+            if (labelRegistry) labelRegistry.textContent = title; 
+            
+            // Prepare render target
+            if (renderTarget) { 
+                renderTarget.className = 'relative w-full h-[80vh] mx-auto md:max-w-5xl rounded-2xl overflow-hidden shadow-2xl transition-all duration-300';
+                renderTarget.style.height = 'calc(100vh - 100px)';
+                renderTarget.innerHTML = ''; 
+                renderTarget.classList.remove('hidden'); 
+            } else {
+                return;
+            }
+
+            const url = calculateValue(encodedUrl);
+
+            // Create Loading UI (Simplified)
+            const loadingOverlay = document.createElement('div');
+            loadingOverlay.id = 'loading-overlay';
+            loadingOverlay.className = 'absolute inset-0 bg-zenith-dark/95 flex flex-col items-center justify-center p-8 z-10 rounded-2xl transition-opacity duration-500';
+            loadingOverlay.innerHTML = `
+                <div class="rounded-spinner mb-4"></div>
+                <h3 class="text-xl font-semibold mb-1 text-white">Loading Test:</h3>
+                <p class="text-2xl font-bold text-zenith-purple text-center">${title}</p>
+                
+                <div class="mt-4 w-48 h-2 bg-gray-700 rounded-full overflow-hidden">
+                    <div class="h-full bg-zenith-purple w-full"></div>
+                </div>
+            `;
+            
+            const controlBar = document.createElement('div');
+            controlBar.className = 'asset-control-bar';
+            
+            // Back button specific to Tester view
+            const backButton = document.createElement('button');
+            backButton.className = 'fullscreen-button';
+            backButton.innerHTML = '<i class="fas fa-arrow-left"></i>';
+            backButton.onclick = () => {
+                // Return to the Tester View
+                resetViewport(); 
+                applySecretMode(true);
+            };
+            controlBar.appendChild(backButton);
+            
+            const displayToggleButton = document.createElement('button'); 
+            displayToggleButton.id = 'fullscreen-toggle-button';
+            displayToggleButton.className = 'fullscreen-button'; 
+            displayToggleButton.innerHTML = '<i id="fs-icon" class="fas fa-expand"></i>'; 
+            displayToggleButton.onclick = () => adjustCanvasGeometry(renderTarget); 
+            controlBar.appendChild(displayToggleButton);
+
+            const iframe = document.createElement('iframe');
+            iframe.id = 'asset-iframe';
+            iframe.className = 'border-none opacity-0 transition-opacity duration-500 w-full h-full'; 
+            iframe.setAttribute('allow', 'fullscreen');
+            iframe.setAttribute('allowfullscreen', 'true');
+            iframe.setAttribute('loading', 'lazy');
+            iframe.src = url;
+            
+            const centeringWrapper = document.createElement('div');
+            centeringWrapper.className = 'asset-iframe-content'; 
+            centeringWrapper.appendChild(iframe);
+
+            renderTarget.appendChild(controlBar); 
+            renderTarget.appendChild(centeringWrapper); 
+            renderTarget.appendChild(loadingOverlay); 
+
+            iframe.onload = () => {
+                loadingOverlay.style.opacity = '0'; 
+                iframe.classList.remove('opacity-0');
+
+                setTimeout(() => {
+                    loadingOverlay.remove();
+                }, 500);
+            };
+        }
+
 
         // Handles direct navigation back/forward in the browser history (popstate)
         window.addEventListener('popstate', (event) => {
@@ -592,10 +922,16 @@
                 return 0;
             });
             
+            // --- CORE LOGIC: Check for Secret Mode Persistence First ---
+            if (localStorage.getItem(SECRET_STORAGE_KEY) === 'active') {
+                applySecretMode(true);
+                // The rest of the page loading logic is skipped if in tester mode
+                return; 
+            }
+            // --------------------------------------------------
+
+
             const assetIdFromUrl = getAssetIdFromUrl();
-            
-            // DEBUG LOG: What is the final calculated ID?
-            console.log("DEBUG: Initialization - Calculated Asset ID (parsed integer):", assetIdFromUrl);
 
             // --- CORE LOGIC FOR CHECKING URL ON PAGE LOAD ---
             if (assetIdFromUrl) {
@@ -680,16 +1016,74 @@
         <p class="text-sm text-gray-400 mt-2">Loading interface...</p>
     </div>
 
-    <header class="p-4 md:p-6 flex items-center fixed top-0 left-0 right-0 z-10 bg-black/30 backdrop-blur-sm">
-        <!-- MODIFIED: Changed div to a proper <a> tag with href and onclick to handle history/navigation -->
-        <a href="./" class="flex items-center space-x-3" onclick="resetViewport(); return false;">
-            <img src="https://notbingsa.github.io/Zenith/ui/logo.png" alt="Zenith Logo" class="w-8 h-8 object-contain" />
+    <!-- Secret Code Modal -->
+    <div id="secret-modal" class="fixed inset-0 bg-black/80 hidden items-center justify-center z-[1000] p-4" onclick="if(event.target.id === 'secret-modal') toggleSecretModal(false)">
+        <div class="bg-gray-800 p-8 rounded-xl shadow-2xl w-full max-w-sm border border-zenith-purple/50 transform scale-100 transition-transform duration-300">
+            <h3 class="text-2xl font-bold text-white mb-4">Enter Access Key</h3>
+            <p class="text-gray-400 mb-6 text-sm">A secret key is required to unlock the tester view.</p>
+            
+            <input type="password" id="secret-input" 
+                   placeholder="Enter code..." 
+                   class="w-full p-3 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-zenith-blue mb-4" />
+            
+            <p id="secret-message" class="text-sm text-red-400 mb-4 hidden"></p>
+
+            <div class="flex justify-between space-x-3">
+                <button onclick="toggleSecretModal(false)" 
+                        class="flex-1 py-2 rounded-lg bg-gray-600 text-white font-semibold hover:bg-gray-700 transition duration-150">
+                    Cancel
+                </button>
+                <button onclick="checkSecretCode()" 
+                        class="flex-1 py-2 rounded-lg bg-zenith-purple text-white font-semibold hover:bg-zenith-purple/90 transition duration-150">
+                    Unlock
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <header class="py-3 px-4 md:px-8 flex items-center justify-between fixed top-0 left-0 right-0 z-10 bg-black/30 backdrop-blur-sm">
+        
+        <!-- Logo and Title (Left) -->
+        <a href="./" class="flex items-center space-x-3" onclick="applySecretMode(false); return false;">
+            <img src="https://notbingsa.github.io/Zenith/ui/logo.png" alt="Zenith Logo" class="w-10 h-10 object-contain" />
             <h1 id="header-title" class="text-xl md:text-3xl font-bold"></h1>
         </a>
+
+        <!-- Secret Mode Toggle Button (Right) -->
+        <button id="secret-mode-toggle" class="p-2 rounded-lg text-gray-400 hover:text-white hover:bg-zenith-purple/50 transition duration-200" onclick="toggleSecretModal(true)">
+            <i class="fas fa-lock"></i>
+        </button>
     </header>
 
     <main class="pt-24 md:pt-32 pb-8 px-4 md:px-8 max-w-7xl mx-auto">
+        
+        <!-- TESTER MODE CONTENT (Hidden by default, shown when code 'tester' is entered) -->
+        <div id="secret-mode-content" class="hidden text-center py-10 rounded-xl">
+            
+            <h2 class="text-4xl font-extrabold text-blue-400 mb-6">Tester Mode</h2>
+            <p class="text-lg text-gray-400 mb-8">Click below to load the live asset testing grid.</p>
 
+            <button id="testAllGamesButton"
+                    class="px-8 py-3 text-lg font-semibold text-white rounded-xl shadow-lg bg-zenith-purple hover:bg-zenith-blue transition duration-200"
+                    onclick="toggleTesterCatalog();">
+                Test All Games
+            </button>
+
+            <!-- Live Iframe Catalog Grid Container -->
+            <div id="tester-catalog-grid" class="hidden mt-12 w-full mx-auto">
+                <h3 class="text-2xl font-bold text-gray-200 mb-6 border-b border-gray-700 pb-3">Live Test Grid</h3>
+                <div id="game-cards-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+                    <!-- Dynamic Live Iframes Go Here -->
+                </div>
+            </div>
+            
+            <!-- Exit Button -->
+            <button class="mt-12 py-2 px-6 rounded-lg bg-red-600 text-white font-semibold hover:bg-red-700 transition duration-150"
+                    onclick="applySecretMode(false);">
+                Exit Tester Mode
+            </button>
+        </div>
+        
         <div id="homepage-section">
 
             <section class="text-center py-16">
