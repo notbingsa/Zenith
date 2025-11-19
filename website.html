@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Zenith</title>
 
     <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -100,7 +100,7 @@
             border-bottom-right-radius: 1rem; 
         }
 
-        /* MODIFIED: This is now a flex container to center its child (the iframe) */
+        /* This is now a flex container to center its child (the iframe) */
         .asset-iframe-content {
             position: absolute;
             top: 0;
@@ -164,14 +164,14 @@
         const ENCRYPTED_TAGLINES = [
             'V2UgYXJlIGRvaW5nIG91ciB3b3JrLi4uIGp1c3Qgbm90IHRoZSB0ZWFjaGVycy4=', 
             'VGhpcyBpcyB0aGUgb25seSB0aGluZyBrZWVwaW5nIG1lIGluIHNjaG9vbC4=', 
-            'IkEgc3R1ZGVudCdzIGRyZWFtIiAtIHNvbWUgcmFuZG9tIHN0dWRlbnQgdGhh dCBkb2Vzbid0IGV4aXN0', 
+            'IkEgc3R1ZGVudCdzIGRyZWFtIiAtIHNvbWUgcmFuZG9tIHN0dWRlbnQgdGhhdCBkb2Vzbid0IGV4aXN0', 
             'V2Uga25vdyB5b3UgZGlkbid0IGdldCBoZXJlIGFjY2lkZW50bHku', 
             'V2hhdCBhc3NldCBzaGFsbCB5b3UgcGljaz8=', 
         ];
 
         const ENCODED_LOAD_ASSET = 'cHJvY2Vzc01hdHJpeA=='; 
         const ENCODED_LOAD_FNF = 'ZXhlY3V0ZVZhcmlhbnQ='; 
-        const ENCODED_PLAYABLE_CATEGORY = 'QXNzZXQ='; 
+        const ENCODED_PLAYABLE_CATEGORY = 'QXNzZXQ=';
         const ENCODED_APP_CATEGORY = 'QXBw';
         
         // Constants for Fixed-Size Assets (for A Dance of Fire and Ice)
@@ -180,12 +180,21 @@
         const ADFOAI_WIDTH = '800px'; 
         const ADFOAI_HEIGHT = '400px';
 
-        // Updated Assets List: Snake and Minesweeper removed (IDs 21, 22), Cricket (ID 23) remains.
+        // Assets List: 
         const ALL_ASSETS = [
             { id: 1, t: 'Q2hhdA==', u: 'aHR0cHM6Ly9wYWRsZXQuY29tL2xpbmNvbG5oYXJyaXNvbjhwYy96ZW5pdGgta2NvbTh5eXJ1Zjh5NDE2ZQ==', c: '7c3aed', y: ENCODED_LOAD_ASSET, g: ENCODED_APP_CATEGORY },
-            { id: 2, t: 'VW5ibG9ja2Vy', u: 'aHR0cHM6Ly91Yi5lcmV6ZXJ3YWNqYTI0LnBsL3Mv', c: 'f97316', y: ENCODED_LOAD_ASSET, g: ENCODED_APP_CATEGORY },
+            // NEW ASSET ADDED HERE: ChatGPT
+            { id: 28, t: 'Q2hhdEdQVA==', u: 'aHR0cHM6Ly93d3cuaG90Ym90LmNvbS9mcmVlLWNoYXRncHQ=', c: '16a34a', y: ENCODED_LOAD_ASSET, g: ENCODED_APP_CATEGORY },
 
-            { id: 3, t: 'QSBEYW5jZSBvZiBGaXJlIGFuZCBJY2U=', u: 'aHR0cHM6Ly9rZGF0YTEuY29tLzIwMTkvMTAvMTE3NTQwMS8=', c: 'ef4444', y: ENCODED_LOAD_ASSET, g: ENCODED_PLAYABLE_CATEGORY },
+            { id: 2, t: 'VW5ibG9ja2Vy', u: 'aHR0cHM6Ly91Yi5lcmV6ZXJ3YWNqYTI0LnBsL3Mv', c: 'f97316', y: ENCODED_LOAD_ASSET, g: ENCODED_APP_CATEGORY },
+            { id: 24, t: 'Rmx1aWQgU2ltdWxhdGlvbg==', u: 'aHR0cHM6Ly9oYXhpb21pYy5naXRodWIuaW8vcHJvamVjdHMvd2ViZ2wtZmx1aWQtYW5kLXBhcnRpY2xlcw==', c: '3b82f6', y: ENCODED_LOAD_ASSET, g: ENCODED_APP_CATEGORY },
+            
+            { id: 26, t: 'QmFzZWJhbGw=', u: 'aHR0cHM6Ly9uZWJ1bGFnYW1lcy51cy9zdG9yYWdlL0dvb2dsZSUyMEJhc2ViYWxsLmh0bWw=', c: '10b981', y: ENCODED_LOAD_ASSET, g: ENCODED_PLAYABLE_CATEGORY },
+            
+            // Thirty Dollar Website (ID 27)
+            { id: 27, t: 'VGhpcnR5IERvbGxhciBXZWJzaXRl', u: 'aHR0cHM6Ly91bml0ZWQtdW5ibG9ja2VyLnBhZ2VzLmRldi8zMGR3Lw==', c: '34d399', y: ENCODED_LOAD_ASSET, g: ENCODED_PLAYABLE_CATEGORY },
+
+            { id: 3, t: 'QSBEYW5jZSBvZiBGaXJlIGFuZCBJY2U=', u: 'aHR0cHM6Ly9rZGF0YTEuY29tLzIwMTkvMTAvMTE3NTMwMS8=', c: 'ef4444', y: ENCODED_LOAD_ASSET, g: ENCODED_PLAYABLE_CATEGORY },
             { id: 4, t: 'Qml0bGlmZQ==', u: 'aHR0cHM6Ly9uZWJ1bGFnYW1lcy51cy9zdG9yYWdlL2JpdGxpZmUv', c: 'ef4444', y: ENCODED_LOAD_ASSET, g: ENCODED_PLAYABLE_CATEGORY },
             { id: 5, t: 'QmxvY2sgQmxhc3Q=', u: 'aHR0cHM6Ly9uZWJ1bGFnYW1lcy51cy9zdG9yYWdlL0Jsb2NrJTIwQmxhc3QuaHRtbA==', c: '1d4ed8', y: ENCODED_LOAD_ASSET, g: ENCODED_PLAYABLE_CATEGORY },
             { id: 6, t: 'Qm91bmNlbWFzdGVycw==', u: 'aHR0cHM6Ly9uZWJ1bGFnYW1lcy51cy9zdG9yYWdlL0JvdW5jZW1hc3RlcnMuaHRtbA==', c: 'f97316', y: ENCODED_LOAD_ASSET, g: ENCODED_PLAYABLE_CATEGORY },
@@ -195,6 +204,7 @@
             { id: 10, t: 'RHJpdmUgTWFk', u: 'aHR0cHM6Ly9uZWJ1bGFnYW1lcy51cy9zdG9yYWdlL0RyaXZlJTIwTWFkLmh0bWw=', c: '34d399', y: ENCODED_LOAD_ASSET, g: ENCODED_PLAYABLE_CATEGORY },
             { id: 11, t: 'RWdneSBDYXI=', u: 'aHR0cHM6Ly9uZWJ1bGFnYW1lcy51cy9zdG9yYWdlL2VnZ3ljYXIv', c: 'facc15', y: ENCODED_LOAD_ASSET, g: ENCODED_PLAYABLE_CATEGORY },
             { id: 12, t: 'RmxhcHB5IEJpcmQ=', u: 'aHR0cHM6Ly9uZWJ1bGFnYW1lcy51cy9zdG9yYWdlL0ZsYXBweSUyMEJpcmQuaHRtbA==', c: 'facc15', y: ENCODED_LOAD_ASSET, g: ENCODED_PLAYABLE_CATEGORY },
+            // FNF: URL is dynamic and set in executeVariant
             { id: 13, t: 'RnJpZGF5IE5pZ2h0IEZ1bmtpbg==', u: '', c: 'ef4444', y: ENCODED_LOAD_FNF, g: ENCODED_PLAYABLE_CATEGORY }, 
             { id: 14, t: 'R2VvbWV0cnkgRGFzaCBMaXRl', u: 'aHR0cHM6Ly9uZWJ1bGFnYW1lcy51cy9zdG9yYWdlL0dlb21ldHJ5JTIwRGFzaCUyMExpdGUuaHRtbA==', c: '3b82f6', y: ENCODED_LOAD_ASSET, g: ENCODED_PLAYABLE_CATEGORY },
             { id: 15, t: 'UG9seSBUcmFjax==', u: 'aHR0cHM6Ly9odG1sLWNsYXNzaWMuaXRjaC56b25lL2h0bWwvMTU0NTEzMzAvaW5kZXguaHRtbA==', c: 'ef4444', y: ENCODED_LOAD_ASSET, g: ENCODED_PLAYABLE_CATEGORY },
@@ -241,17 +251,28 @@
 
             const placeholderSize = '160x160'; 
             
-            let imagePathPrefix;
-            if (asset.g === ENCODED_APP_CATEGORY) {
-                imagePathPrefix = 'https://notbingsa.github.io/Zenith/apps/images/';
+            let imageSrc;
+            const encodedTitle = encodeURIComponent(title);
+
+            // Determine image source based on title, with overrides for specific assets
+            if (title === 'Thirty Dollar Website') {
+                // Explicit path for Thirty Dollar Website
+                imageSrc = 'https://notbingsa.github.io/Zenith/games/images/Thirty%20Dollar%20Website.png'; 
+            } else if (title === 'Fluid Simulation') {
+                // Explicit path for Fluid Simulation, as requested by the user
+                imageSrc = 'https://notbingsa.github.io/Zenith/games/images/Fluid%20Simulation.png';
+            } else if (title === 'ChatGPT') { // <-- NEW LOGIC HERE
+                imageSrc = 'https://notbingsa.github.io/Zenith/apps/images/ChatGPT.png';
             } else {
-                imagePathPrefix = 'https://notbingsa.github.io/Zenith/games/images/';
+                // Standard path construction: Use 'apps' or 'games' based on category
+                const pathSegment = calculateValue(asset.g) === calculateValue(ENCODED_APP_CATEGORY) ? 'apps' : 'games';
+                imageSrc = `https://notbingsa.github.io/Zenith/${pathSegment}/images/${encodedTitle}.png`;
             }
 
             return `
                 <!-- href allows for right-click 'Open in new tab' functionality -->
                 <a href="?id=${asset.id}" onclick="${clickHandler}; return false;" class="block bg-gray-800 rounded-xl overflow-hidden asset-card-shadow ${sizeClass} group relative" data-category="${category}">
-                    <img src="${imagePathPrefix}${title}.png" 
+                    <img src="${imageSrc}" 
                          onerror="this.onerror=null;this.src='https://placehold.co/${placeholderSize}/${asset.c}/ffffff?text=${title.replace(/\s/g, '+')}'" 
                          class="w-full h-full object-cover transition duration-300 group-hover:scale-105" />
                     <div class="absolute inset-0 bg-black/30 flex items-end justify-center p-2 opacity-0 transition-opacity duration-200 group-hover:opacity-100">
@@ -323,18 +344,27 @@
         // Handles loading a standard asset.
         function processMatrix(assetId) {
             const asset = ALL_ASSETS.find(a => a.id === assetId);
-            if (!asset) return console.error('Asset not found for ID:', assetId);
+            if (!asset) {
+                console.error('Asset not found for ID:', assetId);
+                return;
+            }
 
-            // TRY/CATCH BLOCK: Essential for Canvas environment to prevent SecurityError
+            // The following operation may fail in sandboxed iframes, but is safe to catch and ignore.
             try {
                 history.pushState(null, calculateValue(asset.t), `?id=${assetId}`);
             } catch (e) {
-                console.error("History update failed in iframe, continuing normally.");
+                console.error("History update failed in iframe, continuing normally."); // BENIGN ERROR
             }
 
             const title = calculateValue(asset.t);
+            // NOTE: If the asset is FNF (ID 13), the URL must be determined in executeVariant before calling this function.
             const encodedUrl = asset.u; 
             const url = calculateValue(encodedUrl);
+            
+            if (!url) {
+                console.error('Asset URL is empty for ID:', assetId, 'Cannot load.');
+                return;
+            }
 
             // Determine if the current game is a fixed-size asset (only ADFOAI remaining)
             const isFixedSize = asset.t === ENCODED_ADFOAI_TITLE; 
@@ -451,11 +481,11 @@
             if (!asset) return console.error('Asset not found for ID:', assetId);
             const title = calculateValue(asset.t);
 
-            // TRY/CATCH BLOCK: Essential for Canvas environment to prevent SecurityError
+            // The following operation may fail in sandboxed iframes, but is safe to catch and ignore.
             try {
                 history.pushState(null, title, `?id=${assetId}`);
             } catch (e) {
-                console.error("History update failed in iframe, continuing normally.");
+                console.error("History update failed in iframe, continuing normally."); // BENIGN ERROR
             }
 
             const userAgent = navigator.userAgent;
@@ -473,8 +503,21 @@
                 encodedUrl = 'aHR0cHM6Ly9odG1sLWNsYXNzaWMuaXRjaC56b25lL2h0bWwvMjg3NjM1OS0xMzgzODg2L2luZGV4Lmh0bWw=';
             }
             
-            // Re-use processMatrix, passing the new temporary URL data in a new asset object
-            processMatrix({ id: assetId, t: asset.t, u: encodedUrl, y: ENCODED_LOAD_ASSET, g: ENCODED_PLAYABLE_CATEGORY }); 
+            // MODIFIED: Create a temporary asset object with the resolved URL and pass its ID to processMatrix.
+            const tempAsset = { 
+                id: assetId, 
+                t: asset.t, 
+                u: encodedUrl, 
+                y: ENCODED_LOAD_ASSET, // Re-use the standard load type for processMatrix
+                g: ENCODED_PLAYABLE_CATEGORY 
+            };
+            
+            // CRITICAL FIX: Update the original ALL_ASSETS entry with the resolved URL for processMatrix to find it.
+            // This prevents the error where processMatrix looks up the asset again and finds an empty URL.
+            asset.u = encodedUrl; 
+
+            // Now call the standard loader with the correct ID.
+            processMatrix(assetId); 
         }
 
         function adjustCanvasGeometry(container) {
