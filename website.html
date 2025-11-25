@@ -180,6 +180,7 @@
         const ADFOAI_TITLE = 'A Dance of Fire and Ice';
         const ADFOAI_WIDTH = '800px';
         const ADFOAI_HEIGHT = '400px';
+
         const SECRET_CODE = 'tester';
 
 
@@ -216,6 +217,12 @@
             { id: 34, t: 'Escape Road 2', u: 'https://nebulagames.us/storage/clescaperoad2.html', c: 'ef4444', y: LOAD_ASSET, g: GAME_CATEGORY, i: 'https://notbingsa.github.io/Zenith/games/images/Escape%20Road%202.png' },
             { id: 35, t: 'Infinite Craft', u: 'https://infinitecraftnew.com', c: '10b981', y: LOAD_ASSET, g: GAME_CATEGORY, i: 'https://notbingsa.github.io/Zenith/games/images/Infinite%20Craft.png' },
             { id: 36, t: 'Stone Grass', u: 'https://nebulagames.us/storage/Stone%20Grass%20Mowing%20Simulator.html', c: '10b981', y: LOAD_ASSET, g: GAME_CATEGORY, i: 'https://notbingsa.github.io/Zenith/games/images/Stone%20Grass.png' },
+            { id: 37, t: 'Paper.io 2', u: 'https://nebulagames.us/storage/paperio2/', c: 'facc15', y: LOAD_ASSET, g: GAME_CATEGORY, i: 'https://notbingsa.github.io/Zenith/games/images/Paper.io%202.png' },
+            { id: 38, t: 'Gobble', u: 'https://nebulagames.us/storage/Gobble.html', c: '10b981', y: LOAD_ASSET, g: GAME_CATEGORY, i: 'https://notbingsa.github.io/Zenith/games/images/Gobble.png' },
+            { id: 39, t: 'Stack', u: 'https://nebulagames.us/storage/stack/', c: '3b82f6', y: LOAD_ASSET, g: GAME_CATEGORY, i: 'https://notbingsa.github.io/Zenith/games/images/Stack.png' },
+            { id: 40, t: 'Stackball', u: 'https://nebulagames.us/storage/stackball/', c: 'ef4444', y: LOAD_ASSET, g: GAME_CATEGORY, i: 'https://notbingsa.github.io/Zenith/games/images/Stackball.png' },
+            { id: 41, t: 'Ragdoll Hit', u: 'https://nebulagames.us/storage/Ragdoll%20Hit.html', c: 'ef4444', y: LOAD_ASSET, g: GAME_CATEGORY, i: 'https://notbingsa.github.io/Zenith/games/images/Ragdoll%20Hit.png' },
+            { id: 42, t: 'Solar Smash', u: 'https://nebulagames.us/storage/Solar%20Smash.html', c: 'f97316', y: LOAD_ASSET, g: GAME_CATEGORY, i: 'https://notbingsa.github.io/Zenith/games/images/Solar%20Smash.png' },
         ];
         function createAssetCardHtml(asset, sizeClass = 'w-full h-auto aspect-square') {
             const title = asset.t;
@@ -297,22 +304,14 @@
                 console.error('Asset not found for ID:', assetId);
                 return;
             }
-            try {
-                history.pushState(null, asset.t, `?id=${assetId}`);
-            } catch (e) {
-                console.error("History update failed in iframe, continuing normally.");
-            }
+            // History update removed
             processMatrixInternal(asset);
         }
         function executeVariant(assetId) {
             const asset = ALL_ASSETS.find(a => a.id === assetId);
             if (!asset) return console.error('Asset not found for ID:', assetId);
             const title = asset.t;
-            try {
-                history.pushState(null, title, `?id=${assetId}`);
-            } catch (e) {
-                console.error("History update failed in iframe, continuing normally.");
-            }
+            // History update removed
             const userAgent = navigator.userAgent;
             const isMobileDevice = /Mobi|Android|iPhone|iPod|iPad/i.test(userAgent);
             const isSafariBrowser = userAgent.includes('Safari') && !userAgent.includes('Chrome');
@@ -387,6 +386,9 @@
 
             const controlBar = document.createElement('div');
             controlBar.className = 'asset-control-bar';
+
+
+
             const displayToggleButton = document.createElement('button');
             displayToggleButton.id = 'fullscreen-toggle-button';
             displayToggleButton.className = 'fullscreen-button';
@@ -463,11 +465,7 @@
             }
         }
         function resetViewport() {
-            try {
-                history.pushState(null, HOMEPAGE_TITLE, window.location.pathname);
-            } catch (e) {
-                console.error("History update failed in iframe, continuing normally.");
-            }
+            // History update removed
             if (labelRegistry) labelRegistry.textContent = HOMEPAGE_TITLE;
             if (mainPanel) mainPanel.classList.remove('hidden');
             const secretContent = document.getElementById('secret-mode-content');
