@@ -177,9 +177,7 @@
         const LOAD_FNF_VARIANT = 'executeVariant';
         const GAME_CATEGORY = 'Game';
         const APP_CATEGORY = 'App';
-        const ADFOAI_TITLE = 'A Dance of Fire and Ice';
-        const ADFOAI_WIDTH = '800px';
-        const ADFOAI_HEIGHT = '400px';
+
 
         const SECRET_CODE = 'tester';
 
@@ -188,7 +186,7 @@
         const ALL_ASSETS = [
             { id: 1, t: 'Chat', u: 'https://padlet.com/lincolnharrison8pc/zenith', c: '7c3aed', y: LOAD_ASSET, g: APP_CATEGORY, i: 'https://notbingsa.github.io/Zenith/apps/images/Chat.png' },
             { id: 2, t: 'Unblocker', u: 'https://homemath.ns0.it', c: 'f97316', y: LOAD_ASSET, g: APP_CATEGORY, i: 'https://notbingsa.github.io/Zenith/apps/images/Unblocker.png' },
-            { id: 3, t: 'A Dance of Fire and Ice', u: 'https://game221555.konggames.com/gamez/0022/1555/live/index.html', c: 'ef4444', y: LOAD_ASSET, g: GAME_CATEGORY, i: 'https://notbingsa.github.io/Zenith/games/images/A%20Dance%20of%20Fire%20and%20Ice.png' },
+            { id: 3, t: 'Soundboard', u: 'https://filme.imyfone.com/soundboards', c: '3b82f6', y: LOAD_ASSET, g: APP_CATEGORY, i: 'https://notbingsa.github.io/Zenith/apps/images/Soundboard.png' },
             { id: 4, t: 'Bitlife', u: 'https://nebulagames.us/storage/bitlife/', c: 'ef4444', y: LOAD_ASSET, g: GAME_CATEGORY, i: 'https://notbingsa.github.io/Zenith/games/images/Bitlife.png' },
             { id: 5, t: 'Block Blast', u: 'https://nebulagames.us/storage/Block%20Blast.html', c: '1d4ed8', y: LOAD_ASSET, g: GAME_CATEGORY, i: 'https://notbingsa.github.io/Zenith/games/images/Block%20Blast.png' },
             { id: 6, t: 'Bouncemasters', u: 'https://nebulagames.us/storage/Bouncemasters.html', c: 'f97316', y: LOAD_ASSET, g: GAME_CATEGORY, i: 'https://notbingsa.github.io/Zenith/games/images/Bouncemasters.png' },
@@ -223,6 +221,7 @@
             { id: 40, t: 'Stackball', u: 'https://nebulagames.us/storage/stackball/', c: 'ef4444', y: LOAD_ASSET, g: GAME_CATEGORY, i: 'https://notbingsa.github.io/Zenith/games/images/Stackball.png' },
             { id: 41, t: 'Ragdoll Hit', u: 'https://nebulagames.us/storage/Ragdoll%20Hit.html', c: 'ef4444', y: LOAD_ASSET, g: GAME_CATEGORY, i: 'https://notbingsa.github.io/Zenith/games/images/Ragdoll%20Hit.png' },
             { id: 42, t: 'Solar Smash', u: 'https://nebulagames.us/storage/Solar%20Smash.html', c: 'f97316', y: LOAD_ASSET, g: GAME_CATEGORY, i: 'https://notbingsa.github.io/Zenith/games/images/Solar%20Smash.png' },
+            { id: 43, t: 'Traffic Rider', u: 'https://traffic-rider.io/game/traffic-rider/', c: 'facc15', y: LOAD_ASSET, g: GAME_CATEGORY, i: 'https://notbingsa.github.io/Zenith/games/images/Traffic%20Rider.png' },
         ];
         function createAssetCardHtml(asset, sizeClass = 'w-full h-auto aspect-square') {
             const title = asset.t;
@@ -335,13 +334,9 @@
                 console.error('Asset URL is empty for ID:', assetId, 'Cannot load.');
                 return;
             }
-            const isFixedSize = title === ADFOAI_TITLE;
+            const isFixedSize = false;
             let targetWidth = '100%';
             let targetHeight = '100%';
-            if (isFixedSize) {
-                targetWidth = ADFOAI_WIDTH;
-                targetHeight = ADFOAI_HEIGHT;
-            }
             if (labelRegistry) labelRegistry.textContent = title;
             if (mainPanel) {
                 mainPanel.classList.add('hidden');
@@ -456,12 +451,39 @@
             }, 5000);
         }
         function adjustCanvasGeometry(container) {
-            const isFullView = container.classList.toggle('full-view');
+            const isFullView = container.classList.contains('full-view');
             const fsButton = document.getElementById('fullscreen-toggle-button');
+
             if (isFullView) {
-                fsButton.innerHTML = '<i class="fas fa-compress"></i>';
-            } else {
+                // Exit fullscreen
+                container.classList.remove('full-view');
                 fsButton.innerHTML = '<i class="fas fa-expand"></i>';
+
+                // Exit browser fullscreen
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                } else if (document.webkitExitFullscreen) {
+                    document.webkitExitFullscreen();
+                } else if (document.mozCancelFullScreen) {
+                    document.mozCancelFullScreen();
+                } else if (document.msExitFullscreen) {
+                    document.msExitFullscreen();
+                }
+            } else {
+                // Enter fullscreen
+                container.classList.add('full-view');
+                fsButton.innerHTML = '<i class="fas fa-compress"></i>';
+
+                // Request browser fullscreen
+                if (container.requestFullscreen) {
+                    container.requestFullscreen();
+                } else if (container.webkitRequestFullscreen) {
+                    container.webkitRequestFullscreen();
+                } else if (container.mozRequestFullScreen) {
+                    container.mozRequestFullScreen();
+                } else if (container.msRequestFullscreen) {
+                    container.msRequestFullscreen();
+                }
             }
         }
         function resetViewport() {
@@ -519,6 +541,7 @@
                 input.focus();
             }
         }
+
         function applySecretMode(activate) {
             const homepage = document.getElementById('homepage-section');
             const assetContainer = document.getElementById('asset-container');
@@ -533,7 +556,6 @@
                 secretContent.classList.remove('hidden');
                 headerTitle.textContent = 'Tester';
                 primaryMarker.textContent = 'Tester';
-                taglineElement.textContent = 'Test Everything.';
                 secretToggle.innerHTML = '<i class="fas fa-lock-open"></i>';
                 secretToggle.classList.remove('hover:bg-zenith-purple/50');
                 secretToggle.classList.add('text-zenith-purple');
@@ -550,7 +572,7 @@
             }
         }
         function handleTesterAssetLoad() {
-            testerLoadCount++;
+            testerLoadCount;
             const progressBar = document.getElementById('tester-loading-bar');
             const statusText = document.getElementById('tester-loading-status');
             const progress = (testerLoadCount / testerTotalAssets) * 100;
