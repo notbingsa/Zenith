@@ -270,65 +270,225 @@
             sessionStorage.setItem(SPEED_WARNING_SHOWN_KEY, 'true');
         }
 
+        // Cloudflare Speed Test
+        const CLOUDFLARE_SPEED_URL = 'https://speed.cloudflare.com/__down?bytes=100000000'; // 100MB
+        const FALLBACK_SPEED_URL = 'https://httpbin.org/bytes/50000000'; // 50MB
+
+        async function measureCloudflareSpeed() {
+            const modal = document.createElement('div');
+            modal.id = 'speed-test-modal';
+            modal.className = 'fixed inset-0 bg-black/90 flex items-center justify-center z-[2000] p-4';
+            modal.innerHTML = `
+                <div class="bg-gray-800 p-8 rounded-xl shadow-2xl w-full max-w-md border border-zenith-purple/50 flex flex-col items-center">
+                    <h3 class="text-2xl font-bold text-white mb-6">Testing Connection Speed</h3>
+                    <div class="w-full bg-gray-700 rounded-full h-4 mb-4 overflow-hidden">
+                        <div id="st-progress" class="bg-zenith-purple h-full transition-all duration-200" style="width: 0%"></div>
+                    </div>
+                    <div class="text-4xl font-mono font-bold text-zenith-blue mb-2">
+                        <span id="st-speed">0.00</span> <span class="text-lg text-gray-400">Mbps</span>
+                    </div>
+                    <p id="st-status" class="text-gray-400 text-sm mb-6">Initializing...</p>
+                    <button id="st-cancel" class="px-6 py-2 rounded-lg bg-red-600 text-white font-semibold hover:bg-red-500 transition duration-150">
+                        Cancel
+                    </button>
+                </div>
+            `;
+            document.body.appendChild(modal);
+
+            const progressEl = modal.querySelector('#st-progress');
+            const speedEl = modal.querySelector('#st-speed');
+            const statusEl = modal.querySelector('#st-status');
+            const cancelBtn = modal.querySelector('#st-cancel');
+
+            const controller = new AbortController();
+            const signal = controller.signal;
+
+            cancelBtn.onclick = () => {
+                controller.abort();
+                modal.remove();
+            };
+
+            const runTest = async (url, isFallback = false) => {
+                try {
+                    if (isFallback) {
+                        statusEl.textContent = "Primary failed, trying fallback...";
+                    }
+
+                    const startTime = performance.now();
+                    const response = await fetch(url, { signal });
+
+                    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+                    if (!response.body) throw new Error('ReadableStream not supported');
+
+                    const reader = response.body.getReader();
+                    const contentLength = +response.headers.get('Content-Length') || (isFallback ? 50000000 : 100000000);
+
+                    let receivedLength = 0;
+                    let lastUpdate = startTime;
+
+                    while (true) {
+                        const { done, value } = await reader.read();
+
+                        if (done) break;
+
+                        receivedLength += value.length;
+                        const currentTime = performance.now();
+                        const duration = (currentTime - startTime) / 1000; // seconds
+
+                        // Update UI every 100ms
+                        if (currentTime - lastUpdate > 100) {
+                            const speedBps = receivedLength / duration;
+                            const speedMbps = (speedBps * 8) / (1000 * 1000);
+                            const percent = Math.min((receivedLength / contentLength) * 100, 100);
+
+                            progressEl.style.width = `${percent}%`;
+                            speedEl.textContent = speedMbps.toFixed(2);
+                            statusEl.textContent = `Downloaded ${(receivedLength / (1024 * 1024)).toFixed(1)} MB`;
+                            lastUpdate = currentTime;
+                        }
+
+                        // Stop after 15 seconds or 50MB to save bandwidth/time
+                        if (duration > 15 || receivedLength > 50000000) {
+                            controller.abort();
+                            break;
+                        }
+                    }
+
+                    // Final calculation
+                    const endTime = performance.now();
+                    const duration = (endTime - startTime) / 1000;
+                    const speedBps = receivedLength / duration;
+                    const speedMbps = (speedBps * 8) / (1000 * 1000);
+
+                    return speedMbps;
+
+                } catch (error) {
+                    if (signal.aborted && error.name === 'AbortError') {
+                        // If aborted by our timeout/size limit, it's a success in terms of measurement
+                        // But we need to calculate final speed.
+                        // Actually, if we abort via controller in the loop, it throws AbortError.
+                        // We can just return the last calculated speed?
+                        // Better: don't abort for success, just break.
+                        // I fixed the break logic above, so it shouldn't throw AbortError for success case.
+                        // But if user clicked cancel, it throws.
+                        throw error;
+                    }
+                    throw error;
+                }
+            };
+
+            try {
+                let speedMbps;
+                try {
+                    speedMbps = await runTest(CLOUDFLARE_SPEED_URL);
+                } catch (e) {
+                    if (signal.aborted) throw e; // User cancelled
+                    console.warn("Primary speed test failed, trying fallback.", e);
+                    speedMbps = await runTest(FALLBACK_SPEED_URL, true);
+                }
+
+                // Show Result
+                modal.innerHTML = `
+                     <div class="bg-gray-800 p-8 rounded-xl shadow-2xl w-full max-w-md border border-green-500/50 flex flex-col items-center transform scale-100 transition-transform duration-300">
+                        <div class="flex items-center justify-center mb-4">
+                            <i class="fas fa-check-circle text-green-500 text-5xl"></i>
+                        </div>
+                        <h3 class="text-2xl font-bold text-white mb-2">Test Complete</h3>
+                        <div class="text-5xl font-mono font-bold text-white mb-2">
+                            ${speedMbps.toFixed(2)} <span class="text-xl text-gray-400">Mbps</span>
+                        </div>
+                        <p class="text-gray-400 mb-6 text-center">
+                            Your connection is <span class="text-green-400 font-bold">${speedMbps > 50 ? 'Excellent' : speedMbps > 10 ? 'Good' : 'Slow'}</span>
+                        </p>
+                        <button onclick="document.getElementById('speed-test-modal').remove()" 
+                                class="px-8 py-3 rounded-lg bg-zenith-purple text-white font-semibold hover:bg-zenith-purple/90 transition duration-150">
+                            Close
+                        </button>
+                    </div>
+                `;
+
+            } catch (error) {
+                if (signal.aborted && error.name === 'AbortError') {
+                    // Manual cancel, do nothing (modal removed in onclick)
+                } else {
+                    console.error("Speed test error:", error);
+                    modal.innerHTML = `
+                     <div class="bg-gray-800 p-8 rounded-xl shadow-2xl w-full max-w-md border border-red-500/50 flex flex-col items-center">
+                        <i class="fas fa-times-circle text-red-500 text-5xl mb-4"></i>
+                        <h3 class="text-xl font-bold text-white mb-4">Test Failed</h3>
+                        <p class="text-gray-400 mb-6 text-center">Could not complete the speed test.</p>
+                        <p class="text-gray-500 text-xs mb-6 text-center">${error.message}</p>
+                        <button onclick="document.getElementById('speed-test-modal').remove()" class="px-6 py-2 rounded-lg bg-gray-600 text-white">Close</button>
+                    </div>
+                `;
+                }
+            }
+        }
+
 
         const ALL_ASSETS = [
-            { id: 1, t: 'Chat', u: 'https://padlet.com/lincolnharrison8pc/zenith', c: '7c3aed', y: LOAD_ASSET, g: APP_CATEGORY, i: 'https://notbingsa.github.io/Zenith/apps/images/Chat.png' },
-            { id: 2, t: 'Unblocker', u: 'https://homemath.ns0.it', c: 'f97316', y: LOAD_ASSET, g: APP_CATEGORY, i: 'https://notbingsa.github.io/Zenith/apps/images/Unblocker.png' },
-            { id: 4, t: 'Bitlife', u: 'https://nebulagames.us/storage/bitlife/', c: 'ef4444', y: LOAD_ASSET, g: GAME_CATEGORY, i: 'https://notbingsa.github.io/Zenith/games/images/Bitlife.png' },
-            { id: 5, t: 'Block Blast', u: 'https://nebulagames.us/storage/Block%20Blast.html', c: '1d4ed8', y: LOAD_ASSET, g: GAME_CATEGORY, i: 'https://notbingsa.github.io/Zenith/games/images/Block%20Blast.png' },
-            { id: 6, t: 'Bouncemasters', u: 'https://nebulagames.us/storage/Bouncemasters.html', c: 'f97316', y: LOAD_ASSET, g: GAME_CATEGORY, i: 'https://notbingsa.github.io/Zenith/games/images/Bouncemasters.png' },
-            { id: 7, t: 'Cookie Clicker', u: 'https://nebulagames.us/storage/Cookie%20Clicker.html', c: 'd97706', y: LOAD_ASSET, g: GAME_CATEGORY, i: 'https://notbingsa.github.io/Zenith/games/images/Cookie%20Clicker.png' },
-            { id: 8, t: 'Coreball', u: 'https://nebulagames.us/storage/Coreball.html', c: 'f87171', y: LOAD_ASSET, g: GAME_CATEGORY, i: 'https://notbingsa.github.io/Zenith/games/images/Coreball.png' },
-            { id: 9, t: 'Crossy Road', u: 'https://nebulagames.us/storage/Crossy%20Road.html', c: '10b981', y: LOAD_ASSET, g: GAME_CATEGORY, i: 'https://notbingsa.github.io/Zenith/games/images/Crossy%20Road.png' },
-            { id: 10, t: 'Drive Mad', u: 'https://nebulagames.us/storage/Drive%20Mad.html', c: '34d399', y: LOAD_ASSET, g: GAME_CATEGORY, i: 'https://notbingsa.github.io/Zenith/games/images/Drive%20Mad.png' },
-            { id: 11, t: 'Eggy Car', u: 'https://nebulagames.us/storage/eggycar/', c: 'facc15', y: LOAD_ASSET, g: GAME_CATEGORY, i: 'https://notbingsa.github.io/Zenith/games/images/Eggy%20Car.png' },
-            { id: 12, t: 'Flappy Bird', u: 'https://nebulagames.us/storage/Flappy%20Bird.html', c: 'facc15', y: LOAD_ASSET, g: GAME_CATEGORY, i: 'https://notbingsa.github.io/Zenith/games/images/Flappy%20Bird.png' },
-            { id: 13, t: 'Friday Night Funkin', u: '', c: 'ef4444', y: LOAD_FNF_VARIANT, g: GAME_CATEGORY, i: 'https://notbingsa.github.io/Zenith/games/images/Friday%20Night%20Funkin.png' },
-            { id: 14, t: 'Geometry Dash Lite', u: 'https://nebulagames.us/storage/Geometry%20Dash%20Lite.html', c: '3b82f6', y: LOAD_ASSET, g: GAME_CATEGORY, i: 'https://notbingsa.github.io/Zenith/games/images/Geometry%20Dash%20Lite.png' },
-            { id: 15, t: 'Poly Track', u: 'https://html-classic.itch.zone/html/15451330/index.html', c: 'ef4444', y: LOAD_ASSET, g: GAME_CATEGORY, i: 'https://notbingsa.github.io/Zenith/games/images/Poly%20Track.png' },
-            { id: 16, t: 'Ragdoll Archers', u: 'https://nebulagames.us/storage/Ragdoll%20Archers.html', c: 'ef4444', y: LOAD_ASSET, g: GAME_CATEGORY, i: 'https://notbingsa.github.io/Zenith/games/images/Ragdoll%20Archers.png' },
-            { id: 17, t: 'Sandboxels', u: 'https://shalbito.vercel.app/', c: 'ef4444', y: LOAD_ASSET, g: GAME_CATEGORY, i: 'https://notbingsa.github.io/Zenith/games/images/Sandboxels.png' },
-            { id: 18, t: 'Stickman Hook', u: 'https://nebulagames.us/storage/Stickman%20Hook.html', c: '10b981', y: LOAD_ASSET, g: GAME_CATEGORY, i: 'https://notbingsa.github.io/Zenith/games/images/Stickman%20Hook.png' },
-            { id: 20, t: 'Tiny Fishing', u: 'https://nebulagames.us/storage/Tiny%20Fishing.html', c: 'facc15', y: LOAD_ASSET, g: GAME_CATEGORY, i: 'https://notbingsa.github.io/Zenith/games/images/Tiny%20Fishing.png' },
-            { id: 23, t: 'Cricket', u: 'https://doodlecricket.pages.dev/google-cricket/', c: 'f97316', y: LOAD_ASSET, g: GAME_CATEGORY, i: 'https://notbingsa.github.io/Zenith/games/images/Cricket.png' },
-            { id: 24, t: 'Fluid Simulation', u: 'https://haxiomic.github.io/projects/webgl-fluid-and-particles/', c: '3b82f6', y: LOAD_ASSET, g: GAME_CATEGORY, i: 'https://notbingsa.github.io/Zenith/games/images/Fluid%20Simulation.png' },
-            { id: 26, t: 'Baseball', u: 'https://nebulagames.us/storage/Google%20Baseball.html', c: '10b981', y: LOAD_ASSET, g: GAME_CATEGORY, i: 'https://notbingsa.github.io/Zenith/games/images/Baseball.png' },
-            { id: 27, t: 'Thirty Dollar Website', u: 'https://kleeder.de/files/moai2/%F0%9F%97%Bf.html', c: '34d399', y: LOAD_ASSET, g: GAME_CATEGORY, i: 'https://notbingsa.github.io/Zenith/games/images/Thirty%20Dollar%20Website.png' },
-            { id: 29, t: 'Fruit Ninja', u: 'https://nebulagames.us/storage/Fruit%20Ninja.html', c: '10b981', y: LOAD_ASSET, g: GAME_CATEGORY, i: 'https://notbingsa.github.io/Zenith/games/images/Fruit%20Ninja.png' },
-            { id: 30, t: 'Survival Race', u: 'https://nebulagames.us/storage/clsurvivalracev2.html', c: '7c3aed', y: LOAD_ASSET, g: GAME_CATEGORY, i: 'https://notbingsa.github.io/Zenith/games/images/Survival%20Race.png' },
-            { id: 31, t: 'Yohoho.io', u: 'https://nebulagames.us/storage/yohoho/', c: '2563eb', y: LOAD_ASSET, g: GAME_CATEGORY, i: 'https://notbingsa.github.io/Zenith/games/images/Yohoho.io.png' },
-            { id: 32, t: 'Blumgi Merge', u: 'https://nebulagames.us/storage/blumgimerge/', c: 'f97316', y: LOAD_ASSET, g: GAME_CATEGORY, i: 'https://notbingsa.github.io/Zenith/games/images/Blumgi%20Merge.png' },
-            { id: 33, t: 'Cut The Rope', u: 'https://nebulagames.us/storage/clcuttherope.html', c: '10b981', y: LOAD_ASSET, g: GAME_CATEGORY, i: 'https://notbingsa.github.io/Zenith/games/images/Cut%20The%20Rope.png' },
-            { id: 34, t: 'Escape Road 2', u: 'https://nebulagames.us/storage/clescaperoad2.html', c: 'ef4444', y: LOAD_ASSET, g: GAME_CATEGORY, i: 'https://notbingsa.github.io/Zenith/games/images/Escape%20Road%202.png' },
-            { id: 35, t: 'Infinite Craft', u: 'https://infinitecraftnew.com', c: '10b981', y: LOAD_ASSET, g: GAME_CATEGORY, i: 'https://notbingsa.github.io/Zenith/games/images/Infinite%20Craft.png' },
-            { id: 36, t: 'Stone Grass', u: 'https://nebulagames.us/storage/Stone%20Grass%20Mowing%20Simulator.html', c: '10b981', y: LOAD_ASSET, g: GAME_CATEGORY, i: 'https://notbingsa.github.io/Zenith/games/images/Stone%20Grass.png' },
-            { id: 37, t: 'Paper.io 2', u: 'https://nebulagames.us/storage/paperio2/', c: 'facc15', y: LOAD_ASSET, g: GAME_CATEGORY, i: 'https://notbingsa.github.io/Zenith/games/images/Paper.io%202.png' },
-            { id: 38, t: 'Gobble', u: 'https://nebulagames.us/storage/Gobble.html', c: '10b981', y: LOAD_ASSET, g: GAME_CATEGORY, i: 'https://notbingsa.github.io/Zenith/games/images/Gobble.png' },
-            { id: 39, t: 'Stack', u: 'https://nebulagames.us/storage/stack/', c: '3b82f6', y: LOAD_ASSET, g: GAME_CATEGORY, i: 'https://notbingsa.github.io/Zenith/games/images/Stack.png' },
-            { id: 40, t: 'Stackball', u: 'https://nebulagames.us/storage/stackball/', c: 'ef4444', y: LOAD_ASSET, g: GAME_CATEGORY, i: 'https://notbingsa.github.io/Zenith/games/images/Stackball.png' },
-            { id: 41, t: 'Ragdoll Hit', u: 'https://nebulagames.us/storage/Ragdoll%20Hit.html', c: 'ef4444', y: LOAD_ASSET, g: GAME_CATEGORY, i: 'https://notbingsa.github.io/Zenith/games/images/Ragdoll%20Hit.png' },
-            { id: 42, t: 'Solar Smash', u: 'https://nebulagames.us/storage/Solar%20Smash.html', c: 'f97316', y: LOAD_ASSET, g: GAME_CATEGORY, i: 'https://notbingsa.github.io/Zenith/games/images/Solar%20Smash.png' },
-            { id: 43, t: 'Traffic Rider', u: 'https://traffic-rider.io/game/traffic-rider/', c: 'facc15', y: LOAD_ASSET, g: GAME_CATEGORY, i: 'https://notbingsa.github.io/Zenith/games/images/Traffic%20Rider.png' },
-            { id: 44, t: 'Five Nights at Freddy\'s', u: 'https://nebulagames.us/storage/Five%20Nights%20at%20Freddys.html', c: 'ef4444', y: LOAD_ASSET, g: GAME_CATEGORY, i: 'https://notbingsa.github.io/Zenith/games/images/FNAF.png' },
-            { id: 45, t: 'Five Nights at Freddy\'s 2', u: 'https://nebulagames.us/storage/Five%20Nights%20at%20Freddys%202.html', c: 'ef4444', y: LOAD_ASSET, g: GAME_CATEGORY, i: 'https://notbingsa.github.io/Zenith/games/images/FNAF%202.png' },
-            { id: 46, t: 'Five Nights at Freddy\'s 3', u: 'https://nebulagames.us/storage/Five%20Nights%20at%20Freddys%203.html', c: 'ef4444', y: LOAD_ASSET, g: GAME_CATEGORY, i: 'https://notbingsa.github.io/Zenith/games/images/FNAF%203.png' },
-            { id: 47, t: 'Five Nights at Freddy\'s 4', u: 'https://nebulagames.us/storage/Five%20Nights%20at%20Freddys%204.html', c: 'ef4444', y: LOAD_ASSET, g: GAME_CATEGORY, i: 'https://notbingsa.github.io/Zenith/games/images/FNAF%204.png' },
-            { id: 48, t: 'Snake', u: 'https://googlesnakemods.com/v/current/', c: '10b981', y: LOAD_ASSET, g: GAME_CATEGORY, i: 'https://notbingsa.github.io/Zenith/games/images/Snake.png' },
+            { t: 'Baseball', u: 'https://nebulagames.us/storage/Google%20Baseball.html', c: '10b981', y: LOAD_ASSET, g: GAME_CATEGORY, i: 'https://notbingsa.github.io/Zenith/games/images/Baseball.png' },
+            { t: 'Bitlife', u: 'https://nebulagames.us/storage/bitlife/', c: 'ef4444', y: LOAD_ASSET, g: GAME_CATEGORY, i: 'https://notbingsa.github.io/Zenith/games/images/Bitlife.png' },
+            { t: 'Block Blast', u: 'https://nebulagames.us/storage/Block%20Blast.html', c: '1d4ed8', y: LOAD_ASSET, g: GAME_CATEGORY, i: 'https://notbingsa.github.io/Zenith/games/images/Block%20Blast.png' },
+            { t: 'Blumgi Merge', u: 'https://nebulagames.us/storage/blumgimerge/', c: 'f97316', y: LOAD_ASSET, g: GAME_CATEGORY, i: 'https://notbingsa.github.io/Zenith/games/images/Blumgi%20Merge.png' },
+            { t: 'Bouncemasters', u: 'https://nebulagames.us/storage/Bouncemasters.html', c: 'f97316', y: LOAD_ASSET, g: GAME_CATEGORY, i: 'https://notbingsa.github.io/Zenith/games/images/Bouncemasters.png' },
+            { t: 'Chat', u: 'https://padlet.com/lincolnharrison8pc/zenith', c: '7c3aed', y: LOAD_ASSET, g: APP_CATEGORY, i: 'https://notbingsa.github.io/Zenith/apps/images/Chat.png' },
+            { t: 'Cookie Clicker', u: 'https://nebulagames.us/storage/Cookie%20Clicker.html', c: 'd97706', y: LOAD_ASSET, g: GAME_CATEGORY, i: 'https://notbingsa.github.io/Zenith/games/images/Cookie%20Clicker.png' },
+            { t: 'Coreball', u: 'https://nebulagames.us/storage/Coreball.html', c: 'f87171', y: LOAD_ASSET, g: GAME_CATEGORY, i: 'https://notbingsa.github.io/Zenith/games/images/Coreball.png' },
+            { t: 'Cricket', u: 'https://doodlecricket.pages.dev/google-cricket/', c: 'f97316', y: LOAD_ASSET, g: GAME_CATEGORY, i: 'https://notbingsa.github.io/Zenith/games/images/Cricket.png' },
+            { t: 'Crossy Road', u: 'https://nebulagames.us/storage/Crossy%20Road.html', c: '10b981', y: LOAD_ASSET, g: GAME_CATEGORY, i: 'https://notbingsa.github.io/Zenith/games/images/Crossy%20Road.png' },
+            { t: 'Cut The Rope', u: 'https://nebulagames.us/storage/clcuttherope.html', c: '10b981', y: LOAD_ASSET, g: GAME_CATEGORY, i: 'https://notbingsa.github.io/Zenith/games/images/Cut%20The%20Rope.png' },
+            { t: 'Drive Mad', u: 'https://nebulagames.us/storage/Drive%20Mad.html', c: '34d399', y: LOAD_ASSET, g: GAME_CATEGORY, i: 'https://notbingsa.github.io/Zenith/games/images/Drive%20Mad.png' },
+            { t: 'Eggy Car', u: 'https://nebulagames.us/storage/eggycar/', c: 'facc15', y: LOAD_ASSET, g: GAME_CATEGORY, i: 'https://notbingsa.github.io/Zenith/games/images/Eggy%20Car.png' },
+            { t: 'Escape Road 2', u: 'https://nebulagames.us/storage/clescaperoad2.html', c: 'ef4444', y: LOAD_ASSET, g: GAME_CATEGORY, i: 'https://notbingsa.github.io/Zenith/games/images/Escape%20Road%202.png' },
+            { t: 'Five Nights at Freddy\'s', u: 'https://nebulagames.us/storage/Five%20Nights%20at%20Freddys.html', c: 'ef4444', y: LOAD_ASSET, g: GAME_CATEGORY, i: 'https://notbingsa.github.io/Zenith/games/images/FNAF.png' },
+            { t: 'Five Nights at Freddy\'s 2', u: 'https://nebulagames.us/storage/Five%20Nights%20at%20Freddys%202.html', c: 'ef4444', y: LOAD_ASSET, g: GAME_CATEGORY, i: 'https://notbingsa.github.io/Zenith/games/images/FNAF%202.png' },
+            { t: 'Five Nights at Freddy\'s 3', u: 'https://nebulagames.us/storage/Five%20Nights%20at%20Freddys%203.html', c: 'ef4444', y: LOAD_ASSET, g: GAME_CATEGORY, i: 'https://notbingsa.github.io/Zenith/games/images/FNAF%203.png' },
+            { t: 'Five Nights at Freddy\'s 4', u: 'https://nebulagames.us/storage/Five%20Nights%20at%20Freddys%204.html', c: 'ef4444', y: LOAD_ASSET, g: GAME_CATEGORY, i: 'https://notbingsa.github.io/Zenith/games/images/FNAF%204.png' },
+            { t: 'Five Nights at Freddy\'s 4 Halloween', u: 'https://nebulagames.us/storage/Five%20Nights%20at%20Freddys%204_%20Halloween.html', c: 'ef4444', y: LOAD_ASSET, g: GAME_CATEGORY, i: 'https://notbingsa.github.io/Zenith/games/images/FNAF%204%20Halloween.png' },
+            { t: 'Five Nights at Freddy\'s Sister Location', u: 'https://nebulagames.us/storage/Five%20Nights%20at%20Freddys_%20Sister%20Location.html', c: 'ef4444', y: LOAD_ASSET, g: GAME_CATEGORY, i: 'https://notbingsa.github.io/Zenith/games/images/FNAF%20Sister%20Location.png' },
+            { t: 'Flappy Bird', u: 'https://nebulagames.us/storage/Flappy%20Bird.html', c: 'facc15', y: LOAD_ASSET, g: GAME_CATEGORY, i: 'https://notbingsa.github.io/Zenith/games/images/Flappy%20Bird.png' },
+            { t: 'Fluid Simulation', u: 'https://haxiomic.github.io/projects/webgl-fluid-and-particles/', c: '3b82f6', y: LOAD_ASSET, g: GAME_CATEGORY, i: 'https://notbingsa.github.io/Zenith/games/images/Fluid%20Simulation.png' },
+            { t: 'FNAF Pizzeria Simulator', u: 'https://nebulagames.us/storage/Five%20Nights%20at%20Freddys_%20Pizza%20Simulator.html', c: 'ef4444', y: LOAD_ASSET, g: GAME_CATEGORY, i: 'https://notbingsa.github.io/Zenith/games/images/FNAF%20Pizzeria%20Simulator.png' },
+            { t: 'FNAF Ultimate Custom Night', u: 'https://nebulagames.us/storage/Five%20Nights%20at%20Freddys_%20Ultimate%20Custom%20Night.html', c: 'ef4444', y: LOAD_ASSET, g: GAME_CATEGORY, i: 'https://notbingsa.github.io/Zenith/games/images/FNAF%20Ultimate%20Custom%20Night.png' },
+            { t: 'FNAF World', u: 'https://nebulagames.us/storage/Five%20Nights%20at%20Freddys_%20World.html', c: 'ef4444', y: LOAD_ASSET, g: GAME_CATEGORY, i: 'https://notbingsa.github.io/Zenith/games/images/FNAF%20World.png' },
+            { t: 'Friday Night Funkin', u: '', c: 'ef4444', y: LOAD_FNF_VARIANT, g: GAME_CATEGORY, i: 'https://notbingsa.github.io/Zenith/games/images/Friday%20Night%20Funkin.png' },
+            { t: 'Fruit Ninja', u: 'https://nebulagames.us/storage/Fruit%20Ninja.html', c: '10b981', y: LOAD_ASSET, g: GAME_CATEGORY, i: 'https://notbingsa.github.io/Zenith/games/images/Fruit%20Ninja.png' },
+            { t: 'Geometry Dash Lite', u: 'https://nebulagames.us/storage/Geometry%20Dash%20Lite.html', c: '3b82f6', y: LOAD_ASSET, g: GAME_CATEGORY, i: 'https://notbingsa.github.io/Zenith/games/images/Geometry%20Dash%20Lite.png' },
+            { t: 'Gobble', u: 'https://nebulagames.us/storage/Gobble.html', c: '10b981', y: LOAD_ASSET, g: GAME_CATEGORY, i: 'https://notbingsa.github.io/Zenith/games/images/Gobble.png' },
+            { t: 'Infinite Craft', u: 'https://infinitecraftnew.com', c: '10b981', y: LOAD_ASSET, g: GAME_CATEGORY, i: 'https://notbingsa.github.io/Zenith/games/images/Infinite%20Craft.png' },
+            { t: 'Paper.io 2', u: 'https://nebulagames.us/storage/paperio2/', c: 'facc15', y: LOAD_ASSET, g: GAME_CATEGORY, i: 'https://notbingsa.github.io/Zenith/games/images/Paper.io%202.png' },
+            { t: 'Poly Track', u: 'https://html-classic.itch.zone/html/15451330/index.html', c: 'ef4444', y: LOAD_ASSET, g: GAME_CATEGORY, i: 'https://notbingsa.github.io/Zenith/games/images/Poly%20Track.png' },
+            { t: 'Ragdoll Archers', u: 'https://nebulagames.us/storage/Ragdoll%20Archers.html', c: 'ef4444', y: LOAD_ASSET, g: GAME_CATEGORY, i: 'https://notbingsa.github.io/Zenith/games/images/Ragdoll%20Archers.png' },
+            { t: 'Ragdoll Hit', u: 'https://nebulagames.us/storage/Ragdoll%20Hit.html', c: 'ef4444', y: LOAD_ASSET, g: GAME_CATEGORY, i: 'https://notbingsa.github.io/Zenith/games/images/Ragdoll%20Hit.png' },
+            { t: 'Sandboxels', u: 'https://shalbito.vercel.app/', c: 'ef4444', y: LOAD_ASSET, g: GAME_CATEGORY, i: 'https://notbingsa.github.io/Zenith/games/images/Sandboxels.png' },
+            { t: 'Snake', u: 'https://googlesnakemods.com/v/current/', c: '10b981', y: LOAD_ASSET, g: GAME_CATEGORY, i: 'https://notbingsa.github.io/Zenith/games/images/Snake.png' },
+            { t: 'Solar Smash', u: 'https://nebulagames.us/storage/Solar%20Smash.html', c: 'f97316', y: LOAD_ASSET, g: GAME_CATEGORY, i: 'https://notbingsa.github.io/Zenith/games/images/Solar%20Smash.png' },
+            { t: 'Stack', u: 'https://nebulagames.us/storage/stack/', c: '3b82f6', y: LOAD_ASSET, g: GAME_CATEGORY, i: 'https://notbingsa.github.io/Zenith/games/images/Stack.png' },
+            { t: 'Stackball', u: 'https://nebulagames.us/storage/stackball/', c: 'ef4444', y: LOAD_ASSET, g: GAME_CATEGORY, i: 'https://notbingsa.github.io/Zenith/games/images/Stackball.png' },
+            { t: 'Stone Grass', u: 'https://nebulagames.us/storage/Stone%20Grass%20Mowing%20Simulator.html', c: '10b981', y: LOAD_ASSET, g: GAME_CATEGORY, i: 'https://notbingsa.github.io/Zenith/games/images/Stone%20Grass.png' },
+            { t: 'Survival Race', u: 'https://nebulagames.us/storage/clsurvivalracev2.html', c: '7c3aed', y: LOAD_ASSET, g: GAME_CATEGORY, i: 'https://notbingsa.github.io/Zenith/games/images/Survival%20Race.png' },
+            { t: 'Thirty Dollar Website', u: 'https://kleeder.de/files/moai2/%F0%9F%97%Bf.html', c: '34d399', y: LOAD_ASSET, g: GAME_CATEGORY, i: 'https://notbingsa.github.io/Zenith/games/images/Thirty%20Dollar%20Website.png' },
+            { t: 'Tiny Fishing', u: 'https://nebulagames.us/storage/Tiny%20Fishing.html', c: 'facc15', y: LOAD_ASSET, g: GAME_CATEGORY, i: 'https://notbingsa.github.io/Zenith/games/images/Tiny%20Fishing.png' },
+            { t: 'Traffic Rider', u: 'https://traffic-rider.io/game/traffic-rider/', c: 'facc15', y: LOAD_ASSET, g: GAME_CATEGORY, i: 'https://notbingsa.github.io/Zenith/games/images/Traffic%20Rider.png' },
+            { t: 'Unblocker', u: 'https://homemath.ns0.it', c: 'f97316', y: LOAD_ASSET, g: APP_CATEGORY, i: 'https://notbingsa.github.io/Zenith/apps/images/Unblocker.png' },
+            { t: 'Yohoho.io', u: 'https://nebulagames.us/storage/yohoho/', c: '2563eb', y: LOAD_ASSET, g: GAME_CATEGORY, i: 'https://notbingsa.github.io/Zenith/games/images/Yohoho.io.png' },
         ];
         function createAssetCardHtml(asset, sizeClass = 'w-full h-auto aspect-square') {
             const title = asset.t;
             const type = asset.y;
+            const safeTitle = title.replace(/'/g, "\\'");
             let clickHandler;
             if (type === LOAD_FNF_VARIANT) {
-                clickHandler = `executeVariant(${asset.id})`;
+                clickHandler = `executeVariant('${safeTitle}')`;
             } else {
-                clickHandler = `processMatrix(${asset.id})`;
+                clickHandler = `processMatrix('${safeTitle}')`;
             }
             const placeholderSize = '300x300';
             const imageSrc = asset.i;
             const placeholderText = title.replace(/\s/g, '+');
             return `
-                <a href="?id=${asset.id}" onclick="${clickHandler}; return false;" class="block bg-gray-800 rounded-xl overflow-hidden asset-card-shadow ${sizeClass} group relative" data-category="${asset.g}">
+                <a href="?game=${encodeURIComponent(title)}" onclick="${clickHandler}; return false;" class="block bg-gray-800 rounded-xl overflow-hidden asset-card-shadow ${sizeClass} group relative" data-category="${asset.g}">
                     <img src="${imageSrc}" 
                          onerror="this.onerror=null;this.src='https://placehold.co/${placeholderSize}/${asset.c}/ffffff?text=${placeholderText}'" 
                          class="w-full h-full object-cover transition duration-300 group-hover:scale-105" />
@@ -384,24 +544,23 @@
                 }
             });
         }
-        function getAssetIdFromUrl() {
+        function getAssetFromUrl() {
             const params = new URLSearchParams(window.location.search);
-            const id = params.get('id');
-            return id ? parseInt(id, 10) : null;
+            const game = params.get('game');
+            return game ? decodeURIComponent(game) : null;
         }
-        function processMatrix(assetId) {
-            const asset = ALL_ASSETS.find(a => a.id === assetId);
+        function processMatrix(title) {
+            const asset = ALL_ASSETS.find(a => a.t === title);
             if (!asset) {
-                console.error('Asset not found for ID:', assetId);
+                console.error('Asset not found for title:', title);
                 return;
             }
-            // History update removed
             processMatrixInternal(asset);
         }
-        function executeVariant(assetId) {
-            const asset = ALL_ASSETS.find(a => a.id === assetId);
-            if (!asset) return console.error('Asset not found for ID:', assetId);
-            const title = asset.t;
+        function executeVariant(title) {
+            const asset = ALL_ASSETS.find(a => a.t === title);
+            if (!asset) return console.error('Asset not found for title:', title);
+            const assetTitle = asset.t;
             // History update removed
             const userAgent = navigator.userAgent;
             const isMobileDevice = /Mobi|Android|iPhone|iPod|iPad/i.test(userAgent);
@@ -419,11 +578,10 @@
             processMatrixInternal(tempAsset);
         }
         function processMatrixInternal(asset) {
-            const assetId = asset.id;
             const title = asset.t;
             const url = asset.u;
             if (!url) {
-                console.error('Asset URL is empty for ID:', assetId, 'Cannot load.');
+                console.error('Asset URL is empty for title:', title, 'Cannot load.');
                 return;
             }
             const isFixedSize = false;
@@ -884,20 +1042,20 @@
             }, 5000);
         }
         window.addEventListener('popstate', (event) => {
-            const assetId = getAssetIdFromUrl();
-            if (assetId) {
-                const asset = ALL_ASSETS.find(a => a.id === assetId);
+            const title = getAssetFromUrl();
+            if (title) {
+                const asset = ALL_ASSETS.find(a => a.t === title);
                 if (asset) {
                     if (asset.y === LOAD_FNF_VARIANT) {
-                        executeVariant(assetId);
+                        executeVariant(title);
                     } else {
-                        processMatrix(assetId);
+                        processMatrix(title);
                     }
                 } else {
                     try {
                         history.replaceState(null, '', window.location.pathname);
                     } catch (e) {
-                        console.error("History replace failed on invalid ID, continuing normally.");
+                        console.error("History replace failed on invalid title, continuing normally.");
                     }
                     resetViewport();
                 }
@@ -910,27 +1068,21 @@
             renderTarget = document.getElementById('asset-container');
             labelRegistry = document.getElementById('header-title');
             primaryMarker = document.getElementById('main-zenith-title');
-            ALL_ASSETS.sort((a, b) => {
-                const titleA = a.t.toLowerCase();
-                const titleB = b.t.toLowerCase();
-                if (titleA < titleB) return -1;
-                if (titleA > titleB) return 1;
-                return 0;
-            });
-            const assetIdFromUrl = getAssetIdFromUrl();
-            if (assetIdFromUrl) {
-                const asset = ALL_ASSETS.find(a => a.id === assetIdFromUrl);
+            // Sorting is now done in the array definition
+            const titleFromUrl = getAssetFromUrl();
+            if (titleFromUrl) {
+                const asset = ALL_ASSETS.find(a => a.t === titleFromUrl);
                 if (asset) {
                     if (asset.y === LOAD_FNF_VARIANT) {
-                        executeVariant(assetIdFromUrl);
+                        executeVariant(titleFromUrl);
                     } else {
-                        processMatrix(assetIdFromUrl);
+                        processMatrix(titleFromUrl);
                     }
                 } else {
                     try {
                         history.replaceState(null, '', window.location.pathname);
                     } catch (e) {
-                        console.error("History replace failed on invalid ID, continuing normally.");
+                        console.error("History replace failed on invalid title, continuing normally.");
                     }
                     loadHomePage();
                 }
@@ -1023,6 +1175,11 @@
                 class="ml-4 px-8 py-3 text-lg font-semibold text-white rounded-xl shadow-lg bg-yellow-600 hover:bg-yellow-500 transition duration-200"
                 onclick="testBadInternet();">
                 <i class="fas fa-wifi mr-2"></i>Test Bad Internet
+            </button>
+            <button id="testSpeedButton"
+                class="ml-4 px-8 py-3 text-lg font-semibold text-white rounded-xl shadow-lg bg-blue-600 hover:bg-blue-500 transition duration-200"
+                onclick="measureCloudflareSpeed();">
+                <i class="fas fa-tachometer-alt mr-2"></i>Test Speed
             </button>
             <div id="tester-catalog-grid-wrapper" class="hidden mt-12 w-full mx-auto relative">
                 <h3 class="text-2xl font-bold text-gray-200 mb-6 border-b border-gray-700 pb-3">Live Test Grid</h3>
