@@ -41,25 +41,21 @@
             -webkit-text-fill-color: transparent;
             background-clip: text;
             text-fill-color: transparent;
-            text-shadow:
-                0 0 5px rgba(59, 130, 246, 0.3),
-                0 0 20px rgba(124, 58, 237, 0.5);
             color: #ffffff;
         }
 
         .section-heading-glow {
-            text-shadow: 0 0 10px #7c3aed;
             color: #d1d5db;
         }
 
         .asset-card-shadow {
-            box-shadow: 0 10px 15px rgba(124, 58, 237, 0.3), 0 4px 6px rgba(59, 130, 246, 0.1);
+            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.3), 0 4px 6px rgba(0, 0, 0, 0.1);
             transition: transform 0.2s ease, box-shadow 0.2s ease;
         }
 
         .asset-card-shadow:hover {
             transform: translateY(-4px);
-            box-shadow: 0 15px 25px rgba(124, 58, 237, 0.5), 0 6px 10px rgba(59, 130, 246, 0.2);
+            box-shadow: 0 15px 25px rgba(0, 0, 0, 0.5), 0 6px 10px rgba(0, 0, 0, 0.2);
         }
 
         .fullscreen-button {
@@ -183,16 +179,16 @@
 
         // Internet Speed Detection
         const SPEED_THRESHOLD_MBPS = 5; // Warn if speed is below 5 Mbps
-        const SPEED_TEST_IMAGE_URL = 'https://notbingsa.github.io/Zenith/ui/logo.png'; // Small test image
+        const SPEED_TEST_IMAGE_URL = 'https://speed.cloudflare.com/__down?bytes=100000'; // 100KB test file
         const SPEED_WARNING_SHOWN_KEY = 'zenith_speed_warning_shown';
 
         async function measureInternetSpeed() {
             try {
-                const imageSize = 50000; // Approximate size in bytes (50KB)
+                const imageSize = 100000; // 100KB
                 const startTime = performance.now();
 
-                // Download test image with cache-busting
-                const cacheBuster = '?t=' + new Date().getTime();
+                // Download test content with cache-busting
+                const cacheBuster = '&t=' + new Date().getTime();
                 const response = await fetch(SPEED_TEST_IMAGE_URL + cacheBuster);
                 await response.blob();
 
@@ -457,6 +453,7 @@
             { t: 'Gobble', u: 'https://nebulagames.us/storage/Gobble.html', c: '10b981', y: LOAD_ASSET, g: GAME_CATEGORY, i: 'https://notbingsa.github.io/Zenith/games/images/Gobble.png' },
             { t: 'Infinite Craft', u: 'https://infinitecraftnew.com', c: '10b981', y: LOAD_ASSET, g: GAME_CATEGORY, i: 'https://notbingsa.github.io/Zenith/games/images/Infinite%20Craft.png' },
             { t: 'Level Devil', u: 'https://nebulagames.us/storage/clleveldevil.html', c: 'ef4444', y: LOAD_ASSET, g: GAME_CATEGORY, i: 'https://notbingsa.github.io/Zenith/games/images/Level%20Devil.png' },
+            { t: 'OvO', u: 'https://nebulagames.us/storage/ovo/', c: '111827', y: LOAD_ASSET, g: GAME_CATEGORY, i: 'https://notbingsa.github.io/Zenith/games/images/OvO.png' },
             { t: 'Paper.io 2', u: 'https://nebulagames.us/storage/paperio2/', c: 'facc15', y: LOAD_ASSET, g: GAME_CATEGORY, i: 'https://notbingsa.github.io/Zenith/games/images/Paper.io%202.png' },
             { t: 'Poly Track', u: 'https://html-classic.itch.zone/html/15451330/index.html', c: 'ef4444', y: LOAD_ASSET, g: GAME_CATEGORY, i: 'https://notbingsa.github.io/Zenith/games/images/Poly%20Track.png' },
             { t: 'Ragdoll Archers', u: 'https://nebulagames.us/storage/Ragdoll%20Archers.html', c: 'ef4444', y: LOAD_ASSET, g: GAME_CATEGORY, i: 'https://notbingsa.github.io/Zenith/games/images/Ragdoll%20Archers.png' },
@@ -466,12 +463,14 @@
             { t: 'Solar Smash', u: 'https://nebulagames.us/storage/Solar%20Smash.html', c: 'f97316', y: LOAD_ASSET, g: GAME_CATEGORY, i: 'https://notbingsa.github.io/Zenith/games/images/Solar%20Smash.png' },
             { t: 'Stack', u: 'https://nebulagames.us/storage/stack/', c: '3b82f6', y: LOAD_ASSET, g: GAME_CATEGORY, i: 'https://notbingsa.github.io/Zenith/games/images/Stack.png' },
             { t: 'Stackball', u: 'https://nebulagames.us/storage/stackball/', c: 'ef4444', y: LOAD_ASSET, g: GAME_CATEGORY, i: 'https://notbingsa.github.io/Zenith/games/images/Stackball.png' },
+            { t: 'Stickman Hook', u: 'https://nebulagames.us/storage/Stickman%20Hook.html', c: 'ef4444', y: LOAD_ASSET, g: GAME_CATEGORY, i: 'https://notbingsa.github.io/Zenith/games/images/Stickman%20Hook.png' },
             { t: 'Stone Grass', u: 'https://nebulagames.us/storage/Stone%20Grass%20Mowing%20Simulator.html', c: '10b981', y: LOAD_ASSET, g: GAME_CATEGORY, i: 'https://notbingsa.github.io/Zenith/games/images/Stone%20Grass.png' },
+            { t: 'Subway Surfers', u: 'https://nebulagames.us/storage/Subway%20Surfers_%20San%20Francisco.html', c: '3b82f6', y: LOAD_ASSET, g: GAME_CATEGORY, i: 'https://notbingsa.github.io/Zenith/games/images/Subway%20Surfers.png' },
             { t: 'Survival Race', u: 'https://nebulagames.us/storage/clsurvivalracev2.html', c: '7c3aed', y: LOAD_ASSET, g: GAME_CATEGORY, i: 'https://notbingsa.github.io/Zenith/games/images/Survival%20Race.png' },
             { t: 'Thirty Dollar Website', u: 'https://kleeder.de/files/moai2/%F0%9F%97%Bf.html', c: '34d399', y: LOAD_ASSET, g: GAME_CATEGORY, i: 'https://notbingsa.github.io/Zenith/games/images/Thirty%20Dollar%20Website.png' },
             { t: 'Tiny Fishing', u: 'https://nebulagames.us/storage/Tiny%20Fishing.html', c: 'facc15', y: LOAD_ASSET, g: GAME_CATEGORY, i: 'https://notbingsa.github.io/Zenith/games/images/Tiny%20Fishing.png' },
             { t: 'Traffic Rider', u: 'https://azgames.io/game/traffic-rider/', c: 'facc15', y: LOAD_ASSET, g: GAME_CATEGORY, i: 'https://notbingsa.github.io/Zenith/games/images/Traffic%20Rider.png' },
-            { t: 'Unblocker', u: 'https://homemath.ns0.it', c: 'f97316', y: LOAD_ASSET, g: APP_CATEGORY, i: 'https://notbingsa.github.io/Zenith/apps/images/Unblocker.png' },
+            { t: 'Unblocker', u: 'https://waguri.ecolefrancophone.com/search.html', c: 'f97316', y: LOAD_ASSET, g: APP_CATEGORY, i: 'https://notbingsa.github.io/Zenith/apps/images/Unblocker.png' },
             { t: 'Yohoho.io', u: 'https://nebulagames.us/storage/yohoho/', c: '2563eb', y: LOAD_ASSET, g: GAME_CATEGORY, i: 'https://notbingsa.github.io/Zenith/games/images/Yohoho.io.png' },
         ];
         function createAssetCardHtml(asset, sizeClass = 'w-full h-auto aspect-square') {
