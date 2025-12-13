@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,12 +8,14 @@
     <!-- Favicon link added here -->
     <link rel="icon" type="image/png" href="https://notbingsa.github.io/Zenith/ui/logo.png">
     <style>
-        html, body {
+        html,
+        body {
             height: 100%;
             margin: 0;
             padding: 0;
-            overflow: hidden; 
+            overflow: hidden;
         }
+
         iframe {
             display: block;
             width: 100%;
@@ -20,10 +23,30 @@
             border: none;
         }
     </style>
+    <script>
+        // Listen for mute messages from website.html
+        window.addEventListener('message', (event) => {
+            if (event.data.type === 'MUTE_IFRAME') {
+                const iframe = document.querySelector('iframe');
+                if (iframe) {
+                    // Note: HTML iframes don't have a native 'muted' attribute
+                    // But we can try to set volume to 0 via other means
+                    // The most effective way is actually controlling at the browser level
+                    // which we cannot do programmatically
+                    console.log('Mute request received:', event.data.muted);
+                    // Unfortunately, we cannot mute cross-origin iframe content from parent
+                }
+            }
+        });
+    </script>
 </head>
+
 <body>
-    <iframe src="https://notbingsa.github.io/Zenith/website.html">
+    <iframe src="./website.html" id="main-iframe"
+        sandbox="allow-downloads allow-forms allow-modals allow-orientation-lock allow-pointer-lock allow-popups allow-presentation allow-same-origin allow-scripts allow-top-navigation"
+        allow="camera; clipboard-write; encrypted-media; fullscreen; gamepad; geolocation; gyroscope; microphone; midi; payment; picture-in-picture; screen-wake-lock; xr-spatial-tracking">
         Your browser does not support iframes.
     </iframe>
 </body>
+
 </html>
