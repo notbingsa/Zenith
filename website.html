@@ -158,37 +158,21 @@
         let testerLoadCount = 0;
         let testerTotalAssets = 0;
         let testerAssetList = [];
-        const ZENITH_TITLE = 'Zenith';
-        const RANDOM_PICKS = 'Random Picks';
-        const HOMEPAGE_TITLE = 'Homepage';
-        const TITLE_SUFFIX = 'Unblocked Games';
-        const TAGLINES = [
-            'We are doing our work... just not the teachers.',
-            'This is the only reason keeping me in school.',
-            '"A student\'s dream" - some random student that doesn\'t exist',
-            'We know you didn\'t get here accidentally.',
+
+        const BLOCKED_DOMAINS = [
+            'exodragon.com',
+            'https://exodragon.com/cp/'
         ];
-        const LOAD_ASSET = 'processMatrix';
-        const LOAD_FNF_VARIANT = 'executeVariant';
-        const GAME_CATEGORY = 'Game';
-        const APP_CATEGORY = 'App';
 
-
-        const SECRET_CODE = 'tester';
-
-        // Internet Speed Detection
-        const SPEED_THRESHOLD_MBPS = 5; // Warn if speed is below 5 Mbps
-        const SPEED_TEST_IMAGE_URL = 'https://speed.cloudflare.com/__down?bytes=100000'; // 100KB test file
-        const SPEED_WARNING_SHOWN_KEY = 'zenith_speed_warning_shown';
 
         async function measureInternetSpeed() {
             try {
                 const imageSize = 100000; // 100KB
                 const startTime = performance.now();
 
-                // Download test content with cache-busting
+
                 const cacheBuster = '&t=' + new Date().getTime();
-                const response = await fetch(SPEED_TEST_IMAGE_URL + cacheBuster);
+                const response = await fetch('https://speed.cloudflare.com/__down?bytes=100000' + cacheBuster);
                 await response.blob();
 
                 const endTime = performance.now();
@@ -223,7 +207,7 @@
                         Your current internet speed is approximately <span class="text-yellow-500 font-bold">${speedDisplay} Mbps</span>.
                     </p>
                     <p class="text-gray-400 mb-6 text-center text-sm">
-                        Some games and apps may load slowly or not work properly. For the best experience, we recommend a connection of at least ${SPEED_THRESHOLD_MBPS} Mbps.
+                        Some games and apps may load slowly or not work properly. For the best experience, we recommend a connection of at least ${5} Mbps.
                     </p>
                     <div class="flex justify-center">
                         <button onclick="closeSpeedWarning()" 
@@ -244,30 +228,75 @@
             }
         }
 
+        function removeInfoSplash() {
+            const splashLoader = document.getElementById('website-splash-loader');
+            if (splashLoader && window.getComputedStyle(splashLoader).display !== 'none') {
+                splashLoader.style.opacity = '0';
+                setTimeout(() => {
+                    splashLoader.style.display = 'none';
+                }, 300);
+            }
+        }
+
         async function checkInternetSpeed() {
             // Check if warning was already shown this session
-            if (sessionStorage.getItem(SPEED_WARNING_SHOWN_KEY)) {
+            if (sessionStorage.getItem('zenith_speed_warning_shown')) {
                 return;
             }
 
             const speedMbps = await measureInternetSpeed();
 
-            if (speedMbps !== null && speedMbps < SPEED_THRESHOLD_MBPS) {
+            if (speedMbps !== null && speedMbps < 5) {
                 showSlowInternetWarning(speedMbps);
-                sessionStorage.setItem(SPEED_WARNING_SHOWN_KEY, 'true');
+                sessionStorage.setItem('zenith_speed_warning_shown', 'true');
             }
         }
 
         function testBadInternet() {
-            // Force show the warning with a simulated low speed
-            sessionStorage.removeItem(SPEED_WARNING_SHOWN_KEY);
-            showSlowInternetWarning(2.5); // Simulate 2.5 Mbps
-            sessionStorage.setItem(SPEED_WARNING_SHOWN_KEY, 'true');
+
+            sessionStorage.removeItem('zenith_speed_warning_shown');
+            showSlowInternetWarning(2.5);
+            sessionStorage.setItem('zenith_speed_warning_shown', 'true');
         }
 
-        // Cloudflare Speed Test
-        const CLOUDFLARE_SPEED_URL = 'https://speed.cloudflare.com/__down?bytes=100000000'; // 100MB
-        const FALLBACK_SPEED_URL = 'https://httpbin.org/bytes/50000000'; // 50MB
+        function showLegalDisclaimer() {
+            const disclaimerModal = document.createElement('div');
+            disclaimerModal.id = 'legal-disclaimer';
+            disclaimerModal.className = 'fixed inset-0 bg-black/95 flex items-center justify-center z-[10002] p-4 text-center backdrop-blur-sm';
+
+            disclaimerModal.innerHTML = `
+                <div class="bg-gray-800 p-8 rounded-xl shadow-2xl w-full max-w-2xl border-2 border-red-600/50 transform scale-100 transition-transform duration-300">
+                    <div class="flex justify-center mb-6">
+                         <i class="fas fa-gavel text-red-500 text-5xl"></i>
+                    </div>
+                    <h2 class="text-3xl font-bold text-white mb-6 tracking-tight">Legal Disclaimer</h2>
+                    <p class="text-gray-300 text-lg mb-8 leading-relaxed">
+                        For legal purposes, we do not condone or take responsibility for any use of this website to interrupt education. 
+                        <span class="text-white font-semibold">Zenith</span> has been made for use at home or with permission by the overseers of the school's ICT.
+                    </p>
+                    <button onclick="document.getElementById('legal-disclaimer').remove()" 
+                            class="px-10 py-4 rounded-xl bg-red-600 text-white font-bold text-lg hover:bg-red-500 transition duration-200 shadow-lg hover:shadow-red-600/20 active:scale-95">
+                        I Understand
+                    </button>
+                </div>
+            `;
+            document.body.appendChild(disclaimerModal);
+        }
+
+        function handleAssetImageError(img, title, src) {
+            console.error(`DEVELOPER ERROR: Failed to load image for "${title}". URL: ${src}. This might be a 404 Not Found or a blocked resource.`);
+            const placeholderSize = '300x300';
+            const placeholderText = title.replace(/\s/g, '+');
+            // User friendly fallback
+            img.onerror = null; // Prevent infinite loop
+            img.src = `https://placehold.co/${placeholderSize}/374151/ffffff?text=${placeholderText}`;
+            // Visual cue for the user (optional, maybe a border?)
+            img.style.border = '2px solid #ef4444';
+        }
+
+
+        const CLOUDFLARE_SPEED_URL = 'https://speed.cloudflare.com/__down?bytes=100000000';
+        const FALLBACK_SPEED_URL = 'https://httpbin.org/bytes/50000000';
 
         async function measureCloudflareSpeed() {
             const modal = document.createElement('div');
@@ -328,9 +357,9 @@
 
                         receivedLength += value.length;
                         const currentTime = performance.now();
-                        const duration = (currentTime - startTime) / 1000; // seconds
+                        const duration = (currentTime - startTime) / 1000;
 
-                        // Update UI every 100ms
+
                         if (currentTime - lastUpdate > 100) {
                             const speedBps = receivedLength / duration;
                             const speedMbps = (speedBps * 8) / (1000 * 1000);
@@ -342,14 +371,14 @@
                             lastUpdate = currentTime;
                         }
 
-                        // Stop after 15 seconds or 50MB to save bandwidth/time
+
                         if (duration > 15 || receivedLength > 50000000) {
                             controller.abort();
                             break;
                         }
                     }
 
-                    // Final calculation
+
                     const endTime = performance.now();
                     const duration = (endTime - startTime) / 1000;
                     const speedBps = receivedLength / duration;
@@ -359,13 +388,13 @@
 
                 } catch (error) {
                     if (signal.aborted && error.name === 'AbortError') {
-                        // If aborted by our timeout/size limit, it's a success in terms of measurement
-                        // But we need to calculate final speed.
-                        // Actually, if we abort via controller in the loop, it throws AbortError.
-                        // We can just return the last calculated speed?
-                        // Better: don't abort for success, just break.
-                        // I fixed the break logic above, so it shouldn't throw AbortError for success case.
-                        // But if user clicked cancel, it throws.
+
+
+
+
+
+
+
                         throw error;
                     }
                     throw error;
@@ -377,7 +406,7 @@
                 try {
                     speedMbps = await runTest(CLOUDFLARE_SPEED_URL);
                 } catch (e) {
-                    if (signal.aborted) throw e; // User cancelled
+                    if (signal.aborted) throw e;
                     console.warn("Primary speed test failed, trying fallback.", e);
                     speedMbps = await runTest(FALLBACK_SPEED_URL, true);
                 }
@@ -404,7 +433,7 @@
 
             } catch (error) {
                 if (signal.aborted && error.name === 'AbortError') {
-                    // Manual cancel, do nothing (modal removed in onclick)
+
                 } else {
                     console.error("Speed test error:", error);
                     modal.innerHTML = `
@@ -422,62 +451,62 @@
 
 
         const ALL_ASSETS = [
-            { t: 'Baseball', u: 'https://nebulagames.us/storage/Google%20Baseball.html', c: '10b981', y: LOAD_ASSET, g: GAME_CATEGORY, i: 'https://notbingsa.github.io/Zenith/games/images/Baseball.png' },
-            { t: 'Bitlife', u: 'https://nebulagames.us/storage/bitlife/', c: 'ef4444', y: LOAD_ASSET, g: GAME_CATEGORY, i: 'https://notbingsa.github.io/Zenith/games/images/Bitlife.png' },
-            { t: 'Block Blast', u: 'https://nebulagames.us/storage/Block%20Blast.html', c: '1d4ed8', y: LOAD_ASSET, g: GAME_CATEGORY, i: 'https://notbingsa.github.io/Zenith/games/images/Block%20Blast.png' },
-            { t: 'Blumgi Merge', u: 'https://nebulagames.us/storage/blumgimerge/', c: 'f97316', y: LOAD_ASSET, g: GAME_CATEGORY, i: 'https://notbingsa.github.io/Zenith/games/images/Blumgi%20Merge.png' },
-            { t: 'Bouncemasters', u: 'https://nebulagames.us/storage/Bouncemasters.html', c: 'f97316', y: LOAD_ASSET, g: GAME_CATEGORY, i: 'https://notbingsa.github.io/Zenith/games/images/Bouncemasters.png' },
-            { t: 'Chat', u: 'https://padlet.com/lincolnharrison8pc/zenith', c: '7c3aed', y: LOAD_ASSET, g: APP_CATEGORY, i: 'https://notbingsa.github.io/Zenith/apps/images/Chat.png' },
-            { t: 'Cookie Clicker', u: 'https://nebulagames.us/storage/Cookie%20Clicker.html', c: 'd97706', y: LOAD_ASSET, g: GAME_CATEGORY, i: 'https://notbingsa.github.io/Zenith/games/images/Cookie%20Clicker.png' },
-            { t: 'Coreball', u: 'https://nebulagames.us/storage/Coreball.html', c: 'f87171', y: LOAD_ASSET, g: GAME_CATEGORY, i: 'https://notbingsa.github.io/Zenith/games/images/Coreball.png' },
-            { t: 'Cricket', u: 'https://doodlecricket.pages.dev/google-cricket/', c: 'f97316', y: LOAD_ASSET, g: GAME_CATEGORY, i: 'https://notbingsa.github.io/Zenith/games/images/Cricket.png' },
-            { t: 'Cut The Rope', u: 'https://nebulagames.us/storage/clcuttherope.html', c: '10b981', y: LOAD_ASSET, g: GAME_CATEGORY, i: 'https://notbingsa.github.io/Zenith/games/images/Cut%20The%20Rope.png' },
-            { t: 'Drive Mad', u: 'https://nebulagames.us/storage/Drive%20Mad.html', c: '34d399', y: LOAD_ASSET, g: GAME_CATEGORY, i: 'https://notbingsa.github.io/Zenith/games/images/Drive%20Mad.png' },
-            { t: 'Eggy Car', u: 'https://nebulagames.us/storage/eggycar/', c: 'facc15', y: LOAD_ASSET, g: GAME_CATEGORY, i: 'https://notbingsa.github.io/Zenith/games/images/Eggy%20Car.png' },
-            { t: 'Escape Road 2', u: 'https://nebulagames.us/storage/clescaperoad2.html', c: 'ef4444', y: LOAD_ASSET, g: GAME_CATEGORY, i: 'https://notbingsa.github.io/Zenith/games/images/Escape%20Road%202.png' },
-            { t: 'Five Nights at Freddy\'s', u: 'https://nebulagames.us/storage/Five%20Nights%20at%20Freddys.html', c: 'ef4444', y: LOAD_ASSET, g: GAME_CATEGORY, i: 'https://notbingsa.github.io/Zenith/games/images/FNAF.png' },
-            { t: 'Five Nights at Freddy\'s 2', u: 'https://nebulagames.us/storage/Five%20Nights%20at%20Freddys%202.html', c: 'ef4444', y: LOAD_ASSET, g: GAME_CATEGORY, i: 'https://notbingsa.github.io/Zenith/games/images/FNAF%202.png' },
-            { t: 'Five Nights at Freddy\'s 3', u: 'https://nebulagames.us/storage/Five%20Nights%20at%20Freddys%203.html', c: 'ef4444', y: LOAD_ASSET, g: GAME_CATEGORY, i: 'https://notbingsa.github.io/Zenith/games/images/FNAF%203.png' },
-            { t: 'Five Nights at Freddy\'s 4', u: 'https://nebulagames.us/storage/Five%20Nights%20at%20Freddys%204.html', c: 'ef4444', y: LOAD_ASSET, g: GAME_CATEGORY, i: 'https://notbingsa.github.io/Zenith/games/images/FNAF%204.png' },
-            { t: 'Five Nights at Freddy\'s 4 Halloween', u: 'https://nebulagames.us/storage/Five%20Nights%20at%20Freddys%204_%20Halloween.html', c: 'ef4444', y: LOAD_ASSET, g: GAME_CATEGORY, i: 'https://notbingsa.github.io/Zenith/games/images/FNAF%204%20Halloween.png' },
-            { t: 'Five Nights at Freddy\'s Sister Location', u: 'https://nebulagames.us/storage/Five%20Nights%20at%20Freddys_%20Sister%20Location.html', c: 'ef4444', y: LOAD_ASSET, g: GAME_CATEGORY, i: 'https://notbingsa.github.io/Zenith/games/images/FNAF%20Sister%20Location.png' },
-            { t: 'Flappy Bird', u: 'https://nebulagames.us/storage/Flappy%20Bird.html', c: 'facc15', y: LOAD_ASSET, g: GAME_CATEGORY, i: 'https://notbingsa.github.io/Zenith/games/images/Flappy%20Bird.png' },
-            { t: 'Fluid Simulation', u: 'https://haxiomic.github.io/projects/webgl-fluid-and-particles/', c: '3b82f6', y: LOAD_ASSET, g: GAME_CATEGORY, i: 'https://notbingsa.github.io/Zenith/games/images/Fluid%20Simulation.png' },
-            { t: 'FNAF Pizzeria Simulator', u: 'https://nebulagames.us/storage/Five%20Nights%20at%20Freddys_%20Pizza%20Simulator.html', c: 'ef4444', y: LOAD_ASSET, g: GAME_CATEGORY, i: 'https://notbingsa.github.io/Zenith/games/images/FNAF%20Pizzeria%20Simulator.png' },
-            { t: 'FNAF Ultimate Custom Night', u: 'https://nebulagames.us/storage/Five%20Nights%20at%20Freddys_%20Ultimate%20Custom%20Night.html', c: 'ef4444', y: LOAD_ASSET, g: GAME_CATEGORY, i: 'https://notbingsa.github.io/Zenith/games/images/FNAF%20Ultimate%20Custom%20Night.png' },
-            { t: 'FNAF World', u: 'https://nebulagames.us/storage/Five%20Nights%20at%20Freddys_%20World.html', c: 'ef4444', y: LOAD_ASSET, g: GAME_CATEGORY, i: 'https://notbingsa.github.io/Zenith/games/images/FNAF%20World.png' },
-            { t: 'Friday Night Funkin', u: '', c: 'ef4444', y: LOAD_FNF_VARIANT, g: GAME_CATEGORY, i: 'https://notbingsa.github.io/Zenith/games/images/Friday%20Night%20Funkin.png' },
-            { t: 'Fruit Ninja', u: 'https://nebulagames.us/storage/Fruit%20Ninja.html', c: '10b981', y: LOAD_ASSET, g: GAME_CATEGORY, i: 'https://notbingsa.github.io/Zenith/games/images/Fruit%20Ninja.png' },
-            { t: 'Geometry Dash Lite', u: 'https://nebulagames.us/storage/Geometry%20Dash%20Lite.html', c: '3b82f6', y: LOAD_ASSET, g: GAME_CATEGORY, i: 'https://notbingsa.github.io/Zenith/games/images/Geometry%20Dash%20Lite.png' },
-            { t: 'Gobble', u: 'https://nebulagames.us/storage/Gobble.html', c: '10b981', y: LOAD_ASSET, g: GAME_CATEGORY, i: 'https://notbingsa.github.io/Zenith/games/images/Gobble.png' },
-            { t: 'Infinite Craft', u: 'https://infinitecraftnew.com', c: '10b981', y: LOAD_ASSET, g: GAME_CATEGORY, i: 'https://notbingsa.github.io/Zenith/games/images/Infinite%20Craft.png' },
-            { t: 'Level Devil', u: 'https://nebulagames.us/storage/clleveldevil.html', c: 'ef4444', y: LOAD_ASSET, g: GAME_CATEGORY, i: 'https://notbingsa.github.io/Zenith/games/images/Level%20Devil.png' },
-            { t: 'OvO', u: 'https://nebulagames.us/storage/ovo/', c: '111827', y: LOAD_ASSET, g: GAME_CATEGORY, i: 'https://notbingsa.github.io/Zenith/games/images/OvO.png' },
-            { t: 'Paper.io 2', u: 'https://nebulagames.us/storage/paperio2/', c: 'facc15', y: LOAD_ASSET, g: GAME_CATEGORY, i: 'https://notbingsa.github.io/Zenith/games/images/Paper.io%202.png' },
-            { t: 'Poly Track', u: 'https://html-classic.itch.zone/html/15451330/index.html', c: 'ef4444', y: LOAD_ASSET, g: GAME_CATEGORY, i: 'https://notbingsa.github.io/Zenith/games/images/Poly%20Track.png' },
-            { t: 'Ragdoll Archers', u: 'https://nebulagames.us/storage/Ragdoll%20Archers.html', c: 'ef4444', y: LOAD_ASSET, g: GAME_CATEGORY, i: 'https://notbingsa.github.io/Zenith/games/images/Ragdoll%20Archers.png' },
-            { t: 'Ragdoll Hit', u: 'https://nebulagames.us/storage/Ragdoll%20Hit.html', c: 'ef4444', y: LOAD_ASSET, g: GAME_CATEGORY, i: 'https://notbingsa.github.io/Zenith/games/images/Ragdoll%20Hit.png' },
-            { t: 'Sandboxels', u: 'https://shalbito.vercel.app/', c: 'ef4444', y: LOAD_ASSET, g: GAME_CATEGORY, i: 'https://notbingsa.github.io/Zenith/games/images/Sandboxels.png' },
-            { t: 'Snake', u: 'https://googlesnakemods.com/v/current/', c: '10b981', y: LOAD_ASSET, g: GAME_CATEGORY, i: 'https://notbingsa.github.io/Zenith/games/images/Snake.png' },
-            { t: 'Solar Smash', u: 'https://nebulagames.us/storage/Solar%20Smash.html', c: 'f97316', y: LOAD_ASSET, g: GAME_CATEGORY, i: 'https://notbingsa.github.io/Zenith/games/images/Solar%20Smash.png' },
-            { t: 'Stack', u: 'https://nebulagames.us/storage/stack/', c: '3b82f6', y: LOAD_ASSET, g: GAME_CATEGORY, i: 'https://notbingsa.github.io/Zenith/games/images/Stack.png' },
-            { t: 'Stackball', u: 'https://nebulagames.us/storage/stackball/', c: 'ef4444', y: LOAD_ASSET, g: GAME_CATEGORY, i: 'https://notbingsa.github.io/Zenith/games/images/Stackball.png' },
-            { t: 'Stickman Hook', u: 'https://nebulagames.us/storage/Stickman%20Hook.html', c: 'ef4444', y: LOAD_ASSET, g: GAME_CATEGORY, i: 'https://notbingsa.github.io/Zenith/games/images/Stickman%20Hook.png' },
-            { t: 'Stone Grass', u: 'https://nebulagames.us/storage/Stone%20Grass%20Mowing%20Simulator.html', c: '10b981', y: LOAD_ASSET, g: GAME_CATEGORY, i: 'https://notbingsa.github.io/Zenith/games/images/Stone%20Grass.png' },
-            { t: 'Subway Surfers', u: 'https://nebulagames.us/storage/Subway%20Surfers_%20San%20Francisco.html', c: '3b82f6', y: LOAD_ASSET, g: GAME_CATEGORY, i: 'https://notbingsa.github.io/Zenith/games/images/Subway%20Surfers.png' },
-            { t: 'Survival Race', u: 'https://nebulagames.us/storage/clsurvivalracev2.html', c: '7c3aed', y: LOAD_ASSET, g: GAME_CATEGORY, i: 'https://notbingsa.github.io/Zenith/games/images/Survival%20Race.png' },
-            { t: 'Thirty Dollar Website', u: 'https://kleeder.de/files/moai2/%F0%9F%97%Bf.html', c: '34d399', y: LOAD_ASSET, g: GAME_CATEGORY, i: 'https://notbingsa.github.io/Zenith/games/images/Thirty%20Dollar%20Website.png' },
-            { t: 'Tiny Fishing', u: 'https://nebulagames.us/storage/Tiny%20Fishing.html', c: 'facc15', y: LOAD_ASSET, g: GAME_CATEGORY, i: 'https://notbingsa.github.io/Zenith/games/images/Tiny%20Fishing.png' },
-            { t: 'Traffic Rider', u: 'https://azgames.io/game/traffic-rider/', c: 'facc15', y: LOAD_ASSET, g: GAME_CATEGORY, i: 'https://notbingsa.github.io/Zenith/games/images/Traffic%20Rider.png' },
-            { t: 'Unblocker', u: 'https://waguri.ecolefrancophone.com/search.html', c: 'f97316', y: LOAD_ASSET, g: APP_CATEGORY, i: 'https://notbingsa.github.io/Zenith/apps/images/Unblocker.png' },
-            { t: 'Yohoho.io', u: 'https://nebulagames.us/storage/yohoho/', c: '2563eb', y: LOAD_ASSET, g: GAME_CATEGORY, i: 'https://notbingsa.github.io/Zenith/games/images/Yohoho.io.png' },
+            { t: 'Baseball', u: 'https://nebulagames.us/storage/Google%20Baseball.html', c: '10b981', y: 'processMatrix', g: 'Game', i: 'https://notbingsa.github.io/Zenith/games/images/Baseball.png' },
+            { t: 'Bitlife', u: 'https://nebulagames.us/storage/bitlife/', c: 'ef4444', y: 'processMatrix', g: 'Game', i: 'https://notbingsa.github.io/Zenith/games/images/Bitlife.png' },
+            { t: 'Block Blast', u: 'https://nebulagames.us/storage/Block%20Blast.html', c: '1d4ed8', y: 'processMatrix', g: 'Game', i: 'https://notbingsa.github.io/Zenith/games/images/Block%20Blast.png' },
+            { t: 'Blumgi Merge', u: 'https://nebulagames.us/storage/blumgimerge/', c: 'f97316', y: 'processMatrix', g: 'Game', i: 'https://notbingsa.github.io/Zenith/games/images/Blumgi%20Merge.png' },
+            { t: 'Bouncemasters', u: 'https://nebulagames.us/storage/Bouncemasters.html', c: 'f97316', y: 'processMatrix', g: 'Game', i: 'https://notbingsa.github.io/Zenith/games/images/Bouncemasters.png' },
+            { t: 'Chat', u: 'https://padlet.com/lincolnharrison8pc/zenith', c: '7c3aed', y: 'processMatrix', g: 'App', i: 'https://notbingsa.github.io/Zenith/apps/images/Chat.png' },
+            { t: 'Cookie Clicker', u: 'https://nebulagames.us/storage/Cookie%20Clicker.html', c: 'd97706', y: 'processMatrix', g: 'Game', i: 'https://notbingsa.github.io/Zenith/games/images/Cookie%20Clicker.png' },
+            { t: 'Coreball', u: 'https://nebulagames.us/storage/Coreball.html', c: 'f87171', y: 'processMatrix', g: 'Game', i: 'https://notbingsa.github.io/Zenith/games/images/Coreball.png' },
+            { t: 'Cricket', u: 'https://doodlecricket.pages.dev/google-cricket/', c: 'f97316', y: 'processMatrix', g: 'Game', i: 'https://notbingsa.github.io/Zenith/games/images/Cricket.png' },
+            { t: 'Cut The Rope', u: 'https://nebulagames.us/storage/clcuttherope.html', c: '10b981', y: 'processMatrix', g: 'Game', i: 'https://notbingsa.github.io/Zenith/games/images/Cut%20The%20Rope.png' },
+            { t: 'Drive Mad', u: 'https://nebulagames.us/storage/Drive%20Mad.html', c: '34d399', y: 'processMatrix', g: 'Game', i: 'https://notbingsa.github.io/Zenith/games/images/Drive%20Mad.png' },
+            { t: 'Eggy Car', u: 'https://nebulagames.us/storage/eggycar/', c: 'facc15', y: 'processMatrix', g: 'Game', i: 'https://notbingsa.github.io/Zenith/games/images/Eggy%20Car.png' },
+            { t: 'Escape Road 2', u: 'https://nebulagames.us/storage/clescaperoad2.html', c: 'ef4444', y: 'processMatrix', g: 'Game', i: 'https://notbingsa.github.io/Zenith/games/images/Escape%20Road%202.png' },
+            { t: 'Five Nights at Freddy\'s', u: 'https://nebulagames.us/storage/Five%20Nights%20at%20Freddys.html', c: 'ef4444', y: 'processMatrix', g: 'Game', i: 'https://notbingsa.github.io/Zenith/games/images/FNAF.png' },
+            { t: 'Five Nights at Freddy\'s 2', u: 'https://nebulagames.us/storage/Five%20Nights%20at%20Freddys%202.html', c: 'ef4444', y: 'processMatrix', g: 'Game', i: 'https://notbingsa.github.io/Zenith/games/images/FNAF%202.png' },
+            { t: 'Five Nights at Freddy\'s 3', u: 'https://nebulagames.us/storage/Five%20Nights%20at%20Freddys%203.html', c: 'ef4444', y: 'processMatrix', g: 'Game', i: 'https://notbingsa.github.io/Zenith/games/images/FNAF%203.png' },
+            { t: 'Five Nights at Freddy\'s 4', u: 'https://nebulagames.us/storage/Five%20Nights%20at%20Freddys%204.html', c: 'ef4444', y: 'processMatrix', g: 'Game', i: 'https://notbingsa.github.io/Zenith/games/images/FNAF%204.png' },
+            { t: 'Five Nights at Freddy\'s 4 Halloween', u: 'https://nebulagames.us/storage/Five%20Nights%20at%20Freddys%204_%20Halloween.html', c: 'ef4444', y: 'processMatrix', g: 'Game', i: 'https://notbingsa.github.io/Zenith/games/images/FNAF%204%20Halloween.png' },
+            { t: 'Five Nights at Freddy\'s Sister Location', u: 'https://nebulagames.us/storage/Five%20Nights%20at%20Freddys_%20Sister%20Location.html', c: 'ef4444', y: 'processMatrix', g: 'Game', i: 'https://notbingsa.github.io/Zenith/games/images/FNAF%20Sister%20Location.png' },
+            { t: 'Flappy Bird', u: 'https://nebulagames.us/storage/Flappy%20Bird.html', c: 'facc15', y: 'processMatrix', g: 'Game', i: 'https://notbingsa.github.io/Zenith/games/images/Flappy%20Bird.png' },
+            { t: 'Fluid Simulation', u: 'https://haxiomic.github.io/projects/webgl-fluid-and-particles/', c: '3b82f6', y: 'processMatrix', g: 'Game', i: 'https://notbingsa.github.io/Zenith/games/images/Fluid%20Simulation.png' },
+            { t: 'FNAF Pizzeria Simulator', u: 'https://nebulagames.us/storage/Five%20Nights%20at%20Freddys_%20Pizza%20Simulator.html', c: 'ef4444', y: 'processMatrix', g: 'Game', i: 'https://notbingsa.github.io/Zenith/games/images/FNAF%20Pizzeria%20Simulator.png' },
+            { t: 'FNAF Ultimate Custom Night', u: 'https://nebulagames.us/storage/Five%20Nights%20at%20Freddys_%20Ultimate%20Custom%20Night.html', c: 'ef4444', y: 'processMatrix', g: 'Game', i: 'https://notbingsa.github.io/Zenith/games/images/FNAF%20Ultimate%20Custom%20Night.png' },
+            { t: 'FNAF World', u: 'https://nebulagames.us/storage/Five%20Nights%20at%20Freddys_%20World.html', c: 'ef4444', y: 'processMatrix', g: 'Game', i: 'https://notbingsa.github.io/Zenith/games/images/FNAF%20World.png' },
+            { t: 'Friday Night Funkin', u: '', c: 'ef4444', y: 'executeVariant', g: 'Game', i: 'https://notbingsa.github.io/Zenith/games/images/Friday%20Night%20Funkin.png' },
+            { t: 'Fruit Ninja', u: 'https://nebulagames.us/storage/Fruit%20Ninja.html', c: '10b981', y: 'processMatrix', g: 'Game', i: 'https://notbingsa.github.io/Zenith/games/images/Fruit%20Ninja.png' },
+            { t: 'Geometry Dash Lite', u: 'https://nebulagames.us/storage/Geometry%20Dash%20Lite.html', c: '3b82f6', y: 'processMatrix', g: 'Game', i: 'https://notbingsa.github.io/Zenith/games/images/Geometry%20Dash%20Lite.png' },
+            { t: 'Gobble', u: 'https://nebulagames.us/storage/Gobble.html', c: '10b981', y: 'processMatrix', g: 'Game', i: 'https://notbingsa.github.io/Zenith/games/images/Gobble.png' },
+            { t: 'Infinite Craft', u: 'https://infinitecraftnew.com', c: '10b981', y: 'processMatrix', g: 'Game', i: 'https://notbingsa.github.io/Zenith/games/images/Infinite%20Craft.png' },
+            { t: 'Level Devil', u: 'https://nebulagames.us/storage/clleveldevil.html', c: 'ef4444', y: 'processMatrix', g: 'Game', i: 'https://notbingsa.github.io/Zenith/games/images/Level%20Devil.png' },
+            { t: 'OvO', u: 'https://nebulagames.us/storage/ovo/', c: '111827', y: 'processMatrix', g: 'Game', i: 'https://notbingsa.github.io/Zenith/games/images/OvO.png' },
+            { t: 'Paper.io 2', u: 'https://nebulagames.us/storage/paperio2/', c: 'facc15', y: 'processMatrix', g: 'Game', i: 'https://notbingsa.github.io/Zenith/games/images/Paper.io%202.png' },
+            { t: 'Poly Track', u: 'https://html-classic.itch.zone/html/15451330/index.html', c: 'ef4444', y: 'processMatrix', g: 'Game', i: 'https://notbingsa.github.io/Zenith/games/images/Poly%20Track.png' },
+            { t: 'Ragdoll Archers', u: 'https://nebulagames.us/storage/Ragdoll%20Archers.html', c: 'ef4444', y: 'processMatrix', g: 'Game', i: 'https://notbingsa.github.io/Zenith/games/images/Ragdoll%20Archers.png' },
+            { t: 'Ragdoll Hit', u: 'https://nebulagames.us/storage/Ragdoll%20Hit.html', c: 'ef4444', y: 'processMatrix', g: 'Game', i: 'https://notbingsa.github.io/Zenith/games/images/Ragdoll%20Hit.png' },
+            { t: 'Sandboxels', u: 'https://shalbito.vercel.app/', c: 'ef4444', y: 'processMatrix', g: 'Game', i: 'https://notbingsa.github.io/Zenith/games/images/Sandboxels.png' },
+            { t: 'Snake', u: 'https://googlesnakemods.com/v/current/', c: '10b981', y: 'processMatrix', g: 'Game', i: 'https://notbingsa.github.io/Zenith/games/images/Snake.png' },
+            { t: 'Solar Smash', u: 'https://nebulagames.us/storage/Solar%20Smash.html', c: 'f97316', y: 'processMatrix', g: 'Game', i: 'https://notbingsa.github.io/Zenith/games/images/Solar%20Smash.png' },
+            { t: 'Stack', u: 'https://nebulagames.us/storage/stack/', c: '3b82f6', y: 'processMatrix', g: 'Game', i: 'https://notbingsa.github.io/Zenith/games/images/Stack.png' },
+            { t: 'Stackball', u: 'https://nebulagames.us/storage/stackball/', c: 'ef4444', y: 'processMatrix', g: 'Game', i: 'https://notbingsa.github.io/Zenith/games/images/Stackball.png' },
+            { t: 'Stickman Hook', u: 'https://nebulagames.us/storage/Stickman%20Hook.html', c: 'ef4444', y: 'processMatrix', g: 'Game', i: 'https://notbingsa.github.io/Zenith/games/images/Stickman%20Hook.png' },
+            { t: 'Stone Grass', u: 'https://nebulagames.us/storage/Stone%20Grass%20Mowing%20Simulator.html', c: '10b981', y: 'processMatrix', g: 'Game', i: 'https://notbingsa.github.io/Zenith/games/images/Stone%20Grass.png' },
+            { t: 'Subway Surfers', u: 'https://nebulagames.us/storage/Subway%20Surfers_%20San%20Francisco.html', c: '3b82f6', y: 'processMatrix', g: 'Game', i: 'https://notbingsa.github.io/Zenith/games/images/Subway%20Surfers.png' },
+            { t: 'Survival Race', u: 'https://nebulagames.us/storage/clsurvivalracev2.html', c: '7c3aed', y: 'processMatrix', g: 'Game', i: 'https://notbingsa.github.io/Zenith/games/images/Survival%20Race.png' },
+            { t: 'Thirty Dollar Website', u: 'https://kleeder.de/files/moai2/%F0%9F%97%Bf.html', c: '34d399', y: 'processMatrix', g: 'Game', i: 'https://notbingsa.github.io/Zenith/games/images/Thirty%20Dollar%20Website.png' },
+            { t: 'Tiny Fishing', u: 'https://nebulagames.us/storage/Tiny%20Fishing.html', c: 'facc15', y: 'processMatrix', g: 'Game', i: 'https://notbingsa.github.io/Zenith/games/images/Tiny%20Fishing.png' },
+            { t: 'Traffic Rider', u: 'https://traffic-rider.io/game/traffic-rider/', c: 'facc15', y: 'processMatrix', g: 'Game', i: 'https://notbingsa.github.io/Zenith/games/images/Traffic%20Rider.png' },
+            { t: 'Unblocker', u: 'https://waguri.ecolefrancophone.com/search.html', c: 'f97316', y: 'processMatrix', g: 'App', i: 'https://notbingsa.github.io/Zenith/apps/images/Unblocker.png' },
+            { t: 'Yohoho.io', u: 'https://nebulagames.us/storage/yohoho/', c: '2563eb', y: 'processMatrix', g: 'Game', i: 'https://notbingsa.github.io/Zenith/games/images/Yohoho.io.png' },
         ];
         function createAssetCardHtml(asset, sizeClass = 'w-full h-auto aspect-square') {
             const title = asset.t;
             const type = asset.y;
             const safeTitle = title.replace(/'/g, "\\'");
             let clickHandler;
-            if (type === LOAD_FNF_VARIANT) {
+            if (type === 'executeVariant') {
                 clickHandler = `executeVariant('${safeTitle}')`;
             } else {
                 clickHandler = `processMatrix('${safeTitle}')`;
@@ -488,7 +517,9 @@
             return `
                 <a href="?game=${encodeURIComponent(title)}" onclick="${clickHandler}; return false;" class="block bg-gray-800 rounded-xl overflow-hidden asset-card-shadow ${sizeClass} group relative" data-category="${asset.g}">
                     <img src="${imageSrc}" 
-                         onerror="this.onerror=null;this.src='https://placehold.co/${placeholderSize}/${asset.c}/ffffff?text=${placeholderText}'" 
+                         alt="${title}"
+                         loading="lazy"
+                         onerror="handleAssetImageError(this, '${safeTitle}', '${imageSrc}')" 
                          class="w-full h-full object-cover transition duration-300 group-hover:scale-105" />
                     <div class="absolute inset-0 bg-black/30 flex items-end justify-center p-2 opacity-0 transition-opacity duration-200 group-hover:opacity-100">
                         <span class="text-sm font-semibold text-white text-center">${title}</span>
@@ -510,7 +541,7 @@
         }
         function renderRandomAssets() {
             const getRandomAssets = (count) => {
-                const assetOnlyList = ALL_ASSETS.filter(g => g.g === GAME_CATEGORY);
+                const assetOnlyList = ALL_ASSETS.filter(g => g.g === 'Game');
                 const shuffled = [...assetOnlyList].sort(() => 0.5 - Math.random());
                 return shuffled.slice(0, count);
             }
@@ -520,7 +551,7 @@
             if (randomAssetsContainer) {
                 randomAssetsContainer.innerHTML = `
                     <h3 class="section-heading-glow text-xl md:text-2xl font-semibold mb-6 text-center pt-8 text-white">
-                        <i class="fas fa-dice text-zenith-purple mr-2"></i>${RANDOM_PICKS}
+                        <i class="fas fa-dice text-zenith-purple mr-2"></i>${'Random Picks'}
                     </h3>
                     <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4 lg:gap-6 mb-12">
                         ${randomAssetsHtml}
@@ -531,7 +562,7 @@
         function applySearch() {
             const searchInput = document.getElementById('game-search');
             const searchQuery = (searchInput && searchInput.value || '').toLowerCase();
-            const cards = document.querySelectorAll('#game-list a, #random-assets-section a');
+            const cards = document.querySelectorAll('#game-list a');
             cards.forEach(card => {
                 const titleElement = card.querySelector('span');
                 const title = titleElement ? titleElement.textContent : '';
@@ -559,7 +590,7 @@
             const asset = ALL_ASSETS.find(a => a.t === title);
             if (!asset) return console.error('Asset not found for title:', title);
             const assetTitle = asset.t;
-            // History update removed
+
             const userAgent = navigator.userAgent;
             const isMobileDevice = /Mobi|Android|iPhone|iPod|iPad/i.test(userAgent);
             const isSafariBrowser = userAgent.includes('Safari') && !userAgent.includes('Chrome');
@@ -578,8 +609,14 @@
         function processMatrixInternal(asset) {
             const title = asset.t;
             const url = asset.u;
+
             if (!url) {
                 console.error('Asset URL is empty for title:', title, 'Cannot load.');
+                return;
+            }
+            // Adblocker Check
+            if (BLOCKED_DOMAINS.some(d => url.includes(d))) {
+                console.warn(`Blocked restricted URL for asset: ${title}`);
                 return;
             }
             const isFixedSize = false;
@@ -601,6 +638,7 @@
             } else {
                 return;
             }
+            removeInfoSplash();
             const loadingOverlay = document.createElement('div');
             loadingOverlay.id = 'loading-overlay';
             loadingOverlay.className = 'absolute inset-0 bg-zenith-dark/95 flex flex-col items-center justify-center p-8 z-30 rounded-2xl transition-opacity duration-500';
@@ -637,9 +675,34 @@
             displayToggleButton.className = 'fullscreen-button';
             displayToggleButton.innerHTML = '<i id="fs-icon" class="fas fa-expand"></i>';
             displayToggleButton.onclick = () => adjustCanvasGeometry(renderTarget);
+            // Mute/Unmute Button
+            const muteButton = document.createElement('button');
+            muteButton.className = 'fullscreen-button';
+            muteButton.innerHTML = '<i class="fas fa-volume-mute"></i>';
+            let isMuted = false;
+
+            muteButton.onclick = () => {
+                isMuted = !isMuted;
+
+                // 1. Update UI
+                if (isMuted) {
+                    muteButton.innerHTML = '<i class="fas fa-volume-mute"></i>';
+                } else {
+                    muteButton.innerHTML = '<i class="fas fa-volume-up"></i>';
+                }
+
+                // 2. Send message to parent (index.html) to mute the iframe
+                try {
+                    window.parent.postMessage({ type: 'MUTE_IFRAME', muted: isMuted }, '*');
+                } catch (e) {
+                    console.warn('Could not send mute message to parent:', e);
+                }
+            };
+            controlBar.appendChild(muteButton);
+
             controlBar.appendChild(displayToggleButton);
 
-            // Start with base CSS class
+
             iframe.className = 'border-none opacity-0 transition-opacity duration-500';
             if (isFixedSize) {
                 iframe.style.width = targetWidth;
@@ -648,8 +711,9 @@
             } else {
                 iframe.className += ' w-full h-full';
             }
-            // Start with autoplay blocked (muted by default)
-            iframe.setAttribute('allow', 'fullscreen');
+
+            iframe.setAttribute('allow', 'fullscreen'); // Removed autoplay to "auto-mute" where possible
+            iframe.setAttribute('sandbox', 'allow-scripts allow-same-origin allow-forms'); // No popups = rough adblock
             iframe.setAttribute('allowfullscreen', 'true');
             iframe.setAttribute('loading', 'lazy');
             const centeringWrapper = document.createElement('div');
@@ -667,33 +731,39 @@
                     loadingOverlay.remove();
                 }, 500);
 
-                // Mute iframe by default
+
                 try {
+                    // INFO: Attempting to auto-mute game media as requested.
                     const mediaElements = iframe.contentWindow.document.querySelectorAll('video, audio');
                     mediaElements.forEach(media => {
                         media.muted = true;
                     });
                 } catch (e) {
-                    // Cross-origin iframe, can't access
+                    // This block WILL fail for cross-origin iframes.
+                    // The user requested to "EXPLAIN, NOT FIX" this error, so we log it clearly.
+                    console.log("Note: Auto-mute unavailable for this game (likely cross-origin). Use in-game settings.");
                 }
             };
 
             iframe.onerror = () => {
-                console.error("Iframe failed to load");
+                console.error(`DEVELOPER ERROR: Iframe failed to load content for "${title}" (${url}). Likely a 404 or connection Refused.`);
+                // User feedback: The loading overlay will eventually time out or we can show a message.
+                // Since iframes rarely fire onerror for HTTP errors, the timeout is the backup.
                 loadingOverlay.remove();
             };
 
-            // Safety timeout: Remove overlay after 15 seconds (extended)
+
             setTimeout(() => {
                 if (document.body.contains(loadingOverlay)) {
-                    console.warn("Loading timeout reached, forcing overlay removal.");
+                    console.warn(`DEVELOPER WARNING: Game load timed out for "${title}". It might be blocked or very slow.`);
+                    // User feedback is implicit (loading disappears), but we can log for dev.
                     loadingOverlay.style.opacity = '0';
                     iframe.classList.remove('opacity-0');
                     setTimeout(() => loadingOverlay.remove(), 500);
                 }
             }, 15000);
 
-            // Skip Loading Button (appears after 5 seconds)
+
             setTimeout(() => {
                 if (document.body.contains(loadingOverlay)) {
                     const skipButton = document.createElement('button');
@@ -714,11 +784,11 @@
             const fsButton = document.getElementById('fullscreen-toggle-button');
 
             if (isFullView) {
-                // Exit fullscreen
+
                 container.classList.remove('full-view');
                 fsButton.innerHTML = '<i class="fas fa-expand"></i>';
 
-                // Exit browser fullscreen
+
                 if (document.exitFullscreen) {
                     document.exitFullscreen();
                 } else if (document.webkitExitFullscreen) {
@@ -729,11 +799,11 @@
                     document.msExitFullscreen();
                 }
             } else {
-                // Enter fullscreen
+
                 container.classList.add('full-view');
                 fsButton.innerHTML = '<i class="fas fa-compress"></i>';
 
-                // Request browser fullscreen
+
                 if (container.requestFullscreen) {
                     container.requestFullscreen();
                 } else if (container.webkitRequestFullscreen) {
@@ -744,9 +814,9 @@
             }
         }
         function resetViewport() {
-            // History update removed
 
-            // Mute any active iframes before closing
+
+
             const activeIframe = document.getElementById('asset-iframe');
             if (activeIframe) {
                 try {
@@ -756,11 +826,11 @@
                         media.pause();
                     });
                 } catch (e) {
-                    // Cross-origin iframe, can't access
+
                 }
             }
 
-            if (labelRegistry) labelRegistry.textContent = HOMEPAGE_TITLE;
+            if (labelRegistry) labelRegistry.textContent = 'Homepage';
             if (mainPanel) mainPanel.classList.remove('hidden');
             const secretContent = document.getElementById('secret-mode-content');
             if (secretContent) {
@@ -803,7 +873,7 @@
             const input = document.getElementById('secret-input');
             const message = document.getElementById('secret-message');
             const code = input.value.trim();
-            if (code === SECRET_CODE) {
+            if (code === 'tester') {
                 applySecretMode(true);
                 toggleSecretModal(false);
             } else {
@@ -821,7 +891,7 @@
             const headerTitle = document.getElementById('header-title');
             const secretToggle = document.getElementById('secret-mode-toggle');
             const primaryMarker = document.getElementById('main-zenith-title');
-            const taglineElement = document.getElementById('random-tagline');
+
             if (activate) {
                 homepage.classList.add('hidden');
                 assetContainer.classList.add('hidden');
@@ -835,33 +905,50 @@
             } else {
                 homepage.classList.remove('hidden');
                 secretContent.classList.add('hidden');
-                if (labelRegistry) labelRegistry.textContent = HOMEPAGE_TITLE;
-                if (primaryMarker) primaryMarker.textContent = ZENITH_TITLE;
+                if (labelRegistry) labelRegistry.textContent = 'Homepage';
+                if (primaryMarker) primaryMarker.textContent = 'Zenith';
                 secretToggle.innerHTML = '<i class="fas fa-lock"></i>';
                 secretToggle.classList.add('hover:bg-zenith-purple/50');
                 secretToggle.classList.remove('text-zenith-purple');
                 resetViewport();
             }
         }
-        function handleTesterAssetLoad() {
-            testerLoadCount++; // Increment the counter
+        function handleTesterAssetLoad(isError = false, iframeElement = null) {
+            testerLoadCount++;
             const progressBar = document.getElementById('tester-loading-bar');
             const statusText = document.getElementById('tester-loading-status');
+
+            // Developer Logging
+            if (isError && iframeElement) {
+                console.error(`DEVELOPER ERROR: Tester asset failed to load via onerror. Src: ${iframeElement.dataset.src}`);
+                const container = iframeElement.parentElement;
+                const errorIndicator = container.querySelector('.tester-error-indicator');
+                if (errorIndicator) errorIndicator.classList.remove('hidden');
+            }
+
             const progress = (testerLoadCount / testerTotalAssets) * 100;
             if (progressBar) progressBar.style.width = `${progress.toFixed(0)}%`;
             if (statusText) statusText.textContent = `Loading Assets (${testerLoadCount} / ${testerTotalAssets})`;
-            if (testerLoadCount >= testerTotalAssets) {
+
+            checkTesterCompletion();
+        }
+
+        function checkTesterCompletion(force = false) {
+            if (force || testerLoadCount >= testerTotalAssets) {
                 const banner = document.getElementById('tester-loading-banner');
                 const container = document.getElementById('game-cards-container');
-                if (banner) {
+                const statusText = document.getElementById('tester-loading-status');
+
+                // If forced, ensure we don't double-animate or get weird states if already done
+                if (banner && !banner.classList.contains('hidden')) {
                     banner.classList.remove('bg-indigo-900/90');
                     banner.classList.add('bg-green-700/90');
-                    statusText.textContent = `All ${testerTotalAssets} Assets Loaded!`;
+                    if (statusText) statusText.textContent = force ? `Done (Timed Out)` : `All ${testerTotalAssets} Assets Loaded!`;
+
                     setTimeout(() => {
                         banner.classList.add('opacity-0');
                         setTimeout(() => {
                             banner.classList.add('hidden');
-                            // Show the entire container once everything is loaded
                             if (container) {
                                 container.classList.remove('opacity-0', 'invisible');
                                 container.classList.add('opacity-100');
@@ -883,15 +970,21 @@
                     <iframe 
                         data-src="${url}"
                         class="tester-iframe absolute inset-0 w-full h-full border-none transition-opacity duration-500"
-                        onload="handleTesterAssetLoad()"
+                        onload="handleTesterAssetLoad(false, this)"
+                        onerror="handleTesterAssetLoad(true, this)"
                         loading="lazy"
-                        sandbox="allow-scripts allow-same-origin allow-popups allow-forms"
+                        loading="lazy"
+                        sandbox="allow-scripts allow-same-origin allow-forms"
                         allowfullscreen="true">
                     </iframe>
                     <button onclick="launchTesterAsset('${safeUrl}', '${safeTitle}', '${color}')" 
                             class="absolute bottom-2 right-2 p-1.5 bg-black/50 text-white rounded-full opacity-0 group-hover:opacity-100 transition duration-300 z-30 hover:bg-zenith-purple/70">
                         <i class="fas fa-expand text-sm"></i>
                     </button>
+                    <!-- Error Indicator (Hidden by default) -->
+                    <div class="absolute inset-0 flex items-center justify-center bg-red-900/80 hidden pointer-events-none z-10 tester-error-indicator">
+                        <span class="text-white font-bold text-xs">Load Failed</span>
+                    </div>
                 </div>
             `;
         }
@@ -901,7 +994,7 @@
             const mobileUrl = 'https://html-classic.itch.zone/html/4459499/luckydog7.github.io-master/funkinmobile/game/index.html';
             for (const asset of ALL_ASSETS) {
                 const decodedTitle = asset.t;
-                if (asset.y === LOAD_FNF_VARIANT) {
+                if (asset.y === 'executeVariant') {
                     const fnfTitle = decodedTitle;
                     testerAssetList.push({ t: `${fnfTitle} (Desktop)`, u: desktopUrl, g: asset.g, c: asset.c, i: asset.i });
                     testerAssetList.push({ t: `${fnfTitle} (Mobile)`, u: mobileUrl, g: asset.g, c: asset.c, i: asset.i });
@@ -915,14 +1008,22 @@
             }).join('');
             return cardsHtml;
         }
-        function loadAllTesterIframes() {
+        function loadTesterIframesStaggered(startIndex) {
             const iframes = document.querySelectorAll('#game-cards-container .tester-iframe');
-            iframes.forEach((iframe, index) => {
-                const asset = testerAssetList[index];
-                if (asset) {
+            const BATCH_SIZE = 3; // Load 3 at a time to keep UI responsive
+
+            for (let i = startIndex; i < Math.min(startIndex + BATCH_SIZE, iframes.length); i++) {
+                const iframe = iframes[i];
+                const asset = testerAssetList[i];
+                if (asset && iframe && !iframe.src) {
                     iframe.src = iframe.getAttribute('data-src');
                 }
-            });
+            }
+
+            if (startIndex + BATCH_SIZE < iframes.length) {
+                // Schedule next batch
+                setTimeout(() => loadTesterIframesStaggered(startIndex + BATCH_SIZE), 200);
+            }
         }
         function toggleTesterCatalog() {
             const gridWrapper = document.getElementById('tester-catalog-grid-wrapper');
@@ -940,7 +1041,19 @@
                 document.getElementById('tester-loading-status').textContent = `Loading Assets (0 / ${testerTotalAssets})`;
                 gridWrapper.classList.remove('hidden');
                 button.textContent = 'Hide Live Grid';
-                setTimeout(loadAllTesterIframes, 100);
+
+                // Start loading
+                // Start loading in staggered chunks to prevent UI freeze
+                setTimeout(() => loadTesterIframesStaggered(0), 100);
+
+                // SAFETY TIMEOUT: If not all assets report loaded in 30 seconds, force show the grid.
+                // This prevents the "stuck loading" issue if an iframe 404s/hangs without firing events.
+                setTimeout(() => {
+                    if (testerLoadCount < testerTotalAssets) {
+                        console.warn("DEVELOPER WARNING: Test Grid load timed out. Forcing display.");
+                        checkTesterCompletion(true);
+                    }
+                }, 30000);
             } else {
                 gridWrapper.classList.add('hidden');
                 button.textContent = 'Test All Games';
@@ -1012,18 +1125,18 @@
                     loadingOverlay.remove();
                 }, 500);
 
-                // Mute iframe by default
+
                 try {
                     const mediaElements = iframe.contentWindow.document.querySelectorAll('video, audio');
                     mediaElements.forEach(media => {
                         media.muted = true;
                     });
                 } catch (e) {
-                    // Cross-origin iframe, can't access
+
                 }
             };
 
-            // Skip Loading Button for Tester Asset (appears after 5 seconds)
+
             setTimeout(() => {
                 if (renderTarget.contains(loadingOverlay)) {
                     const skipButton = document.createElement('button');
@@ -1044,7 +1157,7 @@
             if (title) {
                 const asset = ALL_ASSETS.find(a => a.t === title);
                 if (asset) {
-                    if (asset.y === LOAD_FNF_VARIANT) {
+                    if (asset.y === 'executeVariant') {
                         executeVariant(title);
                     } else {
                         processMatrix(title);
@@ -1066,12 +1179,12 @@
             renderTarget = document.getElementById('asset-container');
             labelRegistry = document.getElementById('header-title');
             primaryMarker = document.getElementById('main-zenith-title');
-            // Sorting is now done in the array definition
+
             const titleFromUrl = getAssetFromUrl();
             if (titleFromUrl) {
                 const asset = ALL_ASSETS.find(a => a.t === titleFromUrl);
                 if (asset) {
-                    if (asset.y === LOAD_FNF_VARIANT) {
+                    if (asset.y === 'executeVariant') {
                         executeVariant(titleFromUrl);
                     } else {
                         processMatrix(titleFromUrl);
@@ -1092,29 +1205,22 @@
                 if (searchInput) {
                     searchInput.placeholder = '';
                 }
-                document.title = ZENITH_TITLE + ' - ' + TITLE_SUFFIX;
-                if (labelRegistry) labelRegistry.textContent = HOMEPAGE_TITLE;
-                if (primaryMarker) primaryMarker.textContent = ZENITH_TITLE;
-                const taglineElement = document.getElementById('random-tagline');
-                if (taglineElement) {
-                    const randomIndex = Math.floor(Math.random() * TAGLINES.length);
-                    taglineElement.textContent = TAGLINES[randomIndex];
-                }
-                const splashLoader = document.getElementById('website-splash-loader');
-                if (splashLoader) {
-                    splashLoader.style.opacity = '0';
-                    setTimeout(() => {
-                        splashLoader.style.display = 'none';
-                    }, 300);
-                }
+                document.title = 'Zenith' + ' - ' + 'Unblocked Games';
+                if (labelRegistry) labelRegistry.textContent = 'Homepage';
+                if (primaryMarker) primaryMarker.textContent = 'Zenith';
+
+                removeInfoSplash();
                 renderRandomAssets();
                 renderAllAssets();
 
-                // Check internet speed after page loads
+
                 setTimeout(() => {
                     checkInternetSpeed();
                 }, 500);
             }
+
+
+            showLegalDisclaimer();
         });
     </script>
 </head>
@@ -1203,8 +1309,7 @@
             <section class="text-center py-16">
                 <h2 id="main-zenith-title"
                     class="text-6xl md:text-8xl font-extrabold zenith-title-glow tracking-tighter mb-4"></h2>
-                <p id="random-tagline" class="text-xl md:text-2xl font-medium text-white mb-4"
-                    style="text-shadow: 0 0 10px #3b82f6;"></p>
+
                 <div class="w-full h-0.5 bg-gradient-to-r from-transparent via-zenith-purple/50 to-transparent mb-0">
                 </div>
             </section>
