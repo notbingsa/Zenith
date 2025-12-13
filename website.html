@@ -271,8 +271,7 @@
                     </div>
                     <h2 class="text-3xl font-bold text-white mb-6 tracking-tight">Legal Disclaimer</h2>
                     <p class="text-gray-300 text-lg mb-8 leading-relaxed">
-                        For legal purposes, we do not condone or take responsibility for any use of this website to interrupt education. 
-                        <span class="text-white font-semibold">Zenith</span> has been made for use at home or with permission by the overseers of the school's ICT.
+                    For legal purposes, we affirm that Arcane Algorithms (the developers of this website, Zenith) do not own any of the games, images, icons, or graphical assets used to display the content on this site. We are a distribution platform that links to or embeds publicly available content from external sources. All rights, titles, and interests are explicitly reserved by the original creators, developers, and copyright holders of the respective games and associated imagery. Furthermore, we do not condone or take liability for any use of this website to interrupt education or violate local rules. Zenith has been made for use at home or with explicit permission from the administrators or overseers of the school's ICT department.
                     </p>
                     <button onclick="document.getElementById('legal-disclaimer').remove()" 
                             class="px-10 py-4 rounded-xl bg-red-600 text-white font-bold text-lg hover:bg-red-500 transition duration-200 shadow-lg hover:shadow-red-600/20 active:scale-95">
@@ -1284,6 +1283,11 @@
                 class="ml-4 px-8 py-3 text-lg font-semibold text-white rounded-xl shadow-lg bg-blue-600 hover:bg-blue-500 transition duration-200"
                 onclick="measureCloudflareSpeed();">
                 <i class="fas fa-tachometer-alt mr-2"></i>Test Speed
+            </button>
+            <button id="testLegalDisclaimerButton"
+                class="ml-4 px-8 py-3 text-lg font-semibold text-white rounded-xl shadow-lg bg-red-600 hover:bg-red-500 transition duration-200"
+                onclick="showLegalDisclaimer();">
+                <i class="fas fa-gavel mr-2"></i>Test Legal Disclaimer
             </button>
             <div id="tester-catalog-grid-wrapper" class="hidden mt-12 w-full mx-auto relative">
                 <h3 class="text-2xl font-bold text-gray-200 mb-6 border-b border-gray-700 pb-3">Live Test Grid</h3>
