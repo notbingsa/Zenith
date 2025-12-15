@@ -578,12 +578,57 @@
             return game ? decodeURIComponent(game) : null;
         }
         function processMatrix(title) {
+            if (title === 'Chat') {
+                showChatSelectionModal();
+                return;
+            }
             const asset = ALL_ASSETS.find(a => a.t === title);
             if (!asset) {
                 console.error('Asset not found for title:', title);
                 return;
             }
             processMatrixInternal(asset);
+        }
+
+        function showChatSelectionModal() {
+            const modal = document.createElement('div');
+            modal.id = 'chat-selection-modal';
+            modal.className = 'fixed inset-0 bg-black/90 flex items-center justify-center z-[10001] p-4';
+            modal.innerHTML = `
+                <div class="bg-gray-800 p-8 rounded-xl shadow-2xl w-full max-w-lg border border-zenith-purple/50 transform scale-100 transition-transform duration-300">
+                    <h3 class="text-3xl font-bold text-white mb-6 text-center">Choose Chat</h3>
+                    <div class="space-y-4">
+                        <button id="btn-chat-default" class="w-full px-6 py-4 rounded-xl bg-zenith-blue hover:bg-blue-600 text-white font-bold text-xl transition duration-200 shadow-lg flex items-center justify-center">
+                            <i class="fas fa-comments mr-3"></i> Default
+                        </button>
+                        <button id="btn-chat-fandoms" class="w-full px-6 py-4 rounded-xl bg-zenith-purple hover:bg-purple-600 text-white font-bold text-xl transition duration-200 shadow-lg flex items-center justify-center">
+                            <i class="fas fa-users mr-3"></i> Fandoms Only
+                        </button>
+                    </div>
+                     <button onclick="document.getElementById('chat-selection-modal').remove()" class="mt-6 w-full text-gray-400 hover:text-white text-sm underline">Cancel</button>
+                </div>
+            `;
+            document.body.appendChild(modal);
+
+            document.getElementById('btn-chat-default').onclick = () => {
+                modal.remove();
+                const asset = ALL_ASSETS.find(a => a.t === 'Chat');
+                // The default URL is already in the asset list, but let's be explicit just in case
+                // Default: https://padlet.com/lincolnharrison8pc/zenith-kcoo8yyruf8y416e
+                // Verify if the ALL_ASSETS has this URL or if we need to force it.
+                // Looking at ALL_ASSETS line 458: u: 'https://padlet.com/lincolnharrison8pc/zenith' ... wait, that's different.
+                // The user requested: https://padlet.com/lincolnharrison8pc/zenith-kcoo8yyruf8y416e
+                // I will force the requested URL here to be safe and accurate to the request.
+                const defaultUrl = 'https://padlet.com/lincolnharrison8pc/zenith-kcoo8yyruf8y416e';
+                processMatrixInternal({ ...asset, u: defaultUrl });
+            };
+
+            document.getElementById('btn-chat-fandoms').onclick = () => {
+                modal.remove();
+                const asset = ALL_ASSETS.find(a => a.t === 'Chat');
+                const fandomsUrl = 'https://padlet.com/lincolnharrison8pc/zenith-fandoms-v7ylknh0umwis649';
+                processMatrixInternal({ ...asset, u: fandomsUrl });
+            };
         }
         function executeVariant(title) {
             const asset = ALL_ASSETS.find(a => a.t === title);
