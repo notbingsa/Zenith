@@ -40,7 +40,6 @@
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
-            text-fill-color: transparent;
             color: #ffffff;
         }
 
@@ -450,55 +449,56 @@
 
 
         const ALL_ASSETS = [
-            { t: 'Baseball', u: 'https://nebulagames.us/storage/Google%20Baseball.html', c: '10b981', y: 'processMatrix', g: 'Game', i: 'https://notbingsa.github.io/Zenith/games/images/Baseball.png' },
-            { t: 'Bitlife', u: 'https://nebulagames.us/storage/bitlife/', c: 'ef4444', y: 'processMatrix', g: 'Game', i: 'https://notbingsa.github.io/Zenith/games/images/Bitlife.png' },
-            { t: 'Block Blast', u: 'https://nebulagames.us/storage/Block%20Blast.html', c: '1d4ed8', y: 'processMatrix', g: 'Game', i: 'https://notbingsa.github.io/Zenith/games/images/Block%20Blast.png' },
-            { t: 'Blumgi Merge', u: 'https://nebulagames.us/storage/blumgimerge/', c: 'f97316', y: 'processMatrix', g: 'Game', i: 'https://notbingsa.github.io/Zenith/games/images/Blumgi%20Merge.png' },
-            { t: 'Bouncemasters', u: 'https://nebulagames.us/storage/Bouncemasters.html', c: 'f97316', y: 'processMatrix', g: 'Game', i: 'https://notbingsa.github.io/Zenith/games/images/Bouncemasters.png' },
-            { t: 'Chat', u: 'https://padlet.com/lincolnharrison8pc/zenith', c: '7c3aed', y: 'processMatrix', g: 'App', i: 'https://notbingsa.github.io/Zenith/apps/images/Chat.png' },
-            { t: 'Cookie Clicker', u: 'https://nebulagames.us/storage/Cookie%20Clicker.html', c: 'd97706', y: 'processMatrix', g: 'Game', i: 'https://notbingsa.github.io/Zenith/games/images/Cookie%20Clicker.png' },
-            { t: 'Coreball', u: 'https://nebulagames.us/storage/Coreball.html', c: 'f87171', y: 'processMatrix', g: 'Game', i: 'https://notbingsa.github.io/Zenith/games/images/Coreball.png' },
-            { t: 'Cricket', u: 'https://doodlecricket.pages.dev/google-cricket/', c: 'f97316', y: 'processMatrix', g: 'Game', i: 'https://notbingsa.github.io/Zenith/games/images/Cricket.png' },
-            { t: 'Cut The Rope', u: 'https://nebulagames.us/storage/clcuttherope.html', c: '10b981', y: 'processMatrix', g: 'Game', i: 'https://notbingsa.github.io/Zenith/games/images/Cut%20The%20Rope.png' },
-            { t: 'Drive Mad', u: 'https://nebulagames.us/storage/Drive%20Mad.html', c: '34d399', y: 'processMatrix', g: 'Game', i: 'https://notbingsa.github.io/Zenith/games/images/Drive%20Mad.png' },
-            { t: 'Eggy Car', u: 'https://nebulagames.us/storage/eggycar/', c: 'facc15', y: 'processMatrix', g: 'Game', i: 'https://notbingsa.github.io/Zenith/games/images/Eggy%20Car.png' },
-            { t: 'Escape Road 2', u: 'https://nebulagames.us/storage/clescaperoad2.html', c: 'ef4444', y: 'processMatrix', g: 'Game', i: 'https://notbingsa.github.io/Zenith/games/images/Escape%20Road%202.png' },
-            { t: 'Five Nights at Freddy\'s', u: 'https://nebulagames.us/storage/Five%20Nights%20at%20Freddys.html', c: 'ef4444', y: 'processMatrix', g: 'Game', i: 'https://notbingsa.github.io/Zenith/games/images/FNAF.png' },
-            { t: 'Five Nights at Freddy\'s 2', u: 'https://nebulagames.us/storage/Five%20Nights%20at%20Freddys%202.html', c: 'ef4444', y: 'processMatrix', g: 'Game', i: 'https://notbingsa.github.io/Zenith/games/images/FNAF%202.png' },
-            { t: 'Five Nights at Freddy\'s 3', u: 'https://nebulagames.us/storage/Five%20Nights%20at%20Freddys%203.html', c: 'ef4444', y: 'processMatrix', g: 'Game', i: 'https://notbingsa.github.io/Zenith/games/images/FNAF%203.png' },
-            { t: 'Five Nights at Freddy\'s 4', u: 'https://nebulagames.us/storage/Five%20Nights%20at%20Freddys%204.html', c: 'ef4444', y: 'processMatrix', g: 'Game', i: 'https://notbingsa.github.io/Zenith/games/images/FNAF%204.png' },
-            { t: 'Five Nights at Freddy\'s 4 Halloween', u: 'https://nebulagames.us/storage/Five%20Nights%20at%20Freddys%204_%20Halloween.html', c: 'ef4444', y: 'processMatrix', g: 'Game', i: 'https://notbingsa.github.io/Zenith/games/images/FNAF%204%20Halloween.png' },
-            { t: 'Five Nights at Freddy\'s Sister Location', u: 'https://nebulagames.us/storage/Five%20Nights%20at%20Freddys_%20Sister%20Location.html', c: 'ef4444', y: 'processMatrix', g: 'Game', i: 'https://notbingsa.github.io/Zenith/games/images/FNAF%20Sister%20Location.png' },
-            { t: 'Flappy Bird', u: 'https://nebulagames.us/storage/Flappy%20Bird.html', c: 'facc15', y: 'processMatrix', g: 'Game', i: 'https://notbingsa.github.io/Zenith/games/images/Flappy%20Bird.png' },
-            { t: 'Fluid Simulation', u: 'https://haxiomic.github.io/projects/webgl-fluid-and-particles/', c: '3b82f6', y: 'processMatrix', g: 'Game', i: 'https://notbingsa.github.io/Zenith/games/images/Fluid%20Simulation.png' },
-            { t: 'FNAF Pizzeria Simulator', u: 'https://nebulagames.us/storage/Five%20Nights%20at%20Freddys_%20Pizza%20Simulator.html', c: 'ef4444', y: 'processMatrix', g: 'Game', i: 'https://notbingsa.github.io/Zenith/games/images/FNAF%20Pizzeria%20Simulator.png' },
-            { t: 'FNAF Ultimate Custom Night', u: 'https://nebulagames.us/storage/Five%20Nights%20at%20Freddys_%20Ultimate%20Custom%20Night.html', c: 'ef4444', y: 'processMatrix', g: 'Game', i: 'https://notbingsa.github.io/Zenith/games/images/FNAF%20Ultimate%20Custom%20Night.png' },
-            { t: 'FNAF World', u: 'https://nebulagames.us/storage/Five%20Nights%20at%20Freddys_%20World.html', c: 'ef4444', y: 'processMatrix', g: 'Game', i: 'https://notbingsa.github.io/Zenith/games/images/FNAF%20World.png' },
-            { t: 'Friday Night Funkin', u: '', c: 'ef4444', y: 'executeVariant', g: 'Game', i: 'https://notbingsa.github.io/Zenith/games/images/Friday%20Night%20Funkin.png' },
-            { t: 'Fruit Ninja', u: 'https://nebulagames.us/storage/Fruit%20Ninja.html', c: '10b981', y: 'processMatrix', g: 'Game', i: 'https://notbingsa.github.io/Zenith/games/images/Fruit%20Ninja.png' },
-            { t: 'Geometry Dash Lite', u: 'https://nebulagames.us/storage/Geometry%20Dash%20Lite.html', c: '3b82f6', y: 'processMatrix', g: 'Game', i: 'https://notbingsa.github.io/Zenith/games/images/Geometry%20Dash%20Lite.png' },
-            { t: 'Gobble', u: 'https://nebulagames.us/storage/Gobble.html', c: '10b981', y: 'processMatrix', g: 'Game', i: 'https://notbingsa.github.io/Zenith/games/images/Gobble.png' },
-            { t: 'Infinite Craft', u: 'https://infinitecraftnew.com', c: '10b981', y: 'processMatrix', g: 'Game', i: 'https://notbingsa.github.io/Zenith/games/images/Infinite%20Craft.png' },
-            { t: 'Level Devil', u: 'https://nebulagames.us/storage/clleveldevil.html', c: 'ef4444', y: 'processMatrix', g: 'Game', i: 'https://notbingsa.github.io/Zenith/games/images/Level%20Devil.png' },
-            { t: 'OvO', u: 'https://nebulagames.us/storage/ovo/', c: '111827', y: 'processMatrix', g: 'Game', i: 'https://notbingsa.github.io/Zenith/games/images/OvO.png' },
-            { t: 'Paper.io 2', u: 'https://nebulagames.us/storage/paperio2/', c: 'facc15', y: 'processMatrix', g: 'Game', i: 'https://notbingsa.github.io/Zenith/games/images/Paper.io%202.png' },
-            { t: 'Poly Track', u: 'https://html-classic.itch.zone/html/15451330/index.html', c: 'ef4444', y: 'processMatrix', g: 'Game', i: 'https://notbingsa.github.io/Zenith/games/images/Poly%20Track.png' },
-            { t: 'Ragdoll Archers', u: 'https://nebulagames.us/storage/Ragdoll%20Archers.html', c: 'ef4444', y: 'processMatrix', g: 'Game', i: 'https://notbingsa.github.io/Zenith/games/images/Ragdoll%20Archers.png' },
-            { t: 'Ragdoll Hit', u: 'https://nebulagames.us/storage/Ragdoll%20Hit.html', c: 'ef4444', y: 'processMatrix', g: 'Game', i: 'https://notbingsa.github.io/Zenith/games/images/Ragdoll%20Hit.png' },
-            { t: 'Sandboxels', u: 'https://shalbito.vercel.app/', c: 'ef4444', y: 'processMatrix', g: 'Game', i: 'https://notbingsa.github.io/Zenith/games/images/Sandboxels.png' },
-            { t: 'Snake', u: 'https://googlesnakemods.com/v/current/', c: '10b981', y: 'processMatrix', g: 'Game', i: 'https://notbingsa.github.io/Zenith/games/images/Snake.png' },
-            { t: 'Solar Smash', u: 'https://nebulagames.us/storage/Solar%20Smash.html', c: 'f97316', y: 'processMatrix', g: 'Game', i: 'https://notbingsa.github.io/Zenith/games/images/Solar%20Smash.png' },
-            { t: 'Stack', u: 'https://nebulagames.us/storage/stack/', c: '3b82f6', y: 'processMatrix', g: 'Game', i: 'https://notbingsa.github.io/Zenith/games/images/Stack.png' },
-            { t: 'Stackball', u: 'https://nebulagames.us/storage/stackball/', c: 'ef4444', y: 'processMatrix', g: 'Game', i: 'https://notbingsa.github.io/Zenith/games/images/Stackball.png' },
-            { t: 'Stickman Hook', u: 'https://nebulagames.us/storage/Stickman%20Hook.html', c: 'ef4444', y: 'processMatrix', g: 'Game', i: 'https://notbingsa.github.io/Zenith/games/images/Stickman%20Hook.png' },
-            { t: 'Stone Grass', u: 'https://nebulagames.us/storage/Stone%20Grass%20Mowing%20Simulator.html', c: '10b981', y: 'processMatrix', g: 'Game', i: 'https://notbingsa.github.io/Zenith/games/images/Stone%20Grass.png' },
-            { t: 'Subway Surfers', u: 'https://nebulagames.us/storage/Subway%20Surfers_%20San%20Francisco.html', c: '3b82f6', y: 'processMatrix', g: 'Game', i: 'https://notbingsa.github.io/Zenith/games/images/Subway%20Surfers.png' },
-            { t: 'Survival Race', u: 'https://nebulagames.us/storage/clsurvivalracev2.html', c: '7c3aed', y: 'processMatrix', g: 'Game', i: 'https://notbingsa.github.io/Zenith/games/images/Survival%20Race.png' },
-            { t: 'Thirty Dollar Website', u: 'https://kleeder.de/files/moai2/%F0%9F%97%Bf.html', c: '34d399', y: 'processMatrix', g: 'Game', i: 'https://notbingsa.github.io/Zenith/games/images/Thirty%20Dollar%20Website.png' },
-            { t: 'Tiny Fishing', u: 'https://nebulagames.us/storage/Tiny%20Fishing.html', c: 'facc15', y: 'processMatrix', g: 'Game', i: 'https://notbingsa.github.io/Zenith/games/images/Tiny%20Fishing.png' },
-            { t: 'Traffic Rider', u: 'https://traffic-rider.io/game/traffic-rider/', c: 'facc15', y: 'processMatrix', g: 'Game', i: 'https://notbingsa.github.io/Zenith/games/images/Traffic%20Rider.png' },
-            { t: 'Unblocker', u: 'https://waguri.ecolefrancophone.com/search.html', c: 'f97316', y: 'processMatrix', g: 'App', i: 'https://notbingsa.github.io/Zenith/apps/images/Unblocker.png' },
-            { t: 'Yohoho.io', u: 'https://nebulagames.us/storage/yohoho/', c: '2563eb', y: 'processMatrix', g: 'Game', i: 'https://notbingsa.github.io/Zenith/games/images/Yohoho.io.png' },
+            { t: 'Baseball', u: 'https://nebulagames.us/storage/Google%20Baseball.html', c: '10b981', y: 'processMatrix', g: 'Game', i: '/games/images/Baseball.png' },
+            { t: 'Bitlife', u: 'https://nebulagames.us/storage/bitlife/', c: 'ef4444', y: 'processMatrix', g: 'Game', i: '/games/images/Bitlife.png' },
+            { t: 'Block Blast', u: 'https://nebulagames.us/storage/Block%20Blast.html', c: '1d4ed8', y: 'processMatrix', g: 'Game', i: '/games/images/Block%20Blast.png' },
+            { t: 'Blumgi Merge', u: 'https://nebulagames.us/storage/blumgimerge/', c: 'f97316', y: 'processMatrix', g: 'Game', i: '/games/images/Blumgi%20Merge.png' },
+            { t: 'Bouncemasters', u: 'https://nebulagames.us/storage/Bouncemasters.html', c: 'f97316', y: 'processMatrix', g: 'Game', i: '/games/images/Bouncemasters.png' },
+            { t: 'Chat', u: 'https://padlet.com/lincolnharrison8pc/zenith', c: '7c3aed', y: 'processMatrix', g: 'App', i: '/apps/images/Chat.png' },
+            { t: 'Cookie Clicker', u: 'https://nebulagames.us/storage/Cookie%20Clicker.html', c: 'd97706', y: 'processMatrix', g: 'Game', i: '/games/images/Cookie%20Clicker.png' },
+            { t: 'Coreball', u: 'https://nebulagames.us/storage/Coreball.html', c: 'f87171', y: 'processMatrix', g: 'Game', i: '/games/images/Coreball.png' },
+            { t: 'Cricket', u: 'https://doodlecricket.pages.dev/google-cricket/', c: 'f97316', y: 'processMatrix', g: 'Game', i: '/games/images/Cricket.png' },
+            { t: 'Cut The Rope', u: 'https://nebulagames.us/storage/clcuttherope.html', c: '10b981', y: 'processMatrix', g: 'Game', i: '/games/images/Cut%20The%20Rope.png' },
+            { t: 'Drive Mad', u: 'https://nebulagames.us/storage/Drive%20Mad.html', c: '34d399', y: 'processMatrix', g: 'Game', i: '/games/images/Drive%20Mad.png' },
+            { t: 'Eggy Car', u: 'https://nebulagames.us/storage/eggycar/', c: 'facc15', y: 'processMatrix', g: 'Game', i: '/games/images/Eggy%20Car.png' },
+            { t: 'Escape Road 2', u: 'https://nebulagames.us/storage/clescaperoad2.html', c: 'ef4444', y: 'processMatrix', g: 'Game', i: '/games/images/Escape%20Road%202.png' },
+            { t: 'Five Nights at Freddy\'s', u: 'https://nebulagames.us/storage/Five%20Nights%20at%20Freddys.html', c: 'ef4444', y: 'processMatrix', g: 'Game', i: '/games/images/FNAF.png' },
+            { t: 'Five Nights at Freddy\'s 2', u: 'https://nebulagames.us/storage/Five%20Nights%20at%20Freddys%202.html', c: 'ef4444', y: 'processMatrix', g: 'Game', i: '/games/images/FNAF%202.png' },
+            { t: 'Five Nights at Freddy\'s 3', u: 'https://nebulagames.us/storage/Five%20Nights%20at%20Freddys%203.html', c: 'ef4444', y: 'processMatrix', g: 'Game', i: '/games/images/FNAF%203.png' },
+            { t: 'Five Nights at Freddy\'s 4', u: 'https://nebulagames.us/storage/Five%20Nights%20at%20Freddys%204.html', c: 'ef4444', y: 'processMatrix', g: 'Game', i: '/games/images/FNAF%204.png' },
+            { t: 'Five Nights at Freddy\'s 4 Halloween', u: 'https://nebulagames.us/storage/Five%20Nights%20at%20Freddys%204_%20Halloween.html', c: 'ef4444', y: 'processMatrix', g: 'Game', i: '/games/images/FNAF%204%20Halloween.png' },
+            { t: 'Five Nights at Freddy\'s Sister Location', u: 'https://nebulagames.us/storage/Five%20Nights%20at%20Freddys_%20Sister%20Location.html', c: 'ef4444', y: 'processMatrix', g: 'Game', i: '/games/images/FNAF%20Sister%20Location.png' },
+            { t: 'Flappy Bird', u: 'https://nebulagames.us/storage/Flappy%20Bird.html', c: 'facc15', y: 'processMatrix', g: 'Game', i: '/games/images/Flappy%20Bird.png' },
+            { t: 'Fluid Simulation', u: 'https://haxiomic.github.io/projects/webgl-fluid-and-particles/', c: '3b82f6', y: 'processMatrix', g: 'Game', i: '/games/images/Fluid%20Simulation.png' },
+            { t: 'FNAF Pizzeria Simulator', u: 'https://nebulagames.us/storage/Five%20Nights%20at%20Freddys_%20Pizza%20Simulator.html', c: 'ef4444', y: 'processMatrix', g: 'Game', i: '/games/images/FNAF%20Pizzeria%20Simulator.png' },
+            { t: 'FNAF Ultimate Custom Night', u: 'https://nebulagames.us/storage/Five%20Nights%20at%20Freddys_%20Ultimate%20Custom%20Night.html', c: 'ef4444', y: 'processMatrix', g: 'Game', i: '/games/images/FNAF%20Ultimate%20Custom%20Night.png' },
+            { t: 'FNAF World', u: 'https://nebulagames.us/storage/Five%20Nights%20at%20Freddys_%20World.html', c: 'ef4444', y: 'processMatrix', g: 'Game', i: '/games/images/FNAF%20World.png' },
+            { t: 'Friday Night Funkin', u: '', c: 'ef4444', y: 'executeVariant', g: 'Game', i: '/games/images/Friday%20Night%20Funkin.png' },
+            { t: 'Fruit Ninja', u: 'https://nebulagames.us/storage/Fruit%20Ninja.html', c: '10b981', y: 'processMatrix', g: 'Game', i: '/games/images/Fruit%20Ninja.png' },
+            { t: 'Geometry Dash Lite', u: 'https://nebulagames.us/storage/Geometry%20Dash%20Lite.html', c: '3b82f6', y: 'processMatrix', g: 'Game', i: '/games/images/Geometry%20Dash%20Lite.png' },
+            { t: 'Gobble', u: 'https://nebulagames.us/storage/Gobble.html', c: '10b981', y: 'processMatrix', g: 'Game', i: '/games/images/Gobble.png' },
+            { t: 'Infinite Craft', u: 'https://infinitecraftnew.com', c: '10b981', y: 'processMatrix', g: 'Game', i: '/games/images/Infinite%20Craft.png' },
+            { t: 'Level Devil', u: 'https://nebulagames.us/storage/clleveldevil.html', c: 'ef4444', y: 'processMatrix', g: 'Game', i: '/games/images/Level%20Devil.png' },
+            { t: 'OvO', u: 'https://nebulagames.us/storage/ovo/', c: '111827', y: 'processMatrix', g: 'Game', i: '/games/images/OvO.png' },
+            { t: 'Paper.io 2', u: 'https://nebulagames.us/storage/paperio2/', c: 'facc15', y: 'processMatrix', g: 'Game', i: '/games/images/Paper.io%202.png' },
+            { t: 'Poly Track', u: 'https://html-classic.itch.zone/html/15451330/index.html', c: 'ef4444', y: 'processMatrix', g: 'Game', i: '/games/images/Poly%20Track.png' },
+            { t: 'Ragdoll Archers', u: 'https://nebulagames.us/storage/Ragdoll%20Archers.html', c: 'ef4444', y: 'processMatrix', g: 'Game', i: '/games/images/Ragdoll%20Archers.png' },
+            { t: 'Ragdoll Hit', u: 'https://nebulagames.us/storage/Ragdoll%20Hit.html', c: 'ef4444', y: 'processMatrix', g: 'Game', i: '/games/images/Ragdoll%20Hit.png' },
+            { t: 'Revolution Idle', u: 'https://html-classic.itch.zone/html/11749385/index.html', c: 'ef4444', y: 'processMatrix', g: 'Game', i: '/games/images/Revolution%20Idle.png' },
+            { t: 'Sandboxels', u: 'https://shalbito.vercel.app/', c: 'ef4444', y: 'processMatrix', g: 'Game', i: '/games/images/Sandboxels.png' },
+            { t: 'Snake', u: 'https://googlesnakemods.com/v/current/', c: '10b981', y: 'processMatrix', g: 'Game', i: '/games/images/Snake.png' },
+            { t: 'Solar Smash', u: 'https://nebulagames.us/storage/Solar%20Smash.html', c: 'f97316', y: 'processMatrix', g: 'Game', i: '/games/images/Solar%20Smash.png' },
+            { t: 'Stack', u: 'https://nebulagames.us/storage/stack/', c: '3b82f6', y: 'processMatrix', g: 'Game', i: '/games/images/Stack.png' },
+            { t: 'Stackball', u: 'https://nebulagames.us/storage/stackball/', c: 'ef4444', y: 'processMatrix', g: 'Game', i: '/games/images/Stackball.png' },
+            { t: 'Stickman Hook', u: 'https://nebulagames.us/storage/Stickman%20Hook.html', c: 'ef4444', y: 'processMatrix', g: 'Game', i: '/games/images/Stickman%20Hook.png' },
+            { t: 'Stone Grass', u: 'https://nebulagames.us/storage/Stone%20Grass%20Mowing%20Simulator.html', c: '10b981', y: 'processMatrix', g: 'Game', i: '/games/images/Stone%20Grass.png' },
+            { t: 'Subway Surfers', u: 'https://nebulagames.us/storage/Subway%20Surfers_%20San%20Francisco.html', c: '3b82f6', y: 'processMatrix', g: 'Game', i: '/games/images/Subway%20Surfers.png' },
+            { t: 'Survival Race', u: 'https://nebulagames.us/storage/clsurvivalracev2.html', c: '7c3aed', y: 'processMatrix', g: 'Game', i: '/games/images/Survival%20Race.png' },
+            { t: 'Thirty Dollar Website', u: 'https://kleeder.de/files/moai2/%F0%9F%97%Bf.html', c: '34d399', y: 'processMatrix', g: 'Game', i: '/games/images/Thirty%20Dollar%20Website.png' },
+            { t: 'Tiny Fishing', u: 'https://nebulagames.us/storage/Tiny%20Fishing.html', c: 'facc15', y: 'processMatrix', g: 'Game', i: '/games/images/Tiny%20Fishing.png' },
+            { t: 'Traffic Rider', u: 'https://traffic-rider.io/game/traffic-rider/', c: 'facc15', y: 'processMatrix', g: 'Game', i: '/games/images/Traffic%20Rider.png' },
+            { t: 'Unblocker', u: 'https://waguri.ecolefrancophone.com/search.html', c: 'f97316', y: 'processMatrix', g: 'App', i: '/apps/images/Unblocker.png' },
+            { t: 'Yohoho.io', u: 'https://nebulagames.us/storage/yohoho/', c: '2563eb', y: 'processMatrix', g: 'Game', i: '/games/images/Yohoho.io.png' },
         ];
         function createAssetCardHtml(asset, sizeClass = 'w-full h-auto aspect-square') {
             const title = asset.t;
@@ -1272,8 +1272,7 @@
 <body class="font-sans bg-gray-900 text-gray-100">
     <div id="website-splash-loader"
         class="fixed inset-0 z-[10000] bg-zenith-dark flex flex-col items-center justify-center transition-opacity duration-300">
-        <img src="https://notbingsa.github.io/Zenith/ui/logo.png" alt="Zenith Logo"
-            class="w-16 h-16 mb-4 animate-pulse object-contain" />
+        <img src="/ui/logo.png" alt="Zenith Logo" class="w-16 h-16 mb-4 animate-pulse object-contain" />
         <h2 id="splash-title" class="text-3xl font-extrabold zenith-title-glow tracking-tighter">Zenith</h2>
         <p class="text-sm text-gray-400 mt-2">Loading interface...</p>
     </div>
@@ -1299,9 +1298,8 @@
     </div>
     <header
         class="py-3 px-4 md:px-8 flex items-center justify-between fixed top-0 left-0 right-0 z-50 bg-black/30 backdrop-blur-sm">
-        <a href="./" class="flex items-center space-x-3" onclick="applySecretMode(false); return false;">
-            <img src="https://notbingsa.github.io/Zenith/ui/logo.png" alt="Zenith Logo"
-                class="w-10 h-10 object-contain" />
+        <a href="." class="flex items-center space-x-3" onclick="applySecretMode(false); return false;">
+            <img src="/ui/logo.png" alt="Zenith Logo" class="w-10 h-10 object-contain" />
             <h1 id="header-title" class="text-xl md:text-3xl font-bold"></h1>
         </a>
         <button id="secret-mode-toggle"
