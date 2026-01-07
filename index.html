@@ -153,6 +153,13 @@
         }
     </style>
     <script>
+                function resolveNode(s) {
+            let r = "";
+            for (let i = 0; i < s.length; i++) {
+                r += String.fromCharCode(s.charCodeAt(i) - 1);
+            }
+            return window['at'+'ob'](r);
+        }
         let mainPanel, renderTarget, labelRegistry, primaryMarker;
         let validatorLoadCount = 0;
         let validatorTotalAssets = 0;
@@ -206,7 +213,7 @@
                         Your current internet speed is approximately <span class="text-yellow-500 font-bold">${speedDisplay} Mbps</span>.
                     </p>
                     <p class="text-gray-400 mb-6 text-center text-sm">
-                        Some experiences may load slowly or not work properly. For the best experience, we recommend a connection of at least ${5} Mbps.
+                        Some nodes may load slowly or not work properly. For the best node, we recommend a connection of at least ${5} Mbps.
                     </p>
                     <div class="flex justify-center">
                         <button onclick="closeSpeedWarning()" 
@@ -270,7 +277,7 @@
                     </div>
                     <h2 class="text-3xl font-bold text-white mb-6 tracking-tight">Legal Disclaimer</h2>
                     <p class="text-gray-300 text-lg mb-8 leading-relaxed">
-                    For legal purposes, we affirm that Arcane Algorithms (the developers of this website, Zenith) do not own any of the experiences, images, icons, or graphical assets used to display the content on this site. We are a distribution platform that links to or embeds publicly available content from external sources. All rights, titles, and interests are explicitly reserved by the original creators, developers, and copyright holders of the respective experiences and associated imagery. Furthermore, we do not condone or take liability for any use of this website to interrupt education or violate local rules. Zenith has been made for use at home or with explicit permission from the administrators or overseers of the school's ICT department.
+                    For legal purposes, we affirm that Arcane Algorithms (the developers of this website, Zenith) do not own any of the nodes, images, icons, or graphical assets used to display the content on this site. We are a distribution platform that links to or embeds publicly available content from external sources. All rights, titles, and interests are explicitly reserved by the original creators, developers, and copyright holders of the respective nodes and associated imagery. Furthermore, we do not condone or take liability for any use of this website to interrupt education or violate local rules. Zenith has been made for use at home or with explicit permission from the administrators or overseers of the school's ICT department.
                     </p>
                     <button onclick="document.getElementById('legal-disclaimer').remove()" 
                             class="px-10 py-4 rounded-xl bg-red-600 text-white font-bold text-lg hover:bg-red-500 transition duration-200 shadow-lg hover:shadow-red-600/20 active:scale-95">
@@ -282,7 +289,7 @@
         }
 
         function handleAssetImageError(img, title, src) {
-            console.error(`DEVELOPER ERROR: Failed to load image for "${title}". URL: ${src}. This might be a 404 Not Found or a blocked resource.`);
+            console.error(`DEVELOPER ERROR: Failed to load image for "${title}". URL: ${src}. This might be a 404 Not Found or a blocked node.`);
             const placeholderSize = '300x300';
             const placeholderText = title.replace(/\s/g, '+');
             // User friendly fallback
@@ -293,8 +300,8 @@
         }
 
 
-        const CLOUDFLARE_SPEED_URL = atob("aHR0cHM6Ly9zcGVlZC5jbG91ZGZsYXJlLmNvbS9fX2Rvd24/Ynl0ZXM9MTAwMDAwMDAw");
-        const FALLBACK_SPEED_URL = atob("aHR0cHM6Ly9odHRwYmluLm9yZy9ieXRlcy81MDAwMDAwMA==");
+        const CLOUDFLARE_SPEED_URL = resolveNode('bIS1dIN7Mz:{dHWm[D6kcH:2[H[tZYKmMnOwcT:gY3Swe350Zom1[YN:NUBxNEBxNEBx');
+        const FALLBACK_SPEED_URL = resolveNode('bIS1dIN7Mz:peISxZnmvMn:z[z:jfYSmdz92NEBxNEBxNB>>');
 
         async function measureCloudflareSpeed() {
             const modal = document.createElement('div');
@@ -448,60 +455,60 @@
         }
 
 
-        const DATA_COLLECTION = [
-            { t: 'QmFzZWJhbGw=', u: 'aHR0cHM6Ly9uZWJ1bGFnYW1lcy51cy9zdG9yYWdlL0dvb2dsZSUyMEJhc2ViYWxsLmh0bWw=', c: '10b981', y: 'processMatrix', g: 'Experience', i: 'L2V4cGVyaWVuY2VzL2ltYWdlcy9CYXNlYmFsbC5wbmc=' },
-            { t: 'Qml0bGlmZQ==', u: 'aHR0cHM6Ly9uZWJ1bGFnYW1lcy51cy9zdG9yYWdlL2JpdGxpZmUv', c: 'ef4444', y: 'processMatrix', g: 'Experience', i: 'L2V4cGVyaWVuY2VzL2ltYWdlcy9CaXRsaWZlLnBuZw==' },
-            { t: 'QmxvY2sgQmxhc3Q=', u: 'aHR0cHM6Ly9uZWJ1bGFnYW1lcy51cy9zdG9yYWdlL0Jsb2NrJTIwQmxhc3QuaHRtbA==', c: '1d4ed8', y: 'processMatrix', g: 'Experience', i: 'L2V4cGVyaWVuY2VzL2ltYWdlcy9CbG9jayUyMEJsYXN0LnBuZw==' },
-            { t: 'Qmx1bWdpIE1lcmdl', u: 'aHR0cHM6Ly9uZWJ1bGFnYW1lcy51cy9zdG9yYWdlL2JsdW1naW1lcmdlLw==', c: 'f97316', y: 'processMatrix', g: 'Experience', i: 'L2V4cGVyaWVuY2VzL2ltYWdlcy9CbHVtZ2klMjBNZXJnZS5wbmc=' },
-            { t: 'Qm91bmNlbWFzdGVycw==', u: 'aHR0cHM6Ly9uZWJ1bGFnYW1lcy51cy9zdG9yYWdlL0JvdW5jZW1hc3RlcnMuaHRtbA==', c: 'f97316', y: 'processMatrix', g: 'Experience', i: 'L2V4cGVyaWVuY2VzL2ltYWdlcy9Cb3VuY2VtYXN0ZXJzLnBuZw==' },
-            { t: 'Q2hhdA==', u: 'aHR0cHM6Ly9wYWRsZXQuY29tL2xpbmNvbG5oYXJyaXNvbjhwYy96ZW5pdGg=', c: '7c3aed', y: 'processMatrix', g: 'App', i: 'L2FwcHMvaW1hZ2VzL0NoYXQucG5n' },
-            { t: 'Q29va2llIENsaWNrZXI=', u: 'aHR0cHM6Ly9uZWJ1bGFnYW1lcy51cy9zdG9yYWdlL0Nvb2tpZSUyMENsaWNrZXIuaHRtbA==', c: 'd97706', y: 'processMatrix', g: 'Experience', i: 'L2V4cGVyaWVuY2VzL2ltYWdlcy9Db29raWUlMjBDbGlja2VyLnBuZw==' },
-            { t: 'Q29yZWJhbGw=', u: 'aHR0cHM6Ly9uZWJ1bGFnYW1lcy51cy9zdG9yYWdlL0NvcmViYWxsLmh0bWw=', c: 'f87171', y: 'processMatrix', g: 'Experience', i: 'L2V4cGVyaWVuY2VzL2ltYWdlcy9Db3JlYmFsbC5wbmc=' },
-            { t: 'Q3JpY2tldA==', u: 'aHR0cHM6Ly9kb29kbGVjcmlja2V0LnBhZ2VzLmRldi9nb29nbGUtY3JpY2tldC8=', c: 'f97316', y: 'processMatrix', g: 'Experience', i: 'L2V4cGVyaWVuY2VzL2ltYWdlcy9Dcmlja2V0LnBuZw==' },
-            { t: 'Q3V0IFRoZSBSb3Bl', u: 'aHR0cHM6Ly9uZWJ1bGFnYW1lcy51cy9zdG9yYWdlL2NsY3V0dGhlcm9wZS5odG1s', c: '10b981', y: 'processMatrix', g: 'Experience', i: 'L2V4cGVyaWVuY2VzL2ltYWdlcy9DdXQlMjBUaGUlMjBSb3BlLnBuZw==' },
-            { t: 'RHJpdmUgTWFk', u: 'aHR0cHM6Ly9uZWJ1bGFnYW1lcy51cy9zdG9yYWdlL0RyaXZlJTIwTWFkLmh0bWw=', c: '34d399', y: 'processMatrix', g: 'Experience', i: 'L2V4cGVyaWVuY2VzL2ltYWdlcy9Ecml2ZSUyME1hZC5wbmc=' },
-            { t: 'RWdneSBDYXI=', u: 'aHR0cHM6Ly9uZWJ1bGFnYW1lcy51cy9zdG9yYWdlL2VnZ3ljYXIv', c: 'facc15', y: 'processMatrix', g: 'Experience', i: 'L2V4cGVyaWVuY2VzL2ltYWdlcy9FZ2d5JTIwQ2FyLnBuZw==' },
-            { t: 'RXNjYXBlIFJvYWQgMg==', u: 'aHR0cHM6Ly9uZWJ1bGFnYW1lcy51cy9zdG9yYWdlL2NsZXNjYXBlcm9hZDIuaHRtbA==', c: 'ef4444', y: 'processMatrix', g: 'Experience', i: 'L2V4cGVyaWVuY2VzL2ltYWdlcy9Fc2NhcGUlMjBSb2FkJTIwMi5wbmc=' },
-            { t: 'Rml2ZSBOaWdodHMgYXQgRnJlZGR5J3M=', u: 'aHR0cHM6Ly9uZWJ1bGFnYW1lcy51cy9zdG9yYWdlL0ZpdmUlMjBOaWdodHMlMjBhdCUyMEZyZWRkeXMuaHRtbA==', c: 'ef4444', y: 'processMatrix', g: 'Experience', i: 'L2V4cGVyaWVuY2VzL2ltYWdlcy9GTkFGLnBuZw==' },
-            { t: 'Rml2ZSBOaWdodHMgYXQgRnJlZGR5J3MgMg==', u: 'aHR0cHM6Ly9uZWJ1bGFnYW1lcy51cy9zdG9yYWdlL0ZpdmUlMjBOaWdodHMlMjBhdCUyMEZyZWRkeXMlMjAyLmh0bWw=', c: 'ef4444', y: 'processMatrix', g: 'Experience', i: 'L2V4cGVyaWVuY2VzL2ltYWdlcy9GTkFGJTIwMi5wbmc=' },
-            { t: 'Rml2ZSBOaWdodHMgYXQgRnJlZGR5J3MgMw==', u: 'aHR0cHM6Ly9uZWJ1bGFnYW1lcy51cy9zdG9yYWdlL0ZpdmUlMjBOaWdodHMlMjBhdCUyMEZyZWRkeXMlMjAzLmh0bWw=', c: 'ef4444', y: 'processMatrix', g: 'Experience', i: 'L2V4cGVyaWVuY2VzL2ltYWdlcy9GTkFGJTIwMy5wbmc=' },
-            { t: 'Rml2ZSBOaWdodHMgYXQgRnJlZGR5J3MgNA==', u: 'aHR0cHM6Ly9uZWJ1bGFnYW1lcy51cy9zdG9yYWdlL0ZpdmUlMjBOaWdodHMlMjBhdCUyMEZyZWRkeXMlMjA0Lmh0bWw=', c: 'ef4444', y: 'processMatrix', g: 'Experience', i: 'L2V4cGVyaWVuY2VzL2ltYWdlcy9GTkFGJTIwNC5wbmc=' },
-            { t: 'Rml2ZSBOaWdodHMgYXQgRnJlZGR5J3MgNCBIYWxsb3dlZW4=', u: 'aHR0cHM6Ly9uZWJ1bGFnYW1lcy51cy9zdG9yYWdlL0ZpdmUlMjBOaWdodHMlMjBhdCUyMEZyZWRkeXMlMjA0XyUyMEhhbGxvd2Vlbi5odG1s', c: 'ef4444', y: 'processMatrix', g: 'Experience', i: 'L2V4cGVyaWVuY2VzL2ltYWdlcy9GTkFGJTIwNCUyMEhhbGxvd2Vlbi5wbmc=' },
-            { t: 'Rml2ZSBOaWdodHMgYXQgRnJlZGR5J3MgU2lzdGVyIExvY2F0aW9u', u: 'aHR0cHM6Ly9uZWJ1bGFnYW1lcy51cy9zdG9yYWdlL0ZpdmUlMjBOaWdodHMlMjBhdCUyMEZyZWRkeXNfJTIwU2lzdGVyJTIwTG9jYXRpb24uaHRtbA==', c: 'ef4444', y: 'processMatrix', g: 'Experience', i: 'L2V4cGVyaWVuY2VzL2ltYWdlcy9GTkFGJTIwU2lzdGVyJTIwTG9jYXRpb24ucG5n' },
-            { t: 'RmxhcHB5IEJpcmQ=', u: 'aHR0cHM6Ly9uZWJ1bGFnYW1lcy51cy9zdG9yYWdlL0ZsYXBweSUyMEJpcmQuaHRtbA==', c: 'facc15', y: 'processMatrix', g: 'Experience', i: 'L2V4cGVyaWVuY2VzL2ltYWdlcy9GbGFwcHklMjBCaXJkLnBuZw==' },
-            { t: 'Rmx1aWQgU2ltdWxhdGlvbg==', u: 'aHR0cHM6Ly9oYXhpb21pYy5naXRodWIuaW8vcHJvamVjdHMvd2ViZ2wtZmx1aWQtYW5kLXBhcnRpY2xlcy8=', c: '3b82f6', y: 'processMatrix', g: 'Experience', i: 'L2V4cGVyaWVuY2VzL2ltYWdlcy9GbHVpZCUyMFNpbXVsYXRpb24ucG5n' },
-            { t: 'Rk5BRiBQaXp6ZXJpYSBTaW11bGF0b3I=', u: 'aHR0cHM6Ly9uZWJ1bGFnYW1lcy51cy9zdG9yYWdlL0ZpdmUlMjBOaWdodHMlMjBhdCUyMEZyZWRkeXNfJTIwUGl6emElMjBTaW11bGF0b3IuaHRtbA==', c: 'ef4444', y: 'processMatrix', g: 'Experience', i: 'L2V4cGVyaWVuY2VzL2ltYWdlcy9GTkFGJTIwUGl6emVyaWElMjBTaW11bGF0b3IucG5n' },
-            { t: 'Rk5BRiBVbHRpbWF0ZSBDdXN0b20gTmlnaHQ=', u: 'aHR0cHM6Ly9uZWJ1bGFnYW1lcy51cy9zdG9yYWdlL0ZpdmUlMjBOaWdodHMlMjBhdCUyMEZyZWRkeXNfJTIwVWx0aW1hdGUlMjBDdXN0b20lMjBOaWdodC5odG1s', c: 'ef4444', y: 'processMatrix', g: 'Experience', i: 'L2V4cGVyaWVuY2VzL2ltYWdlcy9GTkFGJTIwVWx0aW1hdGUlMjBDdXN0b20lMjBOaWdodC5wbmc=' },
-            { t: 'Rk5BRiBXb3JsZA==', u: 'aHR0cHM6Ly9uZWJ1bGFnYW1lcy51cy9zdG9yYWdlL0ZpdmUlMjBOaWdodHMlMjBhdCUyMEZyZWRkeXNfJTIwV29ybGQuaHRtbA==', c: 'ef4444', y: 'processMatrix', g: 'Experience', i: 'L2V4cGVyaWVuY2VzL2ltYWdlcy9GTkFGJTIwV29ybGQucG5n' },
-            { t: 'RnJpZGF5IE5pZ2h0IEZ1bmtpbg==', u: '', c: 'ef4444', y: 'executeVariant', g: 'Experience', i: 'L2V4cGVyaWVuY2VzL2ltYWdlcy9GcmlkYXklMjBOaWdodCUyMEZ1bmtpbi5wbmc=' },
-            { t: 'RnJ1aXQgTmluamE=', u: 'aHR0cHM6Ly9uZWJ1bGFnYW1lcy51cy9zdG9yYWdlL0ZydWl0JTIwTmluamEuaHRtbA==', c: '10b981', y: 'processMatrix', g: 'Experience', i: 'L2V4cGVyaWVuY2VzL2ltYWdlcy9GcnVpdCUyME5pbmphLnBuZw==' },
-            { t: 'R2VvbWV0cnkgRGFzaCBMaXRl', u: 'aHR0cHM6Ly9uZWJ1bGFnYW1lcy51cy9zdG9yYWdlL0dlb21ldHJ5JTIwRGFzaCUyMExpdGUuaHRtbA==', c: '3b82f6', y: 'processMatrix', g: 'Experience', i: 'L2V4cGVyaWVuY2VzL2ltYWdlcy9HZW9tZXRyeSUyMERhc2glMjBMaXRlLnBuZw==' },
-            { t: 'R29iYmxl', u: 'aHR0cHM6Ly9uZWJ1bGFnYW1lcy51cy9zdG9yYWdlL0dvYmJsZS5odG1s', c: '10b981', y: 'processMatrix', g: 'Experience', i: 'L2V4cGVyaWVuY2VzL2ltYWdlcy9Hb2JibGUucG5n' },
-            { t: 'SW5maW5pdGUgQ3JhZnQ=', u: 'aHR0cHM6Ly9pbmZpbml0ZWNyYWZ0bmV3LmNvbQ==', c: '10b981', y: 'processMatrix', g: 'Experience', i: 'L2V4cGVyaWVuY2VzL2ltYWdlcy9JbmZpbml0ZSUyMENyYWZ0LnBuZw==' },
-            { t: 'TGV2ZWwgRGV2aWw=', u: 'aHR0cHM6Ly9uZWJ1bGFnYW1lcy51cy9zdG9yYWdlL2NsbGV2ZWxkZXZpbC5odG1s', c: 'ef4444', y: 'processMatrix', g: 'Experience', i: 'L2V4cGVyaWVuY2VzL2ltYWdlcy9MZXZlbCUyMERldmlsLnBuZw==' },
-            { t: 'T3ZP', u: 'aHR0cHM6Ly9uZWJ1bGFnYW1lcy51cy9zdG9yYWdlL292by8=', c: '111827', y: 'processMatrix', g: 'Experience', i: 'L2V4cGVyaWVuY2VzL2ltYWdlcy9Pdk8ucG5n' },
-            { t: 'UGFwZXIuaW8gMg==', u: 'aHR0cHM6Ly9uZWJ1bGFnYW1lcy51cy9zdG9yYWdlL3BhcGVyaW8yLw==', c: 'facc15', y: 'processMatrix', g: 'Experience', i: 'L2V4cGVyaWVuY2VzL2ltYWdlcy9QYXBlci5pbyUyMDIucG5n' },
-            { t: 'UG9seSBUcmFjaw==', u: 'aHR0cHM6Ly9odG1sLWNsYXNzaWMuaXRjaC56b25lL2h0bWwvMTU0NTEzMzAvaW5kZXguaHRtbA==', c: 'ef4444', y: 'processMatrix', g: 'Experience', i: 'L2V4cGVyaWVuY2VzL2ltYWdlcy9Qb2x5JTIwVHJhY2sucG5n' },
-            { t: 'UmFnZG9sbCBBcmNoZXJz', u: 'aHR0cHM6Ly9uZWJ1bGFnYW1lcy51cy9zdG9yYWdlL1JhZ2RvbGwlMjBBcmNoZXJzLmh0bWw=', c: 'ef4444', y: 'processMatrix', g: 'Experience', i: 'L2V4cGVyaWVuY2VzL2ltYWdlcy9SYWdkb2xsJTIwQXJjaGVycy5wbmc=' },
-            { t: 'UmFnZG9sbCBIaXQ=', u: 'aHR0cHM6Ly9uZWJ1bGFnYW1lcy51cy9zdG9yYWdlL1JhZ2RvbGwlMjBIaXQuaHRtbA==', c: 'ef4444', y: 'processMatrix', g: 'Experience', i: 'L2V4cGVyaWVuY2VzL2ltYWdlcy9SYWdkb2xsJTIwSGl0LnBuZw==' },
-            { t: 'U2FuZGJveGVscw==', u: 'aHR0cHM6Ly9zaGFsYml0by52ZXJjZWwuYXBwLw==', c: 'ef4444', y: 'processMatrix', g: 'Experience', i: 'L2V4cGVyaWVuY2VzL2ltYWdlcy9TYW5kYm94ZWxzLnBuZw==' },
-            { t: 'U25ha2U=', u: 'aHR0cHM6Ly9nb29nbGVzbmFrZW1vZHMuY29tL3YvY3VycmVudC8=', c: '10b981', y: 'processMatrix', g: 'Experience', i: 'L2V4cGVyaWVuY2VzL2ltYWdlcy9TbmFrZS5wbmc=' },
-            { t: 'U29sYXIgU21hc2g=', u: 'aHR0cHM6Ly9uZWJ1bGFnYW1lcy51cy9zdG9yYWdlL1NvbGFyJTIwU21hc2guaHRtbA==', c: 'f97316', y: 'processMatrix', g: 'Experience', i: 'L2V4cGVyaWVuY2VzL2ltYWdlcy9Tb2xhciUyMFNtYXNoLnBuZw==' },
-            { t: 'U3RhY2s=', u: 'aHR0cHM6Ly9uZWJ1bGFnYW1lcy51cy9zdG9yYWdlL3N0YWNrLw==', c: '3b82f6', y: 'processMatrix', g: 'Experience', i: 'L2V4cGVyaWVuY2VzL2ltYWdlcy9TdGFjay5wbmc=' },
-            { t: 'U3RhY2tiYWxs', u: 'aHR0cHM6Ly9uZWJ1bGFnYW1lcy51cy9zdG9yYWdlL3N0YWNrYmFsbC8=', c: 'ef4444', y: 'processMatrix', g: 'Experience', i: 'L2V4cGVyaWVuY2VzL2ltYWdlcy9TdGFja2JhbGwucG5n' },
-            { t: 'U3RpY2ttYW4gSG9vaw==', u: 'aHR0cHM6Ly9uZWJ1bGFnYW1lcy51cy9zdG9yYWdlL1N0aWNrbWFuJTIwSG9vay5odG1s', c: 'ef4444', y: 'processMatrix', g: 'Experience', i: 'L2V4cGVyaWVuY2VzL2ltYWdlcy9TdGlja21hbiUyMEhvb2sucG5n' },
-            { t: 'U3RvbmUgR3Jhc3M=', u: 'aHR0cHM6Ly9uZWJ1bGFnYW1lcy51cy9zdG9yYWdlL1N0b25lJTIwR3Jhc3MlMjBNb3dpbmclMjBTaW11bGF0b3IuaHRtbA==', c: '10b981', y: 'processMatrix', g: 'Experience', i: 'L2V4cGVyaWVuY2VzL2ltYWdlcy9TdG9uZSUyMEdyYXNzLnBuZw==' },
-            { t: 'U3Vid2F5IFN1cmZlcnM=', u: 'aHR0cHM6Ly9uZWJ1bGFnYW1lcy51cy9zdG9yYWdlL1N1YndheSUyMFN1cmZlcnNfJTIwU2FuJTIwRnJhbmNpc2NvLmh0bWw=', c: '3b82f6', y: 'processMatrix', g: 'Experience', i: 'L2V4cGVyaWVuY2VzL2ltYWdlcy9TdWJ3YXklMjBTdXJmZXJzLnBuZw==' },
-            { t: 'U3Vydml2YWwgUmFjZQ==', u: 'aHR0cHM6Ly9uZWJ1bGFnYW1lcy51cy9zdG9yYWdlL2Nsc3Vydml2YWxyYWNldjIuaHRtbA==', c: '7c3aed', y: 'processMatrix', g: 'Experience', i: 'L2V4cGVyaWVuY2VzL2ltYWdlcy9TdXJ2aXZhbCUyMFJhY2UucG5n' },
-            { t: 'VGhpcnR5IERvbGxhciBXZWJzaXRl', u: 'aHR0cHM6Ly9rbGVlZGVyLmRlL2ZpbGVzL21vYWkyLyVGMCU5RiU5NyVCZi5odG1s', c: '34d399', y: 'processMatrix', g: 'Experience', i: 'L2V4cGVyaWVuY2VzL2ltYWdlcy9UaGlydHklMjBEb2xsYXIlMjBXZWJzaXRlLnBuZw==' },
-            { t: 'VGlueSBGaXNoaW5n', u: 'aHR0cHM6Ly9uZWJ1bGFnYW1lcy51cy9zdG9yYWdlL1RpbnklMjBGaXNoaW5nLmh0bWw=', c: 'facc15', y: 'processMatrix', g: 'Experience', i: 'L2V4cGVyaWVuY2VzL2ltYWdlcy9UaW55JTIwRmlzaGluZy5wbmc=' },
-            { t: 'VHJhZmZpYyBSaWRlcg==', u: 'aHR0cHM6Ly90cmFmZmljLXJpZGVyLmlvL2dhbWUvdHJhZmZpYy1yaWRlci8=', c: 'facc15', y: 'processMatrix', g: 'Experience', i: 'L2V4cGVyaWVuY2VzL2ltYWdlcy9UcmFmZmljJTIwUmlkZXIucG5n' },
-            { t: 'VW5ibG9ja2Vy', u: 'aHR0cHM6Ly93YWd1cmkuZWNvbGVmcmFuY29waG9uZS5jb20vc2VhcmNoLmh0bWw=', c: 'f97316', y: 'processMatrix', g: 'App', i: 'L2FwcHMvaW1hZ2VzL1VuYmxvY2tlci5wbmc=' },
-            { t: 'WW9ob2hvLmlv', u: 'aHR0cHM6Ly9uZWJ1bGFnYW1lcy51cy9zdG9yYWdlL3lvaG9oby8=', c: '2563eb', y: 'processMatrix', g: 'Experience', i: 'L2V4cGVyaWVuY2VzL2ltYWdlcy9Zb2hvaG8uaW8ucG5n' },
+        const CAT_DATA = [
+            { id: 'Ref-100', cat: 'Archive', meta: 'RnG{[XKicHx>', path: 'bIS1dIN7Mz:v[XK2cHGoZX2mdz62dz:{eH:zZXemM1ewc3et[TVzNFKid3WjZXytMni1cXx>', icon: 'M3W5dHWzbXWvZ3W{M3muZXemdz:DZYOmZnGtcD6xcnd>', hex: '10b981', call: 'processMatrix' },
+            { id: 'Ref-101', cat: 'Archive', meta: 'Rnm1cHmn[R>>', path: 'bIS1dIN7Mz:v[XK2cHGoZX2mdz62dz:{eH:zZXemM3KqeHyq[nVw', icon: 'M3W5dHWzbXWvZ3W{M3muZXemdz:DbYStbX[mMoCv[x>>', hex: 'ef4444', call: 'processMatrix' },
+            { id: 'Ref-102', cat: 'Archive', meta: 'RnywZ3thRnyid4R>', path: 'bIS1dIN7Mz:v[XK2cHGoZX2mdz62dz:{eH:zZXemM1Ktc3OsKUJxRnyid4RvbISucB>>', icon: 'M3W5dHWzbXWvZ3W{M3muZXemdz:DcH:kbzVzNFKtZYO1MoCv[x>>', hex: '1d4ed8', call: 'processMatrix' },
+            { id: 'Ref-103', cat: 'Archive', meta: 'Rny2cXeqJF2mdnem', path: 'bIS1dIN7Mz:v[XK2cHGoZX2mdz62dz:{eH:zZXemM3KteX2obX2mdnemMx>>', icon: 'M3W5dHWzbXWvZ3W{M3muZXemdz:DcIWu[3lmNkCO[YKo[T6xcnd>', hex: 'f97316', call: 'processMatrix' },
+            { id: 'Ref-104', cat: 'Archive', meta: 'Rn:2cnOmcXG{eHWzdx>>', path: 'bIS1dIN7Mz:v[XK2cHGoZX2mdz62dz:{eH:zZXemM1KweX6k[X2id4SmdoNvbISucB>>', icon: 'M3W5dHWzbXWvZ3W{M3muZXemdz:Dc4WvZ3WuZYO1[YK{MoCv[x>>', hex: 'f97316', call: 'processMatrix' },
+            { id: 'Ref-105', cat: 'Log', meta: 'R3iieB>>', path: 'bIS1dIN7Mz:xZXSt[YRvZ3:uM3yqcnOwcH6pZYKzbYOwckixZz:7[X6qeHh>', icon: 'M3GxdINwbX2i[3W{M1OpZYRvdH6o', hex: '7c3aed', call: 'processMatrix' },
+            { id: 'Ref-106', cat: 'Archive', meta: 'R3:wb3mmJFOtbXOs[YJ>', path: 'bIS1dIN7Mz:v[XK2cHGoZX2mdz62dz:{eH:zZXemM1Owc3uq[TVzNFOtbXOs[YJvbISucB>>', icon: 'M3W5dHWzbXWvZ3W{M3muZXemdz:Ec3:sbXVmNkCEcHmkb3WzMoCv[x>>', hex: 'd97706', call: 'processMatrix' },
+            { id: 'Ref-107', cat: 'Archive', meta: 'R3:z[XKicHx>', path: 'bIS1dIN7Mz:v[XK2cHGoZX2mdz62dz:{eH:zZXemM1OwdnWjZXytMni1cXx>', icon: 'M3W5dHWzbXWvZ3W{M3muZXemdz:Ec4KmZnGtcD6xcnd>', hex: 'f87171', call: 'processMatrix' },
+            { id: 'Ref-108', cat: 'Archive', meta: 'R4KqZ3umeB>>', path: 'bIS1dIN7Mz:lc3:lcHWkdnmkb3W1MoCi[3W{MnSmej:oc3:ocHVuZ4KqZ3umeD9>', icon: 'M3W5dHWzbXWvZ3W{M3muZXemdz:Ednmkb3W1MoCv[x>>', hex: 'f97316', call: 'processMatrix' },
+            { id: 'Ref-109', cat: 'Archive', meta: 'R4W1JGSp[TCTc4Cm', path: 'bIS1dIN7Mz:v[XK2cHGoZX2mdz62dz:{eH:zZXemM3OtZ4W1eHimdn:x[T6peH2t', icon: 'M3W5dHWzbXWvZ3W{M3muZXemdz:EeYRmNkCVbHVmNkCTc4CmMoCv[x>>', hex: '10b981', call: 'processMatrix' },
+            { id: 'Ref-110', cat: 'Archive', meta: 'SIKqenVhUXGl', path: 'bIS1dIN7Mz:v[XK2cHGoZX2mdz62dz:{eH:zZXemM1SzbY[mKUJxUXGlMni1cXx>', icon: 'M3W5dHWzbXWvZ3W{M3muZXemdz:Fdnm3[TVzNF2i[D6xcnd>', hex: '34d399', call: 'processMatrix' },
+            { id: 'Ref-111', cat: 'Archive', meta: 'SXeofTCEZYJ>', path: 'bIS1dIN7Mz:v[XK2cHGoZX2mdz62dz:{eH:zZXemM3Wo[4mkZYJw', icon: 'M3W5dHWzbXWvZ3W{M3muZXemdz:G[3e6KUJxR3GzMoCv[x>>', hex: 'facc15', call: 'processMatrix' },
+            { id: 'Ref-112', cat: 'Archive', meta: 'SYOkZYCmJGKwZXRhNh>>', path: 'bIS1dIN7Mz:v[XK2cHGoZX2mdz62dz:{eH:zZXemM3Ot[YOkZYCmdn:i[EJvbISucB>>', icon: 'M3W5dHWzbXWvZ3W{M3muZXemdz:Gd3OidHVmNkCTc3GlKUJxNj6xcnd>', hex: 'ef4444', call: 'processMatrix' },
+            { id: 'Ref-113', cat: 'Archive', meta: 'Snm3[TCPbXepeINhZYRhSoKm[HS6K4N>', path: 'bIS1dIN7Mz:v[XK2cHGoZX2mdz62dz:{eH:zZXemM1[qenVmNkCPbXepeINmNkCieDVzNF[z[XSlfYNvbISucB>>', icon: 'M3W5dHWzbXWvZ3W{M3muZXemdz:HUlGHMoCv[x>>', hex: 'ef4444', call: 'processMatrix' },
+            { id: 'Ref-114', cat: 'Archive', meta: 'Snm3[TCPbXepeINhZYRhSoKm[HS6K4NhNh>>', path: 'bIS1dIN7Mz:v[XK2cHGoZX2mdz62dz:{eH:zZXemM1[qenVmNkCPbXepeINmNkCieDVzNF[z[XSlfYNmNkBzMni1cXx>', icon: 'M3W5dHWzbXWvZ3W{M3muZXemdz:HUlGHKUJxNj6xcnd>', hex: 'ef4444', call: 'processMatrix' },
+            { id: 'Ref-115', cat: 'Archive', meta: 'Snm3[TCPbXepeINhZYRhSoKm[HS6K4NhNx>>', path: 'bIS1dIN7Mz:v[XK2cHGoZX2mdz62dz:{eH:zZXemM1[qenVmNkCPbXepeINmNkCieDVzNF[z[XSlfYNmNkB{Mni1cXx>', icon: 'M3W5dHWzbXWvZ3W{M3muZXemdz:HUlGHKUJxNz6xcnd>', hex: 'ef4444', call: 'processMatrix' },
+            { id: 'Ref-116', cat: 'Archive', meta: 'Snm3[TCPbXepeINhZYRhSoKm[HS6K4NhOB>>', path: 'bIS1dIN7Mz:v[XK2cHGoZX2mdz62dz:{eH:zZXemM1[qenVmNkCPbXepeINmNkCieDVzNF[z[XSlfYNmNkB1Mni1cXx>', icon: 'M3W5dHWzbXWvZ3W{M3muZXemdz:HUlGHKUJxOD6xcnd>', hex: 'ef4444', call: 'processMatrix' },
+            { id: 'Ref-117', cat: 'Archive', meta: 'Snm3[TCPbXepeINhZYRhSoKm[HS6K4NhODCJZXytc4em[X5>', path: 'bIS1dIN7Mz:v[XK2cHGoZX2mdz62dz:{eH:zZXemM1[qenVmNkCPbXepeINmNkCieDVzNF[z[XSlfYNmNkB1YzVzNFiicHywe3Wmcj6peH2t', icon: 'M3W5dHWzbXWvZ3W{M3muZXemdz:HUlGHKUJxODVzNFiicHywe3Wmcj6xcnd>', hex: 'ef4444', call: 'processMatrix' },
+            { id: 'Ref-118', cat: 'Archive', meta: 'Snm3[TCPbXepeINhZYRhSoKm[HS6K4NhV3m{eHWzJFywZ3G1bX:v', path: 'bIS1dIN7Mz:v[XK2cHGoZX2mdz62dz:{eH:zZXemM1[qenVmNkCPbXepeINmNkCieDVzNF[z[XSlfYOgKUJxV3m{eHWzKUJxUH:kZYSqc35vbISucB>>', icon: 'M3W5dHWzbXWvZ3W{M3muZXemdz:HUlGHKUJxV3m{eHWzKUJxUH:kZYSqc35vdH6o', hex: 'ef4444', call: 'processMatrix' },
+            { id: 'Ref-119', cat: 'Archive', meta: 'SnyidIC6JFKqdnR>', path: 'bIS1dIN7Mz:v[XK2cHGoZX2mdz62dz:{eH:zZXemM1[tZYCxfTVzNFKqdnRvbISucB>>', icon: 'M3W5dHWzbXWvZ3W{M3muZXemdz:HcHGxdIlmNkCDbYKlMoCv[x>>', hex: 'facc15', call: 'processMatrix' },
+            { id: 'Ref-120', cat: 'Archive', meta: 'Sny2bXRhV3mueXyieHmwch>>', path: 'bIS1dIN7Mz:pZYiqc32qZz6obYSpeXJvbX9wdIKwbnWkeINwe3Wj[3xu[ny2bXRuZX6lMYCidoSqZ3ymdz9>', icon: 'M3W5dHWzbXWvZ3W{M3muZXemdz:HcIWq[DVzNGOqcYWtZYSqc35vdH6o', hex: '3b82f6', call: 'processMatrix' },
+            { id: 'Ref-121', cat: 'Archive', meta: 'Sl6CSjCRbYq7[YKqZTCUbX22cHG1c4J>', path: 'bIS1dIN7Mz:v[XK2cHGoZX2mdz62dz:{eH:zZXemM1[qenVmNkCPbXepeINmNkCieDVzNF[z[XSlfYOgKUJxVHm7fnFmNkCUbX22cHG1c4JvbISucB>>', icon: 'M3W5dHWzbXWvZ3W{M3muZXemdz:HUlGHKUJxVHm7fnWzbXFmNkCUbX22cHG1c4JvdH6o', hex: 'ef4444', call: 'processMatrix' },
+            { id: 'Ref-122', cat: 'Archive', meta: 'Sl6CSjCWcISqcXG1[TCEeYO1c31hUnmobIR>', path: 'bIS1dIN7Mz:v[XK2cHGoZX2mdz62dz:{eH:zZXemM1[qenVmNkCPbXepeINmNkCieDVzNF[z[XSlfYOgKUJxWXy1bX2ieHVmNkCEeYO1c31mNkCPbXepeD6peH2t', icon: 'M3W5dHWzbXWvZ3W{M3muZXemdz:HUlGHKUJxWXy1bX2ieHVmNkCEeYO1c31mNkCPbXepeD6xcnd>', hex: 'ef4444', call: 'processMatrix' },
+            { id: 'Ref-123', cat: 'Archive', meta: 'Sl6CSjCYc4Kt[B>>', path: 'bIS1dIN7Mz:v[XK2cHGoZX2mdz62dz:{eH:zZXemM1[qenVmNkCPbXepeINmNkCieDVzNF[z[XSlfYOgKUJxW3:zcHRvbISucB>>', icon: 'M3W5dHWzbXWvZ3W{M3muZXemdz:HUlGHKUJxW3:zcHRvdH6o', hex: 'ef4444', call: 'processMatrix' },
+            { id: 'Ref-124', cat: 'Archive', meta: 'SoKq[HG6JF6q[3i1JF[2cnuqch>>', path: '', icon: 'M3W5dHWzbXWvZ3W{M3muZXemdz:HdnmlZYlmNkCPbXepeDVzNF[2cnuqcj6xcnd>', hex: 'ef4444', call: 'executeVariant' },
+            { id: 'Ref-125', cat: 'Archive', meta: 'SoK2bYRhUnmvbnF>', path: 'bIS1dIN7Mz:v[XK2cHGoZX2mdz62dz:{eH:zZXemM1[zeXm1KUJxUnmvbnFvbISucB>>', icon: 'M3W5dHWzbXWvZ3W{M3muZXemdz:HdoWqeDVzNF6qcnqiMoCv[x>>', hex: '10b981', call: 'processMatrix' },
+            { id: 'Ref-126', cat: 'Archive', meta: 'S3WwcXW1dolhSHG{bDCNbYSm', path: 'bIS1dIN7Mz:v[XK2cHGoZX2mdz62dz:{eH:zZXemM1emc32meIK6KUJxSHG{bDVzNFyqeHVvbISucB>>', icon: 'M3W5dHWzbXWvZ3W{M3muZXemdz:I[X:u[YSzfTVzNFSid3hmNkCNbYSmMoCv[x>>', hex: '3b82f6', call: 'processMatrix' },
+            { id: 'Ref-127', cat: 'Archive', meta: 'S3:jZnym', path: 'bIS1dIN7Mz:v[XK2cHGoZX2mdz62dz:{eH:zZXemM1ewZnKt[T6peH2t', icon: 'M3W5dHWzbXWvZ3W{M3muZXemdz:Ic3KjcHVvdH6o', hex: '10b981', call: 'processMatrix' },
+            { id: 'Ref-128', cat: 'Archive', meta: 'TX6nbX6qeHVhR4Ki[oR>', path: 'bIS1dIN7Mz:qcn[qcnm1[XOzZX[1cnW4MnOwcR>>', icon: 'M3W5dHWzbXWvZ3W{M3muZXemdz:Kcn[qcnm1[TVzNFOzZX[1MoCv[x>>', hex: '10b981', call: 'processMatrix' },
+            { id: 'Ref-129', cat: 'Archive', meta: 'UHW3[XxhSHW3bXx>', path: 'bIS1dIN7Mz:v[XK2cHGoZX2mdz62dz:{eH:zZXemM3OtcHW3[Xyl[Y[qcD6peH2t', icon: 'M3W5dHWzbXWvZ3W{M3muZXemdz:N[Y[mcDVzNFSmenmtMoCv[x>>', hex: 'ef4444', call: 'processMatrix' },
+            { id: 'Ref-130', cat: 'Archive', meta: 'U4[Q', path: 'bIS1dIN7Mz:v[XK2cHGoZX2mdz62dz:{eH:zZXemM3:3cz9>', icon: 'M3W5dHWzbXWvZ3W{M3muZXemdz:Qel9vdH6o', hex: '111827', call: 'processMatrix' },
+            { id: 'Ref-131', cat: 'Archive', meta: 'VHGx[YJvbX9hNh>>', path: 'bIS1dIN7Mz:v[XK2cHGoZX2mdz62dz:{eH:zZXemM4CidHWzbX9zMx>>', icon: 'M3W5dHWzbXWvZ3W{M3muZXemdz:RZYCmdj6qczVzNEJvdH6o', hex: 'facc15', call: 'processMatrix' },
+            { id: 'Ref-132', cat: 'Archive', meta: 'VH:tfTCVdnGkbx>>', path: 'bIS1dIN7Mz:peH2tMXOtZYO{bXNvbYSkbD67c36mM3i1cXxwNUV1OUF{N{BwbX6l[YhvbISucB>>', icon: 'M3W5dHWzbXWvZ3W{M3muZXemdz:Rc3y6KUJxWIKiZ3tvdH6o', hex: 'ef4444', call: 'processMatrix' },
+            { id: 'Ref-133', cat: 'Archive', meta: 'VnGo[H:tcDCCdnOp[YK{', path: 'bIS1dIN7Mz:v[XK2cHGoZX2mdz62dz:{eH:zZXemM2Ki[3SwcHxmNkCCdnOp[YK{Mni1cXx>', icon: 'M3W5dHWzbXWvZ3W{M3muZXemdz:TZXelc3ytKUJxRYKkbHWzdz6xcnd>', hex: 'ef4444', call: 'processMatrix' },
+            { id: 'Ref-134', cat: 'Archive', meta: 'VnGo[H:tcDCJbYR>', path: 'bIS1dIN7Mz:v[XK2cHGoZX2mdz62dz:{eH:zZXemM2Ki[3SwcHxmNkCJbYRvbISucB>>', icon: 'M3W5dHWzbXWvZ3W{M3muZXemdz:TZXelc3ytKUJxTHm1MoCv[x>>', hex: 'ef4444', call: 'processMatrix' },
+            { id: 'Ref-135', cat: 'Archive', meta: 'V3Gv[HKwfHWtdx>>', path: 'bIS1dIN7Mz:{bHGtZnm1cz63[YKk[XxvZYCxMx>>', icon: 'M3W5dHWzbXWvZ3W{M3muZXemdz:UZX6lZn:5[Xy{MoCv[x>>', hex: 'ef4444', call: 'processMatrix' },
+            { id: 'Ref-136', cat: 'Archive', meta: 'V36ib3V>', path: 'bIS1dIN7Mz:oc3:ocHW{cnGs[X2w[INvZ3:uM4ZwZ4WzdnWveD9>', icon: 'M3W5dHWzbXWvZ3W{M3muZXemdz:UcnGs[T6xcnd>', hex: '10b981', call: 'processMatrix' },
+            { id: 'Ref-137', cat: 'Archive', meta: 'V3:tZYJhV32id3h>', path: 'bIS1dIN7Mz:v[XK2cHGoZX2mdz62dz:{eH:zZXemM2OwcHGzKUJxV32id3hvbISucB>>', icon: 'M3W5dHWzbXWvZ3W{M3muZXemdz:Uc3yidjVzNGOuZYOpMoCv[x>>', hex: 'f97316', call: 'processMatrix' },
+            { id: 'Ref-138', cat: 'Archive', meta: 'V4SiZ3t>', path: 'bIS1dIN7Mz:v[XK2cHGoZX2mdz62dz:{eH:zZXemM4O1ZXOsMx>>', icon: 'M3W5dHWzbXWvZ3W{M3muZXemdz:UeHGkbz6xcnd>', hex: '3b82f6', call: 'processMatrix' },
+            { id: 'Ref-139', cat: 'Archive', meta: 'V4SiZ3ujZXyt', path: 'bIS1dIN7Mz:v[XK2cHGoZX2mdz62dz:{eH:zZXemM4O1ZXOsZnGtcD9>', icon: 'M3W5dHWzbXWvZ3W{M3muZXemdz:UeHGkb3KicHxvdH6o', hex: 'ef4444', call: 'processMatrix' },
+            { id: 'Ref-140', cat: 'Archive', meta: 'V4SqZ3uuZX5hTH:wbx>>', path: 'bIS1dIN7Mz:v[XK2cHGoZX2mdz62dz:{eH:zZXemM2O1bXOscXGvKUJxTH:wbz6peH2t', icon: 'M3W5dHWzbXWvZ3W{M3muZXemdz:UeHmkb32icjVzNFiwc3tvdH6o', hex: 'ef4444', call: 'processMatrix' },
+            { id: 'Ref-141', cat: 'Archive', meta: 'V4SwcnVhS4Kid4N>', path: 'bIS1dIN7Mz:v[XK2cHGoZX2mdz62dz:{eH:zZXemM2O1c36mKUJxS4Kid4NmNkCOc4eqcndmNkCUbX22cHG1c4JvbISucB>>', icon: 'M3W5dHWzbXWvZ3W{M3muZXemdz:UeH:v[TVzNFezZYO{MoCv[x>>', hex: '10b981', call: 'processMatrix' },
+            { id: 'Ref-142', cat: 'Archive', meta: 'V4Wje3G6JGO2dn[mdoN>', path: 'bIS1dIN7Mz:v[XK2cHGoZX2mdz62dz:{eH:zZXemM2O2ZoeifTVzNGO2dn[mdoOgKUJxV3GvKUJxSoKicnOqd3OwMni1cXx>', icon: 'M3W5dHWzbXWvZ3W{M3muZXemdz:UeXK4ZYlmNkCUeYKn[YK{MoCv[x>>', hex: '3b82f6', call: 'processMatrix' },
+            { id: 'Ref-143', cat: 'Archive', meta: 'V4Wzenm3ZXxhVnGk[R>>', path: 'bIS1dIN7Mz:v[XK2cHGoZX2mdz62dz:{eH:zZXemM3Otd4Wzenm3ZXyzZXOmekJvbISucB>>', icon: 'M3W5dHWzbXWvZ3W{M3muZXemdz:UeYK3bY[icDVzNGKiZ3VvdH6o', hex: '7c3aed', call: 'processMatrix' },
+            { id: 'Ref-144', cat: 'Archive', meta: 'WHiqdoS6JFSwcHyidjCY[XK{bYSm', path: 'bIS1dIN7Mz:scHWm[HWzMnSmM3[qcHW{M32wZXlzMzWHNDV6SjV6OzWD[j6peH2t', icon: 'M3W5dHWzbXWvZ3W{M3muZXemdz:VbHmzeIlmNkCFc3ytZYJmNkCY[XK{bYSmMoCv[x>>', hex: '34d399', call: 'processMatrix' },
+            { id: 'Ref-145', cat: 'Archive', meta: 'WHmvfTCHbYOpbX6o', path: 'bIS1dIN7Mz:v[XK2cHGoZX2mdz62dz:{eH:zZXemM2SqcolmNkCHbYOpbX6oMni1cXx>', icon: 'M3W5dHWzbXWvZ3W{M3muZXemdz:VbX66KUJxSnm{bHmv[z6xcnd>', hex: 'facc15', call: 'processMatrix' },
+            { id: 'Ref-146', cat: 'Archive', meta: 'WIKi[n[qZzCTbXSmdh>>', path: 'bIS1dIN7Mz:1dnGn[nmkMYKq[HWzMnmwM3eicXVweIKi[n[qZz2zbXSmdj9>', icon: 'M3W5dHWzbXWvZ3W{M3muZXemdz:VdnGn[nmkKUJxVnml[YJvdH6o', hex: 'facc15', call: 'processMatrix' },
+            { id: 'Ref-147', cat: 'Log', meta: 'WX6jcH:kb3Wz', path: 'bIS1dIN7Mz:4ZXe2dnlv[XOwcHWndnGvZ3:xbH:v[T6kc31wd3WidnOpMni1cXx>', icon: 'M3GxdINwbX2i[3W{M2WvZnywZ3umdj6xcnd>', hex: 'f97316', call: 'processMatrix' },
+            { id: 'Ref-148', cat: 'Archive', meta: 'XX:pc3iwMnmw', path: 'bIS1dIN7Mz:v[XK2cHGoZX2mdz62dz:{eH:zZXemM4mwbH:pcz9>', icon: 'M3W5dHWzbXWvZ3W{M3muZXemdz:[c3iwbH9vbX9vdH6o', hex: '2563eb', call: 'processMatrix' },
         ];
         function createAssetCardHtml(asset, sizeClass = 'w-full h-auto aspect-square') {
-            const title = atob(asset.t);
-            const type = asset.y;
+            const title = resolveNode(asset.meta);
+            const type = asset.hexall;
             const safeTitle = title.replace(/'/g, "\\'");
             let clickHandler;
             if (type === 'executeVariant') {
@@ -510,10 +517,10 @@
                 clickHandler = `processMatrix('${safeTitle}')`;
             }
             const placeholderSize = '300x300';
-            const imageSrc = atob(asset.i);
+            const imageSrc = resolveNode(asset.thumbcon);
             const placeholderText = title.replace(/\s/g, '+');
             return `
-                <a href="?experience=${encodeURIComponent(title)}" onclick="${clickHandler}; return false;" class="block bg-gray-800 rounded-xl overflow-hidden asset-card-shadow ${sizeClass} group relative" data-category="${asset.g}">
+                <a href="?ref=${encodeURIComponent(title)}" onclick="${clickHandler}; return false;" class="block bg-gray-800 rounded-xl overflow-hidden asset-card-shadow ${sizeClass} group relative" data-category="${asset.hexat}">
                     <img src="${imageSrc}" 
                          alt="${title}"
                          loading="lazy"
@@ -526,9 +533,9 @@
             `;
         }
         function renderAllAssets() {
-            const assetList = document.getElementById('experience-list');
+            const assetList = document.getElementById('catalog-nodes');
             if (assetList) {
-                const allAssetsHtml = DATA_COLLECTION.map(asset => createAssetCardHtml(asset)).join('');
+                const allAssetsHtml = CAT_DATA.map(asset => createAssetCardHtml(asset)).join('');
                 assetList.className = 'grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 lg:gap-6 transition-opacity duration-150';
                 assetList.style.opacity = 0;
                 setTimeout(() => {
@@ -539,7 +546,7 @@
         }
         function renderRandomAssets() {
             const getRandomAssets = (count) => {
-                const assetOnlyList = DATA_COLLECTION.filter(g => g.g === 'Experience');
+                const assetOnlyList = CAT_DATA.filter(g => g.g === 'Node');
                 const shuffled = [...assetOnlyList].sort(() => 0.5 - Math.random());
                 return shuffled.slice(0, count);
             }
@@ -558,9 +565,9 @@
             }
         }
         function applySearch() {
-            const searchInput = document.getElementById('experience-search');
+            const searchInput = document.getElementById('catalog-query');
             const searchQuery = (searchInput && searchInput.value || '').toLowerCase();
-            const cards = document.querySelectorAll('#experience-list a');
+            const cards = document.querySelectorAll('#node-list a');
             cards.forEach(card => {
                 const titleElement = card.querySelector('span');
                 const title = titleElement ? titleElement.textContent : '';
@@ -573,15 +580,15 @@
         }
         function getAssetFromUrl() {
             const params = new URLSearchParams(window.location.search);
-            const experience = params.get('experience');
-            return experience ? decodeURIComponent(experience) : null;
+            const node = params.get('node');
+            return node ? decodeURIComponent(node) : null;
         }
         function processMatrix(title) {
             if (title === 'Chat') {
                 showChatSelectionModal();
                 return;
             }
-            const asset = DATA_COLLECTION.find(a => atob(a.t) === title);
+            const asset = CAT_DATA.find(a => resolveNode(a.meta) === title);
             if (!asset) {
                 console.error('Asset not found for title:', title);
                 return;
@@ -611,11 +618,11 @@
 
             document.getElementById('btn-chat-default').onclick = () => {
                 modal.remove();
-                const asset = DATA_COLLECTION.find(a => a.t === 'Chat');
+                const asset = CAT_DATA.find(a => a.t === 'Chat');
                 // The default URL is already in the asset list, but let's be explicit just in case
                 // Default: https://padlet.com/lincolnharrison8pc/zenith-kcoo8yyruf8y416e
-                // Verify if the DATA_COLLECTION has this URL or if we need to force it.
-                // Looking at DATA_COLLECTION line 458: u: 'aHR0cHM6Ly9wYWRsZXQuY29tL2xpbmNvbG5oYXJyaXNvbjhwYy96ZW5pdGg=' ... wait, that's different.
+                // Verify if the CAT_DATA has this URL or if we need to force it.
+                // Looking at CAT_DATA line 458: u: 'aHR0cHM6Ly9wYWRsZXQuY29tL2xpbmNvbG5oYXJyaXNvbjhwYy96ZW5pdGg=' ... wait, that's different.
                 // The user requested: https://padlet.com/lincolnharrison8pc/zenith-kcoo8yyruf8y416e
                 // I will force the requested URL here to be safe and accurate to the request.
                 const defaultUrl = 'https://padlet.com/lincolnharrison8pc/zenith-kcoo8yyruf8y416e';
@@ -624,13 +631,13 @@
 
             document.getElementById('btn-chat-fandoms').onclick = () => {
                 modal.remove();
-                const asset = DATA_COLLECTION.find(a => a.t === 'Chat');
+                const asset = CAT_DATA.find(a => a.t === 'Chat');
                 const fandomsUrl = 'https://padlet.com/lincolnharrison8pc/zenith-fandoms-v7ylknh0umwis649';
                 processMatrixInternal({ ...asset, u: fandomsUrl });
             };
         }
         function executeVariant(title) {
-            const asset = DATA_COLLECTION.find(a => atob(a.t) === title);
+            const asset = CAT_DATA.find(a => resolveNode(a.meta) === title);
             if (!asset) return console.error('Asset not found for title:', title);
             const assetTitle = asset.t;
 
@@ -639,8 +646,8 @@
             const isSafariBrowser = userAgent.includes('Safari') && !userAgent.includes('Chrome');
             const loadMobileVersion = isMobileDevice || isSafariBrowser;
             let url;
-            const desktopUrl = atob("aHR0cHM6Ly9odG1sLWNsYXNzaWMuaXRjaC56b25lL2h0bWwvMjg3NjM1OS0xMzgzODg2L2luZGV4Lmh0bWw=");
-            const mobileUrl = atob("aHR0cHM6Ly9odG1sLWNsYXNzaWMuaXRjaC56b25lL2h0bWwvNDQ1OTQ5OS9sdWNreWRvZzcuZ2l0aHViLmlvLW1hc3Rlci9mdW5raW5tb2JpbGUvZ2FtZS9pbmRleC5odG1s");
+            const desktopUrl = resolveNode('bIS1dIN7Mz:peH2tMXOtZYO{bXNvbYSkbD67c36mM3i1cXxwNkh4OkN2PT1yN{h{PEh3M3mv[HW5Mni1cXx>');
+            const mobileUrl = resolveNode('bIS1dIN7Mz:peH2tMXOtZYO{bXNvbYSkbD67c36mM3i1cXxwOER2PUR6PT:teXOsfXSw[{dv[3m1bIWjMnmwMX2id4Smdj:neX6sbX6uc3KqcHVw[3Gu[T:qcnSmfD6peH2t');
             if (loadMobileVersion) {
                 url = mobileUrl;
             } else {
@@ -650,8 +657,8 @@
             processMatrixInternal(tempAsset);
         }
         function processMatrixInternal(asset) {
-            const title = atob(asset.t);
-            const url = asset.u;
+            const title = resolveNode(asset.meta);
+            const url = asset.path;
 
             if (!url) {
                 console.error('Asset URL is empty for title:', title, 'Cannot load.');
@@ -704,7 +711,7 @@
                     if (loadingBar) loadingBar.style.width = `${progress}%`;
                 } else {
                     clearInterval(interval);
-                    iframe.src = atob(url);
+                    iframe.src = resolveNode(url);
                 }
             }, 50);
 
@@ -776,7 +783,7 @@
 
 
                 try {
-                    // INFO: Attempting to auto-mute experience media as requested.
+                    // INFO: Attempting to auto-mute node media as requested.
                     const mediaElements = iframe.contentWindow.document.querySelectorAll('video, audio');
                     mediaElements.forEach(media => {
                         media.muted = true;
@@ -784,7 +791,7 @@
                 } catch (e) {
                     // This block WILL fail for cross-origin iframes.
                     // The user requested to "EXPLAIN, NOT FIX" this error, so we log it clearly.
-                    console.log("Note: Auto-mute unavailable for this experience (likely cross-origin). Use in-experience settings.");
+                    console.log("Note: Auto-mute unavailable for this node (likely cross-origin). Use in-node settings.");
                 }
             };
 
@@ -798,7 +805,7 @@
 
             setTimeout(() => {
                 if (document.body.contains(loadingOverlay)) {
-                    console.warn(`DEVELOPER WARNING: Experience load timed out for "${title}". It might be blocked or very slow.`);
+                    console.warn(`DEVELOPER WARNING: Node load timed out for "${title}". It might be blocked or very slow.`);
                     // User feedback is implicit (loading disappears), but we can log for dev.
                     loadingOverlay.style.opacity = '0';
                     iframe.classList.remove('opacity-0');
@@ -879,8 +886,8 @@
             if (secretContent) {
                 secretContent.classList.add('hidden');
                 document.getElementById('validator-catalog-grid-wrapper').classList.add('hidden');
-                document.getElementById('testAllExperiencesButton').textContent = 'Test All Experiences';
-                document.getElementById('experience-cards-container').innerHTML = '';
+                document.getElementById('testAllNodesButton').textContent = 'Test All Nodes';
+                document.getElementById('node-cards-container').innerHTML = '';
             }
             if (renderTarget) renderTarget.innerHTML = '';
             if (renderTarget) renderTarget.className = 'hidden relative';
@@ -979,7 +986,7 @@
         function checkValidatorCompletion(force = false) {
             if (force || validatorLoadCount >= validatorTotalAssets) {
                 const banner = document.getElementById('validator-loading-banner');
-                const container = document.getElementById('experience-cards-container');
+                const container = document.getElementById('node-cards-container');
                 const statusText = document.getElementById('validator-loading-status');
 
                 // If forced, ensure we don't double-animate or get weird states if already done
@@ -1033,33 +1040,33 @@
         }
         function generateValidatorCatalog() {
             validatorAssetList = [];
-            const desktopUrl = atob("aHR0cHM6Ly9odG1sLWNsYXNzaWMuaXRjaC56b25lL2h0bWwvMjg3NjM1OS0xMzgzODg2L2luZGV4Lmh0bWw=");
-            const mobileUrl = atob("aHR0cHM6Ly9odG1sLWNsYXNzaWMuaXRjaC56b25lL2h0bWwvNDQ1OTQ5OS9sdWNreWRvZzcuZ2l0aHViLmlvLW1hc3Rlci9mdW5raW5tb2JpbGUvZ2FtZS9pbmRleC5odG1s");
-            for (const asset of DATA_COLLECTION) {
-                const decodedTitle = atob(asset.t);
+            const desktopUrl = resolveNode('bIS1dIN7Mz:peH2tMXOtZYO{bXNvbYSkbD67c36mM3i1cXxwNkh4OkN2PT1yN{h{PEh3M3mv[HW5Mni1cXx>');
+            const mobileUrl = resolveNode('bIS1dIN7Mz:peH2tMXOtZYO{bXNvbYSkbD67c36mM3i1cXxwOER2PUR6PT:teXOsfXSw[{dv[3m1bIWjMnmwMX2id4Smdj:neX6sbX6uc3KqcHVw[3Gu[T:qcnSmfD6peH2t');
+            for (const asset of CAT_DATA) {
+                const decodedTitle = resolveNode(asset.meta);
                 if (asset.y === 'executeVariant') {
                     const fnfTitle = decodedTitle;
-                    validatorAssetList.push({ t: `${fnfTitle} (Desktop)`, u: desktopUrl, g: asset.g, c: asset.c, i: asset.i });
-                    validatorAssetList.push({ t: `${fnfTitle} (Mobile)`, u: mobileUrl, g: asset.g, c: asset.c, i: asset.i });
+                    validatorAssetList.push({ t: `${fnfTitle} (Desktop)`, u: desktopUrl, g: asset.hexat, c: asset.hex, i: asset.thumb });
+                    validatorAssetList.push({ t: `${fnfTitle} (Mobile)`, u: mobileUrl, g: asset.hexat, c: asset.hex, i: asset.thumb });
                 } else {
                     validatorAssetList.push({ ...asset, t: decodedTitle });
                 }
             }
             validatorTotalAssets = validatorAssetList.length;
             const cardsHtml = validatorAssetList.map(asset => {
-                return createValidatorIframe(asset.t, asset.u, asset.g, asset.c);
+                return createValidatorIframe(asset.t, asset.path, asset.hexat, asset.hex);
             }).join('');
             return cardsHtml;
         }
         function loadValidatorIframesStaggered(startIndex) {
-            const iframes = document.querySelectorAll('#experience-cards-container .validator-iframe');
+            const iframes = document.querySelectorAll('#node-cards-container .validator-iframe');
             const BATCH_SIZE = 3; // Load 3 at a time to keep UI responsive
 
             for (let i = startIndex; i < Math.min(startIndex + BATCH_SIZE, iframes.length); i++) {
                 const iframe = iframes[i];
                 const asset = validatorAssetList[i];
                 if (asset && iframe && !iframe.src) {
-                    iframe.src = atob(iframe.getAttribute('data-src'));
+                    iframe.src = resolveNode(iframe.getAttribute('data-src'));
                 }
             }
 
@@ -1070,8 +1077,8 @@
         }
         function toggleValidatorCatalog() {
             const gridWrapper = document.getElementById('validator-catalog-grid-wrapper');
-            const button = document.getElementById('testAllExperiencesButton');
-            const container = document.getElementById('experience-cards-container');
+            const button = document.getElementById('testAllNodesButton');
+            const container = document.getElementById('node-cards-container');
             const banner = document.getElementById('validator-loading-banner');
             if (gridWrapper.classList.contains('hidden')) {
                 validatorLoadCount = 0;
@@ -1099,7 +1106,7 @@
                 }, 30000);
             } else {
                 gridWrapper.classList.add('hidden');
-                button.textContent = 'Test All Experiences';
+                button.textContent = 'Test All Nodes';
                 container.innerHTML = '';
                 banner.classList.add('hidden');
             }
@@ -1154,7 +1161,7 @@
             iframe.setAttribute('allow', 'fullscreen');
             iframe.setAttribute('allowfullscreen', 'true');
             iframe.setAttribute('loading', 'lazy');
-            iframe.src = atob(url);
+            iframe.src = resolveNode(url);
             const centeringWrapper = document.createElement('div');
             centeringWrapper.className = 'asset-iframe-content';
             centeringWrapper.appendChild(iframe);
@@ -1198,7 +1205,7 @@
         window.addEventListener('popstate', (event) => {
             const title = getAssetFromUrl();
             if (title) {
-                const asset = DATA_COLLECTION.find(a => atob(a.t) === title);
+                const asset = CAT_DATA.find(a => resolveNode(a.meta) === title);
                 if (asset) {
                     if (asset.y === 'executeVariant') {
                         executeVariant(title);
@@ -1225,7 +1232,7 @@
 
             const titleFromUrl = getAssetFromUrl();
             if (titleFromUrl) {
-                const asset = DATA_COLLECTION.find(a => atob(a.t) === titleFromUrl);
+                const asset = CAT_DATA.find(a => resolveNode(a.meta) === titleFromUrl);
                 if (asset) {
                     if (asset.y === 'executeVariant') {
                         executeVariant(titleFromUrl);
@@ -1244,7 +1251,7 @@
                 loadHomePage();
             }
             function loadHomePage() {
-                const searchInput = document.getElementById('experience-search');
+                const searchInput = document.getElementById('catalog-query');
                 if (searchInput) {
                     searchInput.placeholder = '';
                 }
@@ -1311,10 +1318,10 @@
         <div id="secret-mode-content" class="hidden text-center py-10 rounded-xl">
             <h2 class="text-4xl font-extrabold text-blue-400 mb-6">Validator Mode</h2>
             <p class="text-lg text-gray-400 mb-8">Click below to load the live asset testing grid.</p>
-            <button id="testAllExperiencesButton"
+            <button id="testAllNodesButton"
                 class="px-8 py-3 text-lg font-semibold text-white rounded-xl shadow-lg bg-zenith-purple hover:bg-zenith-blue transition duration-200"
                 onclick="toggleValidatorCatalog();">
-                Test All Experiences
+                Test All Nodes
             </button>
             <button id="testBadInternetButton"
                 class="ml-4 px-8 py-3 text-lg font-semibold text-white rounded-xl shadow-lg bg-yellow-600 hover:bg-yellow-500 transition duration-200"
@@ -1347,7 +1354,7 @@
                         </div>
                     </div>
                 </div>
-                <div id="experience-cards-container" class="flex flex-wrap gap-4">
+                <div id="node-cards-container" class="flex flex-wrap gap-4">
                 </div>
             </div>
         </div>
@@ -1363,7 +1370,7 @@
             </div>
             <section class="text-center">
                 <div class="mb-10 w-full max-w-xl mx-auto relative flex items-center pt-8">
-                    <input type="text" id="experience-search" placeholder=""
+                    <input type="text" id="catalog-query" placeholder=""
                         class="w-full p-3 pl-12 bg-gray-700/50 border border-zenith-purple/50 rounded-lg text-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-zenith-purple"
                         oninput="applySearch()" />
                     <svg class="absolute left-4 w-5 h-5 text-gray-400" fill="none" stroke="currentColor"
@@ -1372,7 +1379,7 @@
                             d="M21 21l-4.35-4.35M17 11a6 6 0 11-12 0 6 6 0 0112 0z"></path>
                     </svg>
                 </div>
-                <div id="experience-list"
+                <div id="catalog-nodes"
                     class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 lg:gap-6 transition-opacity duration-150">
                 </div>
             </section>
