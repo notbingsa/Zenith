@@ -148,15 +148,15 @@
             border-radius: 0 !important;
         }
 
-        #tester-loading-banner {
+        #validator-loading-banner {
             z-index: 45;
         }
     </style>
     <script>
         let mainPanel, renderTarget, labelRegistry, primaryMarker;
-        let testerLoadCount = 0;
-        let testerTotalAssets = 0;
-        let testerAssetList = [];
+        let validatorLoadCount = 0;
+        let validatorTotalAssets = 0;
+        let validatorAssetList = [];
 
         const BLOCKED_DOMAINS = [
             'exodragon.com',
@@ -448,56 +448,56 @@
         }
 
 
-        const ALL_ASSETS = [
-            { t: 'QmFzZWJhbGw=', u: 'aHR0cHM6Ly9uZWJ1bGFnYW1lcy51cy9zdG9yYWdlL0dvb2dsZSUyMEJhc2ViYWxsLmh0bWw=', c: '10b981', y: 'processMatrix', g: 'Game', i: '/experiences/images/Baseball.png' },
-            { t: 'Qml0bGlmZQ==', u: 'aHR0cHM6Ly9uZWJ1bGFnYW1lcy51cy9zdG9yYWdlL2JpdGxpZmUv', c: 'ef4444', y: 'processMatrix', g: 'Game', i: '/experiences/images/Bitlife.png' },
-            { t: 'QmxvY2sgQmxhc3Q=', u: 'aHR0cHM6Ly9uZWJ1bGFnYW1lcy51cy9zdG9yYWdlL0Jsb2NrJTIwQmxhc3QuaHRtbA==', c: '1d4ed8', y: 'processMatrix', g: 'Game', i: '/experiences/images/Block%20Blast.png' },
-            { t: 'Qmx1bWdpIE1lcmdl', u: 'aHR0cHM6Ly9uZWJ1bGFnYW1lcy51cy9zdG9yYWdlL2JsdW1naW1lcmdlLw==', c: 'f97316', y: 'processMatrix', g: 'Game', i: '/experiences/images/Blumgi%20Merge.png' },
-            { t: 'Qm91bmNlbWFzdGVycw==', u: 'aHR0cHM6Ly9uZWJ1bGFnYW1lcy51cy9zdG9yYWdlL0JvdW5jZW1hc3RlcnMuaHRtbA==', c: 'f97316', y: 'processMatrix', g: 'Game', i: '/experiences/images/Bouncemasters.png' },
-            { t: 'Q2hhdA==', u: 'aHR0cHM6Ly9wYWRsZXQuY29tL2xpbmNvbG5oYXJyaXNvbjhwYy96ZW5pdGg=', c: '7c3aed', y: 'processMatrix', g: 'App', i: '/apps/images/Chat.png' },
-            { t: 'Q29va2llIENsaWNrZXI=', u: 'aHR0cHM6Ly9uZWJ1bGFnYW1lcy51cy9zdG9yYWdlL0Nvb2tpZSUyMENsaWNrZXIuaHRtbA==', c: 'd97706', y: 'processMatrix', g: 'Game', i: '/experiences/images/Cookie%20Clicker.png' },
-            { t: 'Q29yZWJhbGw=', u: 'aHR0cHM6Ly9uZWJ1bGFnYW1lcy51cy9zdG9yYWdlL0NvcmViYWxsLmh0bWw=', c: 'f87171', y: 'processMatrix', g: 'Game', i: '/experiences/images/Coreball.png' },
-            { t: 'Q3JpY2tldA==', u: 'aHR0cHM6Ly9kb29kbGVjcmlja2V0LnBhZ2VzLmRldi9nb29nbGUtY3JpY2tldC8=', c: 'f97316', y: 'processMatrix', g: 'Game', i: '/experiences/images/Cricket.png' },
-            { t: 'Q3V0IFRoZSBSb3Bl', u: 'aHR0cHM6Ly9uZWJ1bGFnYW1lcy51cy9zdG9yYWdlL2NsY3V0dGhlcm9wZS5odG1s', c: '10b981', y: 'processMatrix', g: 'Game', i: '/experiences/images/Cut%20The%20Rope.png' },
-            { t: 'RHJpdmUgTWFk', u: 'aHR0cHM6Ly9uZWJ1bGFnYW1lcy51cy9zdG9yYWdlL0RyaXZlJTIwTWFkLmh0bWw=', c: '34d399', y: 'processMatrix', g: 'Game', i: '/experiences/images/Drive%20Mad.png' },
-            { t: 'RWdneSBDYXI=', u: 'aHR0cHM6Ly9uZWJ1bGFnYW1lcy51cy9zdG9yYWdlL2VnZ3ljYXIv', c: 'facc15', y: 'processMatrix', g: 'Game', i: '/experiences/images/Eggy%20Car.png' },
-            { t: 'RXNjYXBlIFJvYWQgMg==', u: 'aHR0cHM6Ly9uZWJ1bGFnYW1lcy51cy9zdG9yYWdlL2NsZXNjYXBlcm9hZDIuaHRtbA==', c: 'ef4444', y: 'processMatrix', g: 'Game', i: '/experiences/images/Escape%20Road%202.png' },
-            { t: 'Rml2ZSBOaWdodHMgYXQgRnJlZGR5J3M=', u: 'aHR0cHM6Ly9uZWJ1bGFnYW1lcy51cy9zdG9yYWdlL0ZpdmUlMjBOaWdodHMlMjBhdCUyMEZyZWRkeXMuaHRtbA==', c: 'ef4444', y: 'processMatrix', g: 'Game', i: '/experiences/images/FNAF.png' },
-            { t: 'Rml2ZSBOaWdodHMgYXQgRnJlZGR5J3MgMg==', u: 'aHR0cHM6Ly9uZWJ1bGFnYW1lcy51cy9zdG9yYWdlL0ZpdmUlMjBOaWdodHMlMjBhdCUyMEZyZWRkeXMlMjAyLmh0bWw=', c: 'ef4444', y: 'processMatrix', g: 'Game', i: '/experiences/images/FNAF%202.png' },
-            { t: 'Rml2ZSBOaWdodHMgYXQgRnJlZGR5J3MgMw==', u: 'aHR0cHM6Ly9uZWJ1bGFnYW1lcy51cy9zdG9yYWdlL0ZpdmUlMjBOaWdodHMlMjBhdCUyMEZyZWRkeXMlMjAzLmh0bWw=', c: 'ef4444', y: 'processMatrix', g: 'Game', i: '/experiences/images/FNAF%203.png' },
-            { t: 'Rml2ZSBOaWdodHMgYXQgRnJlZGR5J3MgNA==', u: 'aHR0cHM6Ly9uZWJ1bGFnYW1lcy51cy9zdG9yYWdlL0ZpdmUlMjBOaWdodHMlMjBhdCUyMEZyZWRkeXMlMjA0Lmh0bWw=', c: 'ef4444', y: 'processMatrix', g: 'Game', i: '/experiences/images/FNAF%204.png' },
-            { t: 'Rml2ZSBOaWdodHMgYXQgRnJlZGR5J3MgNCBIYWxsb3dlZW4=', u: 'aHR0cHM6Ly9uZWJ1bGFnYW1lcy51cy9zdG9yYWdlL0ZpdmUlMjBOaWdodHMlMjBhdCUyMEZyZWRkeXMlMjA0XyUyMEhhbGxvd2Vlbi5odG1s', c: 'ef4444', y: 'processMatrix', g: 'Game', i: '/experiences/images/FNAF%204%20Halloween.png' },
-            { t: 'Rml2ZSBOaWdodHMgYXQgRnJlZGR5J3MgU2lzdGVyIExvY2F0aW9u', u: 'aHR0cHM6Ly9uZWJ1bGFnYW1lcy51cy9zdG9yYWdlL0ZpdmUlMjBOaWdodHMlMjBhdCUyMEZyZWRkeXNfJTIwU2lzdGVyJTIwTG9jYXRpb24uaHRtbA==', c: 'ef4444', y: 'processMatrix', g: 'Game', i: '/experiences/images/FNAF%20Sister%20Location.png' },
-            { t: 'RmxhcHB5IEJpcmQ=', u: 'aHR0cHM6Ly9uZWJ1bGFnYW1lcy51cy9zdG9yYWdlL0ZsYXBweSUyMEJpcmQuaHRtbA==', c: 'facc15', y: 'processMatrix', g: 'Game', i: '/experiences/images/Flappy%20Bird.png' },
-            { t: 'Rmx1aWQgU2ltdWxhdGlvbg==', u: 'aHR0cHM6Ly9oYXhpb21pYy5naXRodWIuaW8vcHJvamVjdHMvd2ViZ2wtZmx1aWQtYW5kLXBhcnRpY2xlcy8=', c: '3b82f6', y: 'processMatrix', g: 'Game', i: '/experiences/images/Fluid%20Simulation.png' },
-            { t: 'Rk5BRiBQaXp6ZXJpYSBTaW11bGF0b3I=', u: 'aHR0cHM6Ly9uZWJ1bGFnYW1lcy51cy9zdG9yYWdlL0ZpdmUlMjBOaWdodHMlMjBhdCUyMEZyZWRkeXNfJTIwUGl6emElMjBTaW11bGF0b3IuaHRtbA==', c: 'ef4444', y: 'processMatrix', g: 'Game', i: '/experiences/images/FNAF%20Pizzeria%20Simulator.png' },
-            { t: 'Rk5BRiBVbHRpbWF0ZSBDdXN0b20gTmlnaHQ=', u: 'aHR0cHM6Ly9uZWJ1bGFnYW1lcy51cy9zdG9yYWdlL0ZpdmUlMjBOaWdodHMlMjBhdCUyMEZyZWRkeXNfJTIwVWx0aW1hdGUlMjBDdXN0b20lMjBOaWdodC5odG1s', c: 'ef4444', y: 'processMatrix', g: 'Game', i: '/experiences/images/FNAF%20Ultimate%20Custom%20Night.png' },
-            { t: 'Rk5BRiBXb3JsZA==', u: 'aHR0cHM6Ly9uZWJ1bGFnYW1lcy51cy9zdG9yYWdlL0ZpdmUlMjBOaWdodHMlMjBhdCUyMEZyZWRkeXNfJTIwV29ybGQuaHRtbA==', c: 'ef4444', y: 'processMatrix', g: 'Game', i: '/experiences/images/FNAF%20World.png' },
-            { t: 'RnJpZGF5IE5pZ2h0IEZ1bmtpbg==', u: '', c: 'ef4444', y: 'executeVariant', g: 'Game', i: '/experiences/images/Friday%20Night%20Funkin.png' },
-            { t: 'RnJ1aXQgTmluamE=', u: 'aHR0cHM6Ly9uZWJ1bGFnYW1lcy51cy9zdG9yYWdlL0ZydWl0JTIwTmluamEuaHRtbA==', c: '10b981', y: 'processMatrix', g: 'Game', i: '/experiences/images/Fruit%20Ninja.png' },
-            { t: 'R2VvbWV0cnkgRGFzaCBMaXRl', u: 'aHR0cHM6Ly9uZWJ1bGFnYW1lcy51cy9zdG9yYWdlL0dlb21ldHJ5JTIwRGFzaCUyMExpdGUuaHRtbA==', c: '3b82f6', y: 'processMatrix', g: 'Game', i: '/experiences/images/Geometry%20Dash%20Lite.png' },
-            { t: 'R29iYmxl', u: 'aHR0cHM6Ly9uZWJ1bGFnYW1lcy51cy9zdG9yYWdlL0dvYmJsZS5odG1s', c: '10b981', y: 'processMatrix', g: 'Game', i: '/experiences/images/Gobble.png' },
-            { t: 'SW5maW5pdGUgQ3JhZnQ=', u: 'aHR0cHM6Ly9pbmZpbml0ZWNyYWZ0bmV3LmNvbQ==', c: '10b981', y: 'processMatrix', g: 'Game', i: '/experiences/images/Infinite%20Craft.png' },
-            { t: 'TGV2ZWwgRGV2aWw=', u: 'aHR0cHM6Ly9uZWJ1bGFnYW1lcy51cy9zdG9yYWdlL2NsbGV2ZWxkZXZpbC5odG1s', c: 'ef4444', y: 'processMatrix', g: 'Game', i: '/experiences/images/Level%20Devil.png' },
-            { t: 'T3ZP', u: 'aHR0cHM6Ly9uZWJ1bGFnYW1lcy51cy9zdG9yYWdlL292by8=', c: '111827', y: 'processMatrix', g: 'Game', i: '/experiences/images/OvO.png' },
-            { t: 'UGFwZXIuaW8gMg==', u: 'aHR0cHM6Ly9uZWJ1bGFnYW1lcy51cy9zdG9yYWdlL3BhcGVyaW8yLw==', c: 'facc15', y: 'processMatrix', g: 'Game', i: '/experiences/images/Paper.io%202.png' },
-            { t: 'UG9seSBUcmFjaw==', u: 'aHR0cHM6Ly9odG1sLWNsYXNzaWMuaXRjaC56b25lL2h0bWwvMTU0NTEzMzAvaW5kZXguaHRtbA==', c: 'ef4444', y: 'processMatrix', g: 'Game', i: '/experiences/images/Poly%20Track.png' },
-            { t: 'UmFnZG9sbCBBcmNoZXJz', u: 'aHR0cHM6Ly9uZWJ1bGFnYW1lcy51cy9zdG9yYWdlL1JhZ2RvbGwlMjBBcmNoZXJzLmh0bWw=', c: 'ef4444', y: 'processMatrix', g: 'Game', i: '/experiences/images/Ragdoll%20Archers.png' },
-            { t: 'UmFnZG9sbCBIaXQ=', u: 'aHR0cHM6Ly9uZWJ1bGFnYW1lcy51cy9zdG9yYWdlL1JhZ2RvbGwlMjBIaXQuaHRtbA==', c: 'ef4444', y: 'processMatrix', g: 'Game', i: '/experiences/images/Ragdoll%20Hit.png' },
-            { t: 'U2FuZGJveGVscw==', u: 'aHR0cHM6Ly9zaGFsYml0by52ZXJjZWwuYXBwLw==', c: 'ef4444', y: 'processMatrix', g: 'Game', i: '/experiences/images/Sandboxels.png' },
-            { t: 'U25ha2U=', u: 'aHR0cHM6Ly9nb29nbGVzbmFrZW1vZHMuY29tL3YvY3VycmVudC8=', c: '10b981', y: 'processMatrix', g: 'Game', i: '/experiences/images/Snake.png' },
-            { t: 'U29sYXIgU21hc2g=', u: 'aHR0cHM6Ly9uZWJ1bGFnYW1lcy51cy9zdG9yYWdlL1NvbGFyJTIwU21hc2guaHRtbA==', c: 'f97316', y: 'processMatrix', g: 'Game', i: '/experiences/images/Solar%20Smash.png' },
-            { t: 'U3RhY2s=', u: 'aHR0cHM6Ly9uZWJ1bGFnYW1lcy51cy9zdG9yYWdlL3N0YWNrLw==', c: '3b82f6', y: 'processMatrix', g: 'Game', i: '/experiences/images/Stack.png' },
-            { t: 'U3RhY2tiYWxs', u: 'aHR0cHM6Ly9uZWJ1bGFnYW1lcy51cy9zdG9yYWdlL3N0YWNrYmFsbC8=', c: 'ef4444', y: 'processMatrix', g: 'Game', i: '/experiences/images/Stackball.png' },
-            { t: 'U3RpY2ttYW4gSG9vaw==', u: 'aHR0cHM6Ly9uZWJ1bGFnYW1lcy51cy9zdG9yYWdlL1N0aWNrbWFuJTIwSG9vay5odG1s', c: 'ef4444', y: 'processMatrix', g: 'Game', i: '/experiences/images/Stickman%20Hook.png' },
-            { t: 'U3RvbmUgR3Jhc3M=', u: 'aHR0cHM6Ly9uZWJ1bGFnYW1lcy51cy9zdG9yYWdlL1N0b25lJTIwR3Jhc3MlMjBNb3dpbmclMjBTaW11bGF0b3IuaHRtbA==', c: '10b981', y: 'processMatrix', g: 'Game', i: '/experiences/images/Stone%20Grass.png' },
-            { t: 'U3Vid2F5IFN1cmZlcnM=', u: 'aHR0cHM6Ly9uZWJ1bGFnYW1lcy51cy9zdG9yYWdlL1N1YndheSUyMFN1cmZlcnNfJTIwU2FuJTIwRnJhbmNpc2NvLmh0bWw=', c: '3b82f6', y: 'processMatrix', g: 'Game', i: '/experiences/images/Subway%20Surfers.png' },
-            { t: 'U3Vydml2YWwgUmFjZQ==', u: 'aHR0cHM6Ly9uZWJ1bGFnYW1lcy51cy9zdG9yYWdlL2Nsc3Vydml2YWxyYWNldjIuaHRtbA==', c: '7c3aed', y: 'processMatrix', g: 'Game', i: '/experiences/images/Survival%20Race.png' },
-            { t: 'VGhpcnR5IERvbGxhciBXZWJzaXRl', u: 'aHR0cHM6Ly9rbGVlZGVyLmRlL2ZpbGVzL21vYWkyLyVGMCU5RiU5NyVCZi5odG1s', c: '34d399', y: 'processMatrix', g: 'Game', i: '/experiences/images/Thirty%20Dollar%20Website.png' },
-            { t: 'VGlueSBGaXNoaW5n', u: 'aHR0cHM6Ly9uZWJ1bGFnYW1lcy51cy9zdG9yYWdlL1RpbnklMjBGaXNoaW5nLmh0bWw=', c: 'facc15', y: 'processMatrix', g: 'Game', i: '/experiences/images/Tiny%20Fishing.png' },
-            { t: 'VHJhZmZpYyBSaWRlcg==', u: 'aHR0cHM6Ly90cmFmZmljLXJpZGVyLmlvL2dhbWUvdHJhZmZpYy1yaWRlci8=', c: 'facc15', y: 'processMatrix', g: 'Game', i: '/experiences/images/Traffic%20Rider.png' },
-            { t: 'VW5ibG9ja2Vy', u: 'aHR0cHM6Ly93YWd1cmkuZWNvbGVmcmFuY29waG9uZS5jb20vc2VhcmNoLmh0bWw=', c: 'f97316', y: 'processMatrix', g: 'App', i: '/apps/images/Unblocker.png' },
-            { t: 'WW9ob2hvLmlv', u: 'aHR0cHM6Ly9uZWJ1bGFnYW1lcy51cy9zdG9yYWdlL3lvaG9oby8=', c: '2563eb', y: 'processMatrix', g: 'Game', i: '/experiences/images/Yohoho.io.png' },
+        const DATA_COLLECTION = [
+            { t: 'QmFzZWJhbGw=', u: 'aHR0cHM6Ly9uZWJ1bGFnYW1lcy51cy9zdG9yYWdlL0dvb2dsZSUyMEJhc2ViYWxsLmh0bWw=', c: '10b981', y: 'processMatrix', g: 'Experience', i: 'L2V4cGVyaWVuY2VzL2ltYWdlcy9CYXNlYmFsbC5wbmc=' },
+            { t: 'Qml0bGlmZQ==', u: 'aHR0cHM6Ly9uZWJ1bGFnYW1lcy51cy9zdG9yYWdlL2JpdGxpZmUv', c: 'ef4444', y: 'processMatrix', g: 'Experience', i: 'L2V4cGVyaWVuY2VzL2ltYWdlcy9CaXRsaWZlLnBuZw==' },
+            { t: 'QmxvY2sgQmxhc3Q=', u: 'aHR0cHM6Ly9uZWJ1bGFnYW1lcy51cy9zdG9yYWdlL0Jsb2NrJTIwQmxhc3QuaHRtbA==', c: '1d4ed8', y: 'processMatrix', g: 'Experience', i: 'L2V4cGVyaWVuY2VzL2ltYWdlcy9CbG9jayUyMEJsYXN0LnBuZw==' },
+            { t: 'Qmx1bWdpIE1lcmdl', u: 'aHR0cHM6Ly9uZWJ1bGFnYW1lcy51cy9zdG9yYWdlL2JsdW1naW1lcmdlLw==', c: 'f97316', y: 'processMatrix', g: 'Experience', i: 'L2V4cGVyaWVuY2VzL2ltYWdlcy9CbHVtZ2klMjBNZXJnZS5wbmc=' },
+            { t: 'Qm91bmNlbWFzdGVycw==', u: 'aHR0cHM6Ly9uZWJ1bGFnYW1lcy51cy9zdG9yYWdlL0JvdW5jZW1hc3RlcnMuaHRtbA==', c: 'f97316', y: 'processMatrix', g: 'Experience', i: 'L2V4cGVyaWVuY2VzL2ltYWdlcy9Cb3VuY2VtYXN0ZXJzLnBuZw==' },
+            { t: 'Q2hhdA==', u: 'aHR0cHM6Ly9wYWRsZXQuY29tL2xpbmNvbG5oYXJyaXNvbjhwYy96ZW5pdGg=', c: '7c3aed', y: 'processMatrix', g: 'App', i: 'L2FwcHMvaW1hZ2VzL0NoYXQucG5n' },
+            { t: 'Q29va2llIENsaWNrZXI=', u: 'aHR0cHM6Ly9uZWJ1bGFnYW1lcy51cy9zdG9yYWdlL0Nvb2tpZSUyMENsaWNrZXIuaHRtbA==', c: 'd97706', y: 'processMatrix', g: 'Experience', i: 'L2V4cGVyaWVuY2VzL2ltYWdlcy9Db29raWUlMjBDbGlja2VyLnBuZw==' },
+            { t: 'Q29yZWJhbGw=', u: 'aHR0cHM6Ly9uZWJ1bGFnYW1lcy51cy9zdG9yYWdlL0NvcmViYWxsLmh0bWw=', c: 'f87171', y: 'processMatrix', g: 'Experience', i: 'L2V4cGVyaWVuY2VzL2ltYWdlcy9Db3JlYmFsbC5wbmc=' },
+            { t: 'Q3JpY2tldA==', u: 'aHR0cHM6Ly9kb29kbGVjcmlja2V0LnBhZ2VzLmRldi9nb29nbGUtY3JpY2tldC8=', c: 'f97316', y: 'processMatrix', g: 'Experience', i: 'L2V4cGVyaWVuY2VzL2ltYWdlcy9Dcmlja2V0LnBuZw==' },
+            { t: 'Q3V0IFRoZSBSb3Bl', u: 'aHR0cHM6Ly9uZWJ1bGFnYW1lcy51cy9zdG9yYWdlL2NsY3V0dGhlcm9wZS5odG1s', c: '10b981', y: 'processMatrix', g: 'Experience', i: 'L2V4cGVyaWVuY2VzL2ltYWdlcy9DdXQlMjBUaGUlMjBSb3BlLnBuZw==' },
+            { t: 'RHJpdmUgTWFk', u: 'aHR0cHM6Ly9uZWJ1bGFnYW1lcy51cy9zdG9yYWdlL0RyaXZlJTIwTWFkLmh0bWw=', c: '34d399', y: 'processMatrix', g: 'Experience', i: 'L2V4cGVyaWVuY2VzL2ltYWdlcy9Ecml2ZSUyME1hZC5wbmc=' },
+            { t: 'RWdneSBDYXI=', u: 'aHR0cHM6Ly9uZWJ1bGFnYW1lcy51cy9zdG9yYWdlL2VnZ3ljYXIv', c: 'facc15', y: 'processMatrix', g: 'Experience', i: 'L2V4cGVyaWVuY2VzL2ltYWdlcy9FZ2d5JTIwQ2FyLnBuZw==' },
+            { t: 'RXNjYXBlIFJvYWQgMg==', u: 'aHR0cHM6Ly9uZWJ1bGFnYW1lcy51cy9zdG9yYWdlL2NsZXNjYXBlcm9hZDIuaHRtbA==', c: 'ef4444', y: 'processMatrix', g: 'Experience', i: 'L2V4cGVyaWVuY2VzL2ltYWdlcy9Fc2NhcGUlMjBSb2FkJTIwMi5wbmc=' },
+            { t: 'Rml2ZSBOaWdodHMgYXQgRnJlZGR5J3M=', u: 'aHR0cHM6Ly9uZWJ1bGFnYW1lcy51cy9zdG9yYWdlL0ZpdmUlMjBOaWdodHMlMjBhdCUyMEZyZWRkeXMuaHRtbA==', c: 'ef4444', y: 'processMatrix', g: 'Experience', i: 'L2V4cGVyaWVuY2VzL2ltYWdlcy9GTkFGLnBuZw==' },
+            { t: 'Rml2ZSBOaWdodHMgYXQgRnJlZGR5J3MgMg==', u: 'aHR0cHM6Ly9uZWJ1bGFnYW1lcy51cy9zdG9yYWdlL0ZpdmUlMjBOaWdodHMlMjBhdCUyMEZyZWRkeXMlMjAyLmh0bWw=', c: 'ef4444', y: 'processMatrix', g: 'Experience', i: 'L2V4cGVyaWVuY2VzL2ltYWdlcy9GTkFGJTIwMi5wbmc=' },
+            { t: 'Rml2ZSBOaWdodHMgYXQgRnJlZGR5J3MgMw==', u: 'aHR0cHM6Ly9uZWJ1bGFnYW1lcy51cy9zdG9yYWdlL0ZpdmUlMjBOaWdodHMlMjBhdCUyMEZyZWRkeXMlMjAzLmh0bWw=', c: 'ef4444', y: 'processMatrix', g: 'Experience', i: 'L2V4cGVyaWVuY2VzL2ltYWdlcy9GTkFGJTIwMy5wbmc=' },
+            { t: 'Rml2ZSBOaWdodHMgYXQgRnJlZGR5J3MgNA==', u: 'aHR0cHM6Ly9uZWJ1bGFnYW1lcy51cy9zdG9yYWdlL0ZpdmUlMjBOaWdodHMlMjBhdCUyMEZyZWRkeXMlMjA0Lmh0bWw=', c: 'ef4444', y: 'processMatrix', g: 'Experience', i: 'L2V4cGVyaWVuY2VzL2ltYWdlcy9GTkFGJTIwNC5wbmc=' },
+            { t: 'Rml2ZSBOaWdodHMgYXQgRnJlZGR5J3MgNCBIYWxsb3dlZW4=', u: 'aHR0cHM6Ly9uZWJ1bGFnYW1lcy51cy9zdG9yYWdlL0ZpdmUlMjBOaWdodHMlMjBhdCUyMEZyZWRkeXMlMjA0XyUyMEhhbGxvd2Vlbi5odG1s', c: 'ef4444', y: 'processMatrix', g: 'Experience', i: 'L2V4cGVyaWVuY2VzL2ltYWdlcy9GTkFGJTIwNCUyMEhhbGxvd2Vlbi5wbmc=' },
+            { t: 'Rml2ZSBOaWdodHMgYXQgRnJlZGR5J3MgU2lzdGVyIExvY2F0aW9u', u: 'aHR0cHM6Ly9uZWJ1bGFnYW1lcy51cy9zdG9yYWdlL0ZpdmUlMjBOaWdodHMlMjBhdCUyMEZyZWRkeXNfJTIwU2lzdGVyJTIwTG9jYXRpb24uaHRtbA==', c: 'ef4444', y: 'processMatrix', g: 'Experience', i: 'L2V4cGVyaWVuY2VzL2ltYWdlcy9GTkFGJTIwU2lzdGVyJTIwTG9jYXRpb24ucG5n' },
+            { t: 'RmxhcHB5IEJpcmQ=', u: 'aHR0cHM6Ly9uZWJ1bGFnYW1lcy51cy9zdG9yYWdlL0ZsYXBweSUyMEJpcmQuaHRtbA==', c: 'facc15', y: 'processMatrix', g: 'Experience', i: 'L2V4cGVyaWVuY2VzL2ltYWdlcy9GbGFwcHklMjBCaXJkLnBuZw==' },
+            { t: 'Rmx1aWQgU2ltdWxhdGlvbg==', u: 'aHR0cHM6Ly9oYXhpb21pYy5naXRodWIuaW8vcHJvamVjdHMvd2ViZ2wtZmx1aWQtYW5kLXBhcnRpY2xlcy8=', c: '3b82f6', y: 'processMatrix', g: 'Experience', i: 'L2V4cGVyaWVuY2VzL2ltYWdlcy9GbHVpZCUyMFNpbXVsYXRpb24ucG5n' },
+            { t: 'Rk5BRiBQaXp6ZXJpYSBTaW11bGF0b3I=', u: 'aHR0cHM6Ly9uZWJ1bGFnYW1lcy51cy9zdG9yYWdlL0ZpdmUlMjBOaWdodHMlMjBhdCUyMEZyZWRkeXNfJTIwUGl6emElMjBTaW11bGF0b3IuaHRtbA==', c: 'ef4444', y: 'processMatrix', g: 'Experience', i: 'L2V4cGVyaWVuY2VzL2ltYWdlcy9GTkFGJTIwUGl6emVyaWElMjBTaW11bGF0b3IucG5n' },
+            { t: 'Rk5BRiBVbHRpbWF0ZSBDdXN0b20gTmlnaHQ=', u: 'aHR0cHM6Ly9uZWJ1bGFnYW1lcy51cy9zdG9yYWdlL0ZpdmUlMjBOaWdodHMlMjBhdCUyMEZyZWRkeXNfJTIwVWx0aW1hdGUlMjBDdXN0b20lMjBOaWdodC5odG1s', c: 'ef4444', y: 'processMatrix', g: 'Experience', i: 'L2V4cGVyaWVuY2VzL2ltYWdlcy9GTkFGJTIwVWx0aW1hdGUlMjBDdXN0b20lMjBOaWdodC5wbmc=' },
+            { t: 'Rk5BRiBXb3JsZA==', u: 'aHR0cHM6Ly9uZWJ1bGFnYW1lcy51cy9zdG9yYWdlL0ZpdmUlMjBOaWdodHMlMjBhdCUyMEZyZWRkeXNfJTIwV29ybGQuaHRtbA==', c: 'ef4444', y: 'processMatrix', g: 'Experience', i: 'L2V4cGVyaWVuY2VzL2ltYWdlcy9GTkFGJTIwV29ybGQucG5n' },
+            { t: 'RnJpZGF5IE5pZ2h0IEZ1bmtpbg==', u: '', c: 'ef4444', y: 'executeVariant', g: 'Experience', i: 'L2V4cGVyaWVuY2VzL2ltYWdlcy9GcmlkYXklMjBOaWdodCUyMEZ1bmtpbi5wbmc=' },
+            { t: 'RnJ1aXQgTmluamE=', u: 'aHR0cHM6Ly9uZWJ1bGFnYW1lcy51cy9zdG9yYWdlL0ZydWl0JTIwTmluamEuaHRtbA==', c: '10b981', y: 'processMatrix', g: 'Experience', i: 'L2V4cGVyaWVuY2VzL2ltYWdlcy9GcnVpdCUyME5pbmphLnBuZw==' },
+            { t: 'R2VvbWV0cnkgRGFzaCBMaXRl', u: 'aHR0cHM6Ly9uZWJ1bGFnYW1lcy51cy9zdG9yYWdlL0dlb21ldHJ5JTIwRGFzaCUyMExpdGUuaHRtbA==', c: '3b82f6', y: 'processMatrix', g: 'Experience', i: 'L2V4cGVyaWVuY2VzL2ltYWdlcy9HZW9tZXRyeSUyMERhc2glMjBMaXRlLnBuZw==' },
+            { t: 'R29iYmxl', u: 'aHR0cHM6Ly9uZWJ1bGFnYW1lcy51cy9zdG9yYWdlL0dvYmJsZS5odG1s', c: '10b981', y: 'processMatrix', g: 'Experience', i: 'L2V4cGVyaWVuY2VzL2ltYWdlcy9Hb2JibGUucG5n' },
+            { t: 'SW5maW5pdGUgQ3JhZnQ=', u: 'aHR0cHM6Ly9pbmZpbml0ZWNyYWZ0bmV3LmNvbQ==', c: '10b981', y: 'processMatrix', g: 'Experience', i: 'L2V4cGVyaWVuY2VzL2ltYWdlcy9JbmZpbml0ZSUyMENyYWZ0LnBuZw==' },
+            { t: 'TGV2ZWwgRGV2aWw=', u: 'aHR0cHM6Ly9uZWJ1bGFnYW1lcy51cy9zdG9yYWdlL2NsbGV2ZWxkZXZpbC5odG1s', c: 'ef4444', y: 'processMatrix', g: 'Experience', i: 'L2V4cGVyaWVuY2VzL2ltYWdlcy9MZXZlbCUyMERldmlsLnBuZw==' },
+            { t: 'T3ZP', u: 'aHR0cHM6Ly9uZWJ1bGFnYW1lcy51cy9zdG9yYWdlL292by8=', c: '111827', y: 'processMatrix', g: 'Experience', i: 'L2V4cGVyaWVuY2VzL2ltYWdlcy9Pdk8ucG5n' },
+            { t: 'UGFwZXIuaW8gMg==', u: 'aHR0cHM6Ly9uZWJ1bGFnYW1lcy51cy9zdG9yYWdlL3BhcGVyaW8yLw==', c: 'facc15', y: 'processMatrix', g: 'Experience', i: 'L2V4cGVyaWVuY2VzL2ltYWdlcy9QYXBlci5pbyUyMDIucG5n' },
+            { t: 'UG9seSBUcmFjaw==', u: 'aHR0cHM6Ly9odG1sLWNsYXNzaWMuaXRjaC56b25lL2h0bWwvMTU0NTEzMzAvaW5kZXguaHRtbA==', c: 'ef4444', y: 'processMatrix', g: 'Experience', i: 'L2V4cGVyaWVuY2VzL2ltYWdlcy9Qb2x5JTIwVHJhY2sucG5n' },
+            { t: 'UmFnZG9sbCBBcmNoZXJz', u: 'aHR0cHM6Ly9uZWJ1bGFnYW1lcy51cy9zdG9yYWdlL1JhZ2RvbGwlMjBBcmNoZXJzLmh0bWw=', c: 'ef4444', y: 'processMatrix', g: 'Experience', i: 'L2V4cGVyaWVuY2VzL2ltYWdlcy9SYWdkb2xsJTIwQXJjaGVycy5wbmc=' },
+            { t: 'UmFnZG9sbCBIaXQ=', u: 'aHR0cHM6Ly9uZWJ1bGFnYW1lcy51cy9zdG9yYWdlL1JhZ2RvbGwlMjBIaXQuaHRtbA==', c: 'ef4444', y: 'processMatrix', g: 'Experience', i: 'L2V4cGVyaWVuY2VzL2ltYWdlcy9SYWdkb2xsJTIwSGl0LnBuZw==' },
+            { t: 'U2FuZGJveGVscw==', u: 'aHR0cHM6Ly9zaGFsYml0by52ZXJjZWwuYXBwLw==', c: 'ef4444', y: 'processMatrix', g: 'Experience', i: 'L2V4cGVyaWVuY2VzL2ltYWdlcy9TYW5kYm94ZWxzLnBuZw==' },
+            { t: 'U25ha2U=', u: 'aHR0cHM6Ly9nb29nbGVzbmFrZW1vZHMuY29tL3YvY3VycmVudC8=', c: '10b981', y: 'processMatrix', g: 'Experience', i: 'L2V4cGVyaWVuY2VzL2ltYWdlcy9TbmFrZS5wbmc=' },
+            { t: 'U29sYXIgU21hc2g=', u: 'aHR0cHM6Ly9uZWJ1bGFnYW1lcy51cy9zdG9yYWdlL1NvbGFyJTIwU21hc2guaHRtbA==', c: 'f97316', y: 'processMatrix', g: 'Experience', i: 'L2V4cGVyaWVuY2VzL2ltYWdlcy9Tb2xhciUyMFNtYXNoLnBuZw==' },
+            { t: 'U3RhY2s=', u: 'aHR0cHM6Ly9uZWJ1bGFnYW1lcy51cy9zdG9yYWdlL3N0YWNrLw==', c: '3b82f6', y: 'processMatrix', g: 'Experience', i: 'L2V4cGVyaWVuY2VzL2ltYWdlcy9TdGFjay5wbmc=' },
+            { t: 'U3RhY2tiYWxs', u: 'aHR0cHM6Ly9uZWJ1bGFnYW1lcy51cy9zdG9yYWdlL3N0YWNrYmFsbC8=', c: 'ef4444', y: 'processMatrix', g: 'Experience', i: 'L2V4cGVyaWVuY2VzL2ltYWdlcy9TdGFja2JhbGwucG5n' },
+            { t: 'U3RpY2ttYW4gSG9vaw==', u: 'aHR0cHM6Ly9uZWJ1bGFnYW1lcy51cy9zdG9yYWdlL1N0aWNrbWFuJTIwSG9vay5odG1s', c: 'ef4444', y: 'processMatrix', g: 'Experience', i: 'L2V4cGVyaWVuY2VzL2ltYWdlcy9TdGlja21hbiUyMEhvb2sucG5n' },
+            { t: 'U3RvbmUgR3Jhc3M=', u: 'aHR0cHM6Ly9uZWJ1bGFnYW1lcy51cy9zdG9yYWdlL1N0b25lJTIwR3Jhc3MlMjBNb3dpbmclMjBTaW11bGF0b3IuaHRtbA==', c: '10b981', y: 'processMatrix', g: 'Experience', i: 'L2V4cGVyaWVuY2VzL2ltYWdlcy9TdG9uZSUyMEdyYXNzLnBuZw==' },
+            { t: 'U3Vid2F5IFN1cmZlcnM=', u: 'aHR0cHM6Ly9uZWJ1bGFnYW1lcy51cy9zdG9yYWdlL1N1YndheSUyMFN1cmZlcnNfJTIwU2FuJTIwRnJhbmNpc2NvLmh0bWw=', c: '3b82f6', y: 'processMatrix', g: 'Experience', i: 'L2V4cGVyaWVuY2VzL2ltYWdlcy9TdWJ3YXklMjBTdXJmZXJzLnBuZw==' },
+            { t: 'U3Vydml2YWwgUmFjZQ==', u: 'aHR0cHM6Ly9uZWJ1bGFnYW1lcy51cy9zdG9yYWdlL2Nsc3Vydml2YWxyYWNldjIuaHRtbA==', c: '7c3aed', y: 'processMatrix', g: 'Experience', i: 'L2V4cGVyaWVuY2VzL2ltYWdlcy9TdXJ2aXZhbCUyMFJhY2UucG5n' },
+            { t: 'VGhpcnR5IERvbGxhciBXZWJzaXRl', u: 'aHR0cHM6Ly9rbGVlZGVyLmRlL2ZpbGVzL21vYWkyLyVGMCU5RiU5NyVCZi5odG1s', c: '34d399', y: 'processMatrix', g: 'Experience', i: 'L2V4cGVyaWVuY2VzL2ltYWdlcy9UaGlydHklMjBEb2xsYXIlMjBXZWJzaXRlLnBuZw==' },
+            { t: 'VGlueSBGaXNoaW5n', u: 'aHR0cHM6Ly9uZWJ1bGFnYW1lcy51cy9zdG9yYWdlL1RpbnklMjBGaXNoaW5nLmh0bWw=', c: 'facc15', y: 'processMatrix', g: 'Experience', i: 'L2V4cGVyaWVuY2VzL2ltYWdlcy9UaW55JTIwRmlzaGluZy5wbmc=' },
+            { t: 'VHJhZmZpYyBSaWRlcg==', u: 'aHR0cHM6Ly90cmFmZmljLXJpZGVyLmlvL2dhbWUvdHJhZmZpYy1yaWRlci8=', c: 'facc15', y: 'processMatrix', g: 'Experience', i: 'L2V4cGVyaWVuY2VzL2ltYWdlcy9UcmFmZmljJTIwUmlkZXIucG5n' },
+            { t: 'VW5ibG9ja2Vy', u: 'aHR0cHM6Ly93YWd1cmkuZWNvbGVmcmFuY29waG9uZS5jb20vc2VhcmNoLmh0bWw=', c: 'f97316', y: 'processMatrix', g: 'App', i: 'L2FwcHMvaW1hZ2VzL1VuYmxvY2tlci5wbmc=' },
+            { t: 'WW9ob2hvLmlv', u: 'aHR0cHM6Ly9uZWJ1bGFnYW1lcy51cy9zdG9yYWdlL3lvaG9oby8=', c: '2563eb', y: 'processMatrix', g: 'Experience', i: 'L2V4cGVyaWVuY2VzL2ltYWdlcy9Zb2hvaG8uaW8ucG5n' },
         ];
         function createAssetCardHtml(asset, sizeClass = 'w-full h-auto aspect-square') {
             const title = atob(asset.t);
@@ -510,10 +510,10 @@
                 clickHandler = `processMatrix('${safeTitle}')`;
             }
             const placeholderSize = '300x300';
-            const imageSrc = asset.i;
+            const imageSrc = atob(asset.i);
             const placeholderText = title.replace(/\s/g, '+');
             return `
-                <a href="?game=${encodeURIComponent(title)}" onclick="${clickHandler}; return false;" class="block bg-gray-800 rounded-xl overflow-hidden asset-card-shadow ${sizeClass} group relative" data-category="${asset.g}">
+                <a href="?experience=${encodeURIComponent(title)}" onclick="${clickHandler}; return false;" class="block bg-gray-800 rounded-xl overflow-hidden asset-card-shadow ${sizeClass} group relative" data-category="${asset.g}">
                     <img src="${imageSrc}" 
                          alt="${title}"
                          loading="lazy"
@@ -528,7 +528,7 @@
         function renderAllAssets() {
             const assetList = document.getElementById('experience-list');
             if (assetList) {
-                const allAssetsHtml = ALL_ASSETS.map(asset => createAssetCardHtml(asset)).join('');
+                const allAssetsHtml = DATA_COLLECTION.map(asset => createAssetCardHtml(asset)).join('');
                 assetList.className = 'grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 lg:gap-6 transition-opacity duration-150';
                 assetList.style.opacity = 0;
                 setTimeout(() => {
@@ -539,7 +539,7 @@
         }
         function renderRandomAssets() {
             const getRandomAssets = (count) => {
-                const assetOnlyList = ALL_ASSETS.filter(g => g.g === 'Game');
+                const assetOnlyList = DATA_COLLECTION.filter(g => g.g === 'Experience');
                 const shuffled = [...assetOnlyList].sort(() => 0.5 - Math.random());
                 return shuffled.slice(0, count);
             }
@@ -573,15 +573,15 @@
         }
         function getAssetFromUrl() {
             const params = new URLSearchParams(window.location.search);
-            const game = params.get('game');
-            return game ? decodeURIComponent(game) : null;
+            const experience = params.get('experience');
+            return experience ? decodeURIComponent(experience) : null;
         }
         function processMatrix(title) {
             if (title === 'Chat') {
                 showChatSelectionModal();
                 return;
             }
-            const asset = ALL_ASSETS.find(a => atob(a.t) === title);
+            const asset = DATA_COLLECTION.find(a => atob(a.t) === title);
             if (!asset) {
                 console.error('Asset not found for title:', title);
                 return;
@@ -611,11 +611,11 @@
 
             document.getElementById('btn-chat-default').onclick = () => {
                 modal.remove();
-                const asset = ALL_ASSETS.find(a => a.t === 'Chat');
+                const asset = DATA_COLLECTION.find(a => a.t === 'Chat');
                 // The default URL is already in the asset list, but let's be explicit just in case
                 // Default: https://padlet.com/lincolnharrison8pc/zenith-kcoo8yyruf8y416e
-                // Verify if the ALL_ASSETS has this URL or if we need to force it.
-                // Looking at ALL_ASSETS line 458: u: 'aHR0cHM6Ly9wYWRsZXQuY29tL2xpbmNvbG5oYXJyaXNvbjhwYy96ZW5pdGg=' ... wait, that's different.
+                // Verify if the DATA_COLLECTION has this URL or if we need to force it.
+                // Looking at DATA_COLLECTION line 458: u: 'aHR0cHM6Ly9wYWRsZXQuY29tL2xpbmNvbG5oYXJyaXNvbjhwYy96ZW5pdGg=' ... wait, that's different.
                 // The user requested: https://padlet.com/lincolnharrison8pc/zenith-kcoo8yyruf8y416e
                 // I will force the requested URL here to be safe and accurate to the request.
                 const defaultUrl = 'https://padlet.com/lincolnharrison8pc/zenith-kcoo8yyruf8y416e';
@@ -624,13 +624,13 @@
 
             document.getElementById('btn-chat-fandoms').onclick = () => {
                 modal.remove();
-                const asset = ALL_ASSETS.find(a => a.t === 'Chat');
+                const asset = DATA_COLLECTION.find(a => a.t === 'Chat');
                 const fandomsUrl = 'https://padlet.com/lincolnharrison8pc/zenith-fandoms-v7ylknh0umwis649';
                 processMatrixInternal({ ...asset, u: fandomsUrl });
             };
         }
         function executeVariant(title) {
-            const asset = ALL_ASSETS.find(a => atob(a.t) === title);
+            const asset = DATA_COLLECTION.find(a => atob(a.t) === title);
             if (!asset) return console.error('Asset not found for title:', title);
             const assetTitle = asset.t;
 
@@ -784,7 +784,7 @@
                 } catch (e) {
                     // This block WILL fail for cross-origin iframes.
                     // The user requested to "EXPLAIN, NOT FIX" this error, so we log it clearly.
-                    console.log("Note: Auto-mute unavailable for this experience (likely cross-origin). Use in-game settings.");
+                    console.log("Note: Auto-mute unavailable for this experience (likely cross-origin). Use in-experience settings.");
                 }
             };
 
@@ -878,9 +878,9 @@
             const secretContent = document.getElementById('secret-mode-content');
             if (secretContent) {
                 secretContent.classList.add('hidden');
-                document.getElementById('tester-catalog-grid-wrapper').classList.add('hidden');
+                document.getElementById('validator-catalog-grid-wrapper').classList.add('hidden');
                 document.getElementById('testAllExperiencesButton').textContent = 'Test All Experiences';
-                document.getElementById('game-cards-container').innerHTML = '';
+                document.getElementById('experience-cards-container').innerHTML = '';
             }
             if (renderTarget) renderTarget.innerHTML = '';
             if (renderTarget) renderTarget.className = 'hidden relative';
@@ -916,7 +916,7 @@
             const input = document.getElementById('secret-input');
             const message = document.getElementById('secret-message');
             const code = input.value.trim();
-            if (code === 'tester') {
+            if (code === 'validator') {
                 applySecretMode(true);
                 toggleSecretModal(false);
             } else {
@@ -939,8 +939,8 @@
                 homepage.classList.add('hidden');
                 assetContainer.classList.add('hidden');
                 secretContent.classList.remove('hidden');
-                headerTitle.textContent = 'Tester';
-                primaryMarker.textContent = 'Tester';
+                headerTitle.textContent = 'Validator';
+                primaryMarker.textContent = 'Validator';
                 secretToggle.innerHTML = '<i class="fas fa-lock-open"></i>';
                 secretToggle.classList.remove('hover:bg-zenith-purple/50');
                 secretToggle.classList.add('text-zenith-purple');
@@ -956,37 +956,37 @@
                 resetViewport();
             }
         }
-        function handleTesterAssetLoad(isError = false, iframeElement = null) {
-            testerLoadCount++;
-            const progressBar = document.getElementById('tester-loading-bar');
-            const statusText = document.getElementById('tester-loading-status');
+        function handleValidatorAssetLoad(isError = false, iframeElement = null) {
+            validatorLoadCount++;
+            const progressBar = document.getElementById('validator-loading-bar');
+            const statusText = document.getElementById('validator-loading-status');
 
             // Developer Logging
             if (isError && iframeElement) {
-                console.error(`DEVELOPER ERROR: Tester asset failed to load via onerror. Src: ${iframeElement.dataset.src}`);
+                console.error(`DEVELOPER ERROR: Validator asset failed to load via onerror. Src: ${iframeElement.dataset.src}`);
                 const container = iframeElement.parentElement;
-                const errorIndicator = container.querySelector('.tester-error-indicator');
+                const errorIndicator = container.querySelector('.validator-error-indicator');
                 if (errorIndicator) errorIndicator.classList.remove('hidden');
             }
 
-            const progress = (testerLoadCount / testerTotalAssets) * 100;
+            const progress = (validatorLoadCount / validatorTotalAssets) * 100;
             if (progressBar) progressBar.style.width = `${progress.toFixed(0)}%`;
-            if (statusText) statusText.textContent = `Loading Assets (${testerLoadCount} / ${testerTotalAssets})`;
+            if (statusText) statusText.textContent = `Loading Assets (${validatorLoadCount} / ${validatorTotalAssets})`;
 
-            checkTesterCompletion();
+            checkValidatorCompletion();
         }
 
-        function checkTesterCompletion(force = false) {
-            if (force || testerLoadCount >= testerTotalAssets) {
-                const banner = document.getElementById('tester-loading-banner');
-                const container = document.getElementById('game-cards-container');
-                const statusText = document.getElementById('tester-loading-status');
+        function checkValidatorCompletion(force = false) {
+            if (force || validatorLoadCount >= validatorTotalAssets) {
+                const banner = document.getElementById('validator-loading-banner');
+                const container = document.getElementById('experience-cards-container');
+                const statusText = document.getElementById('validator-loading-status');
 
                 // If forced, ensure we don't double-animate or get weird states if already done
                 if (banner && !banner.classList.contains('hidden')) {
                     banner.classList.remove('bg-indigo-900/90');
                     banner.classList.add('bg-green-700/90');
-                    if (statusText) statusText.textContent = force ? `Done (Timed Out)` : `All ${testerTotalAssets} Assets Loaded!`;
+                    if (statusText) statusText.textContent = force ? `Done (Timed Out)` : `All ${validatorTotalAssets} Assets Loaded!`;
 
                     setTimeout(() => {
                         banner.classList.add('opacity-0');
@@ -1001,7 +1001,7 @@
                 }
             }
         }
-        function createTesterIframe(title, url, category, color) {
+        function createValidatorIframe(title, url, category, color) {
             const safeTitle = title.replace(/'/g, "\\'");
             const safeUrl = url.replace(/'/g, "\\'");
             return `
@@ -1012,52 +1012,52 @@
                     </div>
                     <iframe 
                         data-src="${url}"
-                        class="tester-iframe absolute inset-0 w-full h-full border-none transition-opacity duration-500"
-                        onload="handleTesterAssetLoad(false, this)"
-                        onerror="handleTesterAssetLoad(true, this)"
+                        class="validator-iframe absolute inset-0 w-full h-full border-none transition-opacity duration-500"
+                        onload="handleValidatorAssetLoad(false, this)"
+                        onerror="handleValidatorAssetLoad(true, this)"
                         loading="lazy"
                         loading="lazy"
                         sandbox="allow-scripts allow-same-origin allow-forms"
                         allowfullscreen="true">
                     </iframe>
-                    <button onclick="launchTesterAsset('${safeUrl}', '${safeTitle}', '${color}')" 
+                    <button onclick="launchValidatorAsset('${safeUrl}', '${safeTitle}', '${color}')" 
                             class="absolute bottom-2 right-2 p-1.5 bg-black/50 text-white rounded-full opacity-0 group-hover:opacity-100 transition duration-300 z-30 hover:bg-zenith-purple/70">
                         <i class="fas fa-expand text-sm"></i>
                     </button>
                     <!-- Error Indicator (Hidden by default) -->
-                    <div class="absolute inset-0 flex items-center justify-center bg-red-900/80 hidden pointer-events-none z-10 tester-error-indicator">
+                    <div class="absolute inset-0 flex items-center justify-center bg-red-900/80 hidden pointer-events-none z-10 validator-error-indicator">
                         <span class="text-white font-bold text-xs">Load Failed</span>
                     </div>
                 </div>
             `;
         }
-        function generateTesterCatalog() {
-            testerAssetList = [];
+        function generateValidatorCatalog() {
+            validatorAssetList = [];
             const desktopUrl = atob("aHR0cHM6Ly9odG1sLWNsYXNzaWMuaXRjaC56b25lL2h0bWwvMjg3NjM1OS0xMzgzODg2L2luZGV4Lmh0bWw=");
             const mobileUrl = atob("aHR0cHM6Ly9odG1sLWNsYXNzaWMuaXRjaC56b25lL2h0bWwvNDQ1OTQ5OS9sdWNreWRvZzcuZ2l0aHViLmlvLW1hc3Rlci9mdW5raW5tb2JpbGUvZ2FtZS9pbmRleC5odG1s");
-            for (const asset of ALL_ASSETS) {
+            for (const asset of DATA_COLLECTION) {
                 const decodedTitle = atob(asset.t);
                 if (asset.y === 'executeVariant') {
                     const fnfTitle = decodedTitle;
-                    testerAssetList.push({ t: `${fnfTitle} (Desktop)`, u: desktopUrl, g: asset.g, c: asset.c, i: asset.i });
-                    testerAssetList.push({ t: `${fnfTitle} (Mobile)`, u: mobileUrl, g: asset.g, c: asset.c, i: asset.i });
+                    validatorAssetList.push({ t: `${fnfTitle} (Desktop)`, u: desktopUrl, g: asset.g, c: asset.c, i: asset.i });
+                    validatorAssetList.push({ t: `${fnfTitle} (Mobile)`, u: mobileUrl, g: asset.g, c: asset.c, i: asset.i });
                 } else {
-                    testerAssetList.push({ ...asset, t: decodedTitle });
+                    validatorAssetList.push({ ...asset, t: decodedTitle });
                 }
             }
-            testerTotalAssets = testerAssetList.length;
-            const cardsHtml = testerAssetList.map(asset => {
-                return createTesterIframe(asset.t, asset.u, asset.g, asset.c);
+            validatorTotalAssets = validatorAssetList.length;
+            const cardsHtml = validatorAssetList.map(asset => {
+                return createValidatorIframe(asset.t, asset.u, asset.g, asset.c);
             }).join('');
             return cardsHtml;
         }
-        function loadTesterIframesStaggered(startIndex) {
-            const iframes = document.querySelectorAll('#game-cards-container .tester-iframe');
+        function loadValidatorIframesStaggered(startIndex) {
+            const iframes = document.querySelectorAll('#experience-cards-container .validator-iframe');
             const BATCH_SIZE = 3; // Load 3 at a time to keep UI responsive
 
             for (let i = startIndex; i < Math.min(startIndex + BATCH_SIZE, iframes.length); i++) {
                 const iframe = iframes[i];
-                const asset = testerAssetList[i];
+                const asset = validatorAssetList[i];
                 if (asset && iframe && !iframe.src) {
                     iframe.src = atob(iframe.getAttribute('data-src'));
                 }
@@ -1065,36 +1065,36 @@
 
             if (startIndex + BATCH_SIZE < iframes.length) {
                 // Schedule next batch
-                setTimeout(() => loadTesterIframesStaggered(startIndex + BATCH_SIZE), 200);
+                setTimeout(() => loadValidatorIframesStaggered(startIndex + BATCH_SIZE), 200);
             }
         }
-        function toggleTesterCatalog() {
-            const gridWrapper = document.getElementById('tester-catalog-grid-wrapper');
+        function toggleValidatorCatalog() {
+            const gridWrapper = document.getElementById('validator-catalog-grid-wrapper');
             const button = document.getElementById('testAllExperiencesButton');
-            const container = document.getElementById('game-cards-container');
-            const banner = document.getElementById('tester-loading-banner');
+            const container = document.getElementById('experience-cards-container');
+            const banner = document.getElementById('validator-loading-banner');
             if (gridWrapper.classList.contains('hidden')) {
-                testerLoadCount = 0;
-                container.innerHTML = generateTesterCatalog();
+                validatorLoadCount = 0;
+                container.innerHTML = generateValidatorCatalog();
                 // Hide container initially
                 container.classList.add('opacity-0', 'invisible');
                 banner.classList.remove('hidden', 'opacity-0', 'bg-green-700/90');
                 banner.classList.add('bg-indigo-900/90');
-                document.getElementById('tester-loading-bar').style.width = '0%';
-                document.getElementById('tester-loading-status').textContent = `Loading Assets (0 / ${testerTotalAssets})`;
+                document.getElementById('validator-loading-bar').style.width = '0%';
+                document.getElementById('validator-loading-status').textContent = `Loading Assets (0 / ${validatorTotalAssets})`;
                 gridWrapper.classList.remove('hidden');
                 button.textContent = 'Hide Live Grid';
 
                 // Start loading
                 // Start loading in staggered chunks to prevent UI freeze
-                setTimeout(() => loadTesterIframesStaggered(0), 100);
+                setTimeout(() => loadValidatorIframesStaggered(0), 100);
 
                 // SAFETY TIMEOUT: If not all assets report loaded in 30 seconds, force show the grid.
                 // This prevents the "stuck loading" issue if an iframe 404s/hangs without firing events.
                 setTimeout(() => {
-                    if (testerLoadCount < testerTotalAssets) {
+                    if (validatorLoadCount < validatorTotalAssets) {
                         console.warn("DEVELOPER WARNING: Test Grid load timed out. Forcing display.");
-                        checkTesterCompletion(true);
+                        checkValidatorCompletion(true);
                     }
                 }, 30000);
             } else {
@@ -1104,7 +1104,7 @@
                 banner.classList.add('hidden');
             }
         }
-        function launchTesterAsset(url, title, color) {
+        function launchValidatorAsset(url, title, color) {
             const secretContent = document.getElementById('secret-mode-content');
             if (secretContent) {
                 secretContent.classList.add('hidden');
@@ -1186,7 +1186,7 @@
                     skipButton.className = 'mt-6 px-6 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg font-semibold transition-colors duration-200 shadow-lg border border-gray-500';
                     skipButton.innerHTML = '<i class="fas fa-forward mr-2"></i>Skip Loading';
                     skipButton.onclick = () => {
-                        console.log("User skipped loading (Tester).");
+                        console.log("User skipped loading (Validator).");
                         loadingOverlay.style.opacity = '0';
                         iframe.classList.remove('opacity-0');
                         setTimeout(() => loadingOverlay.remove(), 500);
@@ -1198,7 +1198,7 @@
         window.addEventListener('popstate', (event) => {
             const title = getAssetFromUrl();
             if (title) {
-                const asset = ALL_ASSETS.find(a => atob(a.t) === title);
+                const asset = DATA_COLLECTION.find(a => atob(a.t) === title);
                 if (asset) {
                     if (asset.y === 'executeVariant') {
                         executeVariant(title);
@@ -1225,7 +1225,7 @@
 
             const titleFromUrl = getAssetFromUrl();
             if (titleFromUrl) {
-                const asset = ALL_ASSETS.find(a => atob(a.t) === titleFromUrl);
+                const asset = DATA_COLLECTION.find(a => atob(a.t) === titleFromUrl);
                 if (asset) {
                     if (asset.y === 'executeVariant') {
                         executeVariant(titleFromUrl);
@@ -1309,11 +1309,11 @@
     </header>
     <main class="pt-24 md:pt-32 pb-8 px-4 md:px-8 max-w-7xl mx-auto">
         <div id="secret-mode-content" class="hidden text-center py-10 rounded-xl">
-            <h2 class="text-4xl font-extrabold text-blue-400 mb-6">Tester Mode</h2>
+            <h2 class="text-4xl font-extrabold text-blue-400 mb-6">Validator Mode</h2>
             <p class="text-lg text-gray-400 mb-8">Click below to load the live asset testing grid.</p>
             <button id="testAllExperiencesButton"
                 class="px-8 py-3 text-lg font-semibold text-white rounded-xl shadow-lg bg-zenith-purple hover:bg-zenith-blue transition duration-200"
-                onclick="toggleTesterCatalog();">
+                onclick="toggleValidatorCatalog();">
                 Test All Experiences
             </button>
             <button id="testBadInternetButton"
@@ -1331,23 +1331,23 @@
                 onclick="showLegalDisclaimer();">
                 <i class="fas fa-gavel mr-2"></i>Test Legal Disclaimer
             </button>
-            <div id="tester-catalog-grid-wrapper" class="hidden mt-12 w-full mx-auto relative">
+            <div id="validator-catalog-grid-wrapper" class="hidden mt-12 w-full mx-auto relative">
                 <h3 class="text-2xl font-bold text-gray-200 mb-6 border-b border-gray-700 pb-3">Live Test Grid</h3>
-                <div id="tester-loading-banner"
+                <div id="validator-loading-banner"
                     class="fixed inset-x-0 mx-auto w-full max-w-7xl top-24 md:top-32 p-4 bg-indigo-900/90 border border-indigo-700 rounded-xl shadow-2xl transition-opacity duration-300 z-45 hidden">
                     <div class="flex items-center space-x-3">
                         <i class="fas fa-sync-alt w-5 h-5 text-indigo-400 animate-spin"></i>
-                        <span id="tester-loading-status" class="text-lg font-semibold text-white">
+                        <span id="validator-loading-status" class="text-lg font-semibold text-white">
                             Initializing...
                         </span>
                     </div>
                     <div class="mt-3 w-full bg-indigo-200 rounded-full h-2.5">
-                        <div id="tester-loading-bar"
+                        <div id="validator-loading-bar"
                             class="bg-indigo-400 h-2.5 rounded-full transition-all duration-500" style="width: 0%">
                         </div>
                     </div>
                 </div>
-                <div id="game-cards-container" class="flex flex-wrap gap-4">
+                <div id="experience-cards-container" class="flex flex-wrap gap-4">
                 </div>
             </div>
         </div>
