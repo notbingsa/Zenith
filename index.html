@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Project Workspace</title>
+    <title>Zenith</title>
     <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@100;200;300;400;500;600;700;800;900&display=swap"
         rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
@@ -247,7 +247,7 @@
 
         async function checkInternetSpeed() {
             // Check if warning was already shown this session
-            if (sessionStorage.getItem('Project Workspace_speed_warning_shown')) {
+            if (sessionStorage.getItem('zen_speed_warn')) {
                 return;
             }
 
@@ -255,15 +255,15 @@
 
             if (speedMbps !== null && speedMbps < 5) {
                 showSlowInternetWarning(speedMbps);
-                sessionStorage.setItem('Project Workspace_speed_warning_shown', 'true');
+                sessionStorage.setItem('zen_speed_warn', 'true');
             }
         }
 
         function testBadInternet() {
 
-            sessionStorage.removeItem('Project Workspace_speed_warning_shown');
+            sessionStorage.removeItem('zen_speed_warn');
             showSlowInternetWarning(2.5);
-            sessionStorage.setItem('Project Workspace_speed_warning_shown', 'true');
+            sessionStorage.setItem('zen_speed_warn', 'true');
         }
 
         function showLegalDisclaimer() {
@@ -276,7 +276,7 @@
             html += '<div class="flex justify-center mb-6"><i class="fas fa-gavel text-red-500 text-5xl"></i></div>';
             html += '<h2 class="text-3xl font-bold text-white mb-6 tracking-tight">Notice</h2>';
             html += '<p class="text-gray-300 text-lg mb-8 leading-relaxed">' + content + '</p>';
-            html += '<button onclick="document.getElementById(''legal-disclaimer'').remove()" class="px-10 py-4 rounded-xl bg-red-600 text-white font-bold text-lg hover:bg-red-500 transition duration-200 shadow-lg hover:shadow-red-600/20 active:scale-95">Accept</button>';
+            html += '<button onclick="document.getElementById(\'legal-disclaimer\').remove()" class="px-10 py-4 rounded-xl bg-red-600 text-white font-bold text-lg hover:bg-red-500 transition duration-200 shadow-lg hover:shadow-red-600/20 active:scale-95">Accept</button>';
             html += '</div>';
             disclaimerModal.innerHTML = html;
             document.body.appendChild(disclaimerModal);
@@ -883,7 +883,7 @@
                 homepage.classList.remove('hidden');
                 secretContent.classList.add('hidden');
                 if (labelRegistry) labelRegistry.textContent = 'Homepage';
-                if (primaryMarker) primaryMarker.textContent = 'Project Workspace';
+                if (primaryMarker) primaryMarker.textContent = _resFetch('[fojui');
                 secretToggle.innerHTML = '<i class="fas fa-lock"></i>';
                 secretToggle.classList.add('hover:bg-mod-purple/50');
                 secretToggle.classList.remove('text-mod-purple');
@@ -1155,7 +1155,7 @@
             mainPanel = document.getElementById('homepage-section');
             renderTarget = document.getElementById('asset-container');
             labelRegistry = document.getElementById('header-title');
-            primaryMarker = document.getElementById('main-Project Workspace-title');
+            primaryMarker = document.getElementById('main-zenith-title');
 
             const titleFromUrl = getAssetFromUrl();
             if (titleFromUrl) {
@@ -1182,9 +1182,9 @@
                 if (searchInput) {
                     searchInput.placeholder = '';
                 }
-                document.title = 'Project Workspace';
+                document.title = 'Zenith';
                 if (labelRegistry) labelRegistry.textContent = 'Homepage';
-                if (primaryMarker) primaryMarker.textContent = 'Project Workspace';
+                if (primaryMarker) primaryMarker.textContent = _resFetch('[fojui');
 
                 removeInfoSplash();
                 renderRandomAssets();
@@ -1205,8 +1205,8 @@
 <body class="font-sans bg-gray-900 text-gray-100">
     <div id="website-splash-loader"
         class="fixed inset-0 z-[10000] bg-mod-dark flex flex-col items-center justify-center transition-opacity duration-300">
-        <img src="/ui/logo.png" alt="Project Workspace Logo" class="w-16 h-16 mb-4 animate-pulse object-contain" />
-        <h2 id="splash-title" class="text-3xl font-extrabold mod-text-highlight tracking-tighter">Project Workspace</h2>
+        <img src="/ui/logo.png" alt="Zenith Logo" class="w-16 h-16 mb-4 animate-pulse object-contain" />
+        <h2 id="splash-title" class="text-3xl font-extrabold mod-text-highlight tracking-tighter">Zenith</h2>
         <p class="text-sm text-gray-400 mt-2">Loading interface...</p>
     </div>
     <div id="secret-modal" class="fixed inset-0 bg-black/80 hidden items-center justify-center z-[1000] p-4"
@@ -1232,7 +1232,7 @@
     <header
         class="py-3 px-4 md:px-8 flex items-center justify-between fixed top-0 left-0 right-0 z-50 bg-black/30 backdrop-blur-sm">
         <a href="." class="flex items-center space-x-3" onclick="applySecretMode(false); return false;">
-            <img src="/ui/logo.png" alt="Project Workspace Logo" class="w-10 h-10 object-contain" />
+            <img src="/ui/logo.png" alt="Zenith Logo" class="w-10 h-10 object-contain" />
             <h1 id="header-title" class="text-xl md:text-3xl font-bold"></h1>
         </a>
         <button id="secret-mode-toggle"
@@ -1243,7 +1243,7 @@
     </header>
     <main class="pt-24 md:pt-32 pb-8 px-4 md:px-8 max-w-7xl mx-auto">
         <div id="secret-mode-content" class="hidden text-center py-10 rounded-xl">
-            <h2 class="text-4xl font-extrabold text-blue-400 mb-6">Audit Mode</h2>
+            <h2 class="text-4xl font-extrabold text-blue-400 mb-6">Validator Mode</h2>
             <p class="text-lg text-gray-400 mb-8">Click below to load the live asset testing grid.</p>
             <button id="ctrl-load-all"
                 class="px-8 py-3 text-lg font-semibold text-white rounded-xl shadow-lg bg-mod-purple hover:bg-mod-blue transition duration-200"
@@ -1287,7 +1287,7 @@
         </div>
         <div id="homepage-section">
             <section class="text-center py-16">
-                <h2 id="main-Project Workspace-title"
+                <h2 id="main-zenith-title"
                     class="text-6xl md:text-8xl font-extrabold mod-text-highlight tracking-tighter mb-4"></h2>
 
                 <div class="w-full h-0.5 bg-gradient-to-r from-transparent via-mod-purple/50 to-transparent mb-0">
