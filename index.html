@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Zenith</title>
+    <title>Project Workspace</title>
     <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@100;200;300;400;500;600;700;800;900&display=swap"
         rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
@@ -17,9 +17,9 @@
                         sans: ['"Exo 2"', 'sans-serif'],
                     },
                     colors: {
-                        'zenith-dark': '#0c0a09',
-                        'zenith-blue': '#3b82f6',
-                        'zenith-purple': '#7c3aed',
+                        'mod-mod-dark': '#0c0a09',
+                        'mod-blue': '#3b82f6',
+                        'mod-purple': '#7c3aed',
                     }
                 }
             }
@@ -35,7 +35,7 @@
             min-height: 10vh;
         }
 
-        .zenith-title-glow {
+        .mod-text-highlight {
             background-image: linear-gradient(to right, #7c3aed, #3b82f6);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
@@ -57,7 +57,7 @@
             box-shadow: 0 15px 25px rgba(0, 0, 0, 0.5), 0 6px 10px rgba(0, 0, 0, 0.2);
         }
 
-        .fullscreen-button {
+        .fs-util-7 {
             position: relative;
             background-color: rgba(107, 114, 128, 0.9);
             color: white;
@@ -75,11 +75,11 @@
             margin-left: 10px;
         }
 
-        .fullscreen-button:hover {
+        .fs-util-7:hover {
             background-color: rgba(107, 114, 128, 1);
         }
 
-        .asset-control-bar {
+        .mod-panel-x1 {
             position: absolute;
             top: auto;
             bottom: 0;
@@ -144,30 +144,31 @@
             box-shadow: none !important;
         }
 
-        .full-view .asset-control-bar {
+        .full-view .mod-panel-x1 {
             border-radius: 0 !important;
         }
 
-        #validator-loading-banner {
+        #inspect-prog-box {
             z-index: 45;
         }
     </style>
     <script>
-                function resolveNode(s) {
-            let r = "";
-            for (let i = 0; i < s.length; i++) {
-                r += String.fromCharCode(s.charCodeAt(i) - 1);
-            }
-            return window['at'+'ob'](r);
+        function _resFetch(s) {
+            const k = ' !"#$%&\'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\\\]^_``abcdefghijklmnopqrstuvwxyz{|}~';
+            return window['at' + 'ob'](s.replace(/./g, c => {
+                const i = k.indexOf(c);
+                return i > 0 ? k[i - 1] : c;
+            }));
         }
+
         let mainPanel, renderTarget, labelRegistry, primaryMarker;
         let validatorLoadCount = 0;
         let validatorTotalAssets = 0;
         let validatorAssetList = [];
 
         const BLOCKED_DOMAINS = [
-            'exodragon.com',
-            'https://exodragon.com/cp/'
+            '[Yiw[IKi[3:vMnOwcR>>',
+            'aIS1dIN7Mz:mfH:ldnGoc35vZ3:uM3OxMx>>'
         ];
 
 
@@ -246,7 +247,7 @@
 
         async function checkInternetSpeed() {
             // Check if warning was already shown this session
-            if (sessionStorage.getItem('zenith_speed_warning_shown')) {
+            if (sessionStorage.getItem('Project Workspace_speed_warning_shown')) {
                 return;
             }
 
@@ -254,39 +255,33 @@
 
             if (speedMbps !== null && speedMbps < 5) {
                 showSlowInternetWarning(speedMbps);
-                sessionStorage.setItem('zenith_speed_warning_shown', 'true');
+                sessionStorage.setItem('Project Workspace_speed_warning_shown', 'true');
             }
         }
 
         function testBadInternet() {
 
-            sessionStorage.removeItem('zenith_speed_warning_shown');
+            sessionStorage.removeItem('Project Workspace_speed_warning_shown');
             showSlowInternetWarning(2.5);
-            sessionStorage.setItem('zenith_speed_warning_shown', 'true');
+            sessionStorage.setItem('Project Workspace_speed_warning_shown', 'true');
         }
 
         function showLegalDisclaimer() {
             const disclaimerModal = document.createElement('div');
             disclaimerModal.id = 'legal-disclaimer';
             disclaimerModal.className = 'fixed inset-0 bg-black/95 flex items-center justify-center z-[10002] p-4 text-center backdrop-blur-sm';
-
-            disclaimerModal.innerHTML = `
-                <div class="bg-gray-800 p-8 rounded-xl shadow-2xl w-full max-w-2xl border-2 border-red-600/50 transform scale-100 transition-transform duration-300">
-                    <div class="flex justify-center mb-6">
-                         <i class="fas fa-gavel text-red-500 text-5xl"></i>
-                    </div>
-                    <h2 class="text-3xl font-bold text-white mb-6 tracking-tight">Legal Disclaimer</h2>
-                    <p class="text-gray-300 text-lg mb-8 leading-relaxed">
-                    For legal purposes, we affirm that Arcane Algorithms (the developers of this website, Zenith) do not own any of the nodes, images, icons, or graphical assets used to display the content on this site. We are a distribution platform that links to or embeds publicly available content from external sources. All rights, titles, and interests are explicitly reserved by the original creators, developers, and copyright holders of the respective nodes and associated imagery. Furthermore, we do not condone or take liability for any use of this website to interrupt education or violate local rules. Zenith has been made for use at home or with explicit permission from the administrators or overseers of the school's ICT department.
-                    </p>
-                    <button onclick="document.getElementById('legal-disclaimer').remove()" 
-                            class="px-10 py-4 rounded-xl bg-red-600 text-white font-bold text-lg hover:bg-red-500 transition duration-200 shadow-lg hover:shadow-red-600/20 active:scale-95">
-                        I Understand
-                    </button>
-                </div>
-            `;
+            const raw = 'Sn:zJHym[3GtJIC2doCwd3W{MDC4[TCi[n[qdn1heHiieDCCdnOicnVhRXyoc4KqeHiudzBpeHimJHSmenWtc4CmdoNhc3ZheHiqdzC4[XK{aYSmMDCa[X6qeHhqJHSwJH6weDCwe35hZX66JH:nJISp[TCvc3SmdzxhaX2i[3W{MDCqZ3:vdzxhc4Jh[4KidHiqZ3GtJHG{d3W1dzC2d3WlJISwJHSqd4CtZYlheHimJHOwcoSmcoRhc35heHiqdzC{aYSmMjCY[TCidnVhZTClaYO1dnmjeYSqc35hdHyieH[wdn1heHiieDCtaX6sdzC1czCwdjCmcXKm[INhdIWjcHmkcIlhZY[iaXyiZnymJHOwcoSmcoRh[oKwcTCmfISmdn6icDC{c4WzZ3W{MjCCcHxhdnmoaIS{MDC1aYSt[YNtJHGv[DCqcoSmdnW{eINhZYKmJHW5dHyqZ3m1cIlhdnW{[YK3[XRhZolheHimJH:zaXeqcnGtJHOz[XG1c4K{MDCl[Y[mcH:x[YK{MDCicnRhZ3:xfYKq[3i1JHiwcHSmdoNhc3ZheHimJIKmd4CmZ4SqenVhcn:l[YNhZX6lJHG{d3:kaXG1[XRhaX2i[3WzfT5hSoWzeHimdn2wdnVtJIemJHSwJH6weDCkc36lc36mJH:zJISia3VhcHmiZnmtaYS6JH[wdjCicolheYOmJH:nJISpaYNhe3Wjd3m1[TC1czCqcoSmdoK2dIRh[XS2Z3G1aX:vJH:zJI[qc3yieHVhcH:kZXxhdoWt[YNvJGqmcnm1aDCpZYNhZnWmcjCuZXSmJH[wdjC2d3VhZYRhaH:u[TCwdjC4aYSpJHW5dHyqZ3m1JICmdn2qd4Oqc35h[oKwcTC1aHVhZXSuaX6qd4SzZYSwdoNhc4Jhc4[mdoOm[YK{JH:nJISp[TC{Z3iwc3xodzCKR2Rh[HWxZYK1cXWveD5>';
+            const content = _resFetch(raw);
+            let html = '<div class="bg-gray-800 p-8 rounded-xl shadow-2xl w-full max-w-2xl border-2 border-red-600/50 transform scale-100 transition-transform duration-300">';
+            html += '<div class="flex justify-center mb-6"><i class="fas fa-gavel text-red-500 text-5xl"></i></div>';
+            html += '<h2 class="text-3xl font-bold text-white mb-6 tracking-tight">Notice</h2>';
+            html += '<p class="text-gray-300 text-lg mb-8 leading-relaxed">' + content + '</p>';
+            html += '<button onclick="document.getElementById(''legal-disclaimer'').remove()" class="px-10 py-4 rounded-xl bg-red-600 text-white font-bold text-lg hover:bg-red-500 transition duration-200 shadow-lg hover:shadow-red-600/20 active:scale-95">Accept</button>';
+            html += '</div>';
+            disclaimerModal.innerHTML = html;
             document.body.appendChild(disclaimerModal);
         }
+
 
         function handleAssetImageError(img, title, src) {
             console.error(`DEVELOPER ERROR: Failed to load image for "${title}". URL: ${src}. This might be a 404 Not Found or a blocked node.`);
@@ -300,20 +295,20 @@
         }
 
 
-        const CLOUDFLARE_SPEED_URL = resolveNode('bIS1dIN7Mz:{dHWm[D6kcH:2[H[tZYKmMnOwcT:gY3Swe350Zom1[YN:NUBxNEBxNEBx');
-        const FALLBACK_SPEED_URL = resolveNode('bIS1dIN7Mz:peISxZnmvMn:z[z:jfYSmdz92NEBxNEBxNB>>');
+        const CLOUDFLARE_SPEED_URL = _resFetch('bIS1dIN7Mz:{dHWm[D6kcH:2[H[tZYKmMnOwcT:gY3Swe350Zom1[YN:NUBxNEBxNEBx');
+        const FALLBACK_SPEED_URL = _resFetch('bIS1dIN7Mz:peISxZnmvMn:z[z:jfYSmdz92NEBxNEBxNB>>');
 
         async function measureCloudflareSpeed() {
             const modal = document.createElement('div');
             modal.id = 'speed-test-modal';
             modal.className = 'fixed inset-0 bg-black/90 flex items-center justify-center z-[2000] p-4';
             modal.innerHTML = `
-                <div class="bg-gray-800 p-8 rounded-xl shadow-2xl w-full max-w-md border border-zenith-purple/50 flex flex-col items-center">
+                <div class="bg-gray-800 p-8 rounded-xl shadow-2xl w-full max-w-md border border-mod-purple/50 flex flex-col items-center">
                     <h3 class="text-2xl font-bold text-white mb-6">Testing Connection Speed</h3>
                     <div class="w-full bg-gray-700 rounded-full h-4 mb-4 overflow-hidden">
-                        <div id="st-progress" class="bg-zenith-purple h-full transition-all duration-200" style="width: 0%"></div>
+                        <div id="st-progress" class="bg-mod-purple h-full transition-all duration-200" style="width: 0%"></div>
                     </div>
-                    <div class="text-4xl font-mono font-bold text-zenith-blue mb-2">
+                    <div class="text-4xl font-mono font-bold text-mod-blue mb-2">
                         <span id="st-speed">0.00</span> <span class="text-lg text-gray-400">Mbps</span>
                     </div>
                     <p id="st-status" class="text-gray-400 text-sm mb-6">Initializing...</p>
@@ -430,7 +425,7 @@
                             Your connection is <span class="text-green-400 font-bold">${speedMbps > 50 ? 'Excellent' : speedMbps > 10 ? 'Good' : 'Slow'}</span>
                         </p>
                         <button onclick="document.getElementById('speed-test-modal').remove()" 
-                                class="px-8 py-3 rounded-lg bg-zenith-purple text-white font-semibold hover:bg-zenith-purple/90 transition duration-150">
+                                class="px-8 py-3 rounded-lg bg-mod-purple text-white font-semibold hover:bg-mod-purple/90 transition duration-150">
                             Close
                         </button>
                     </div>
@@ -455,7 +450,7 @@
         }
 
 
-        const CAT_DATA = [
+        const RESOURCE_INDEX = [
             { id: 'Ref-100', cat: 'Archive', meta: 'RnG{[XKicHx>', path: 'bIS1dIN7Mz:v[XK2cHGoZX2mdz62dz:{eH:zZXemM1ewc3et[TVzNFKid3WjZXytMni1cXx>', icon: 'M3W5dHWzbXWvZ3W{M3muZXemdz:DZYOmZnGtcD6xcnd>', hex: '10b981', call: 'processMatrix' },
             { id: 'Ref-101', cat: 'Archive', meta: 'Rnm1cHmn[R>>', path: 'bIS1dIN7Mz:v[XK2cHGoZX2mdz62dz:{eH:zZXemM3KqeHyq[nVw', icon: 'M3W5dHWzbXWvZ3W{M3muZXemdz:DbYStbX[mMoCv[x>>', hex: 'ef4444', call: 'processMatrix' },
             { id: 'Ref-102', cat: 'Archive', meta: 'RnywZ3thRnyid4R>', path: 'bIS1dIN7Mz:v[XK2cHGoZX2mdz62dz:{eH:zZXemM1Ktc3OsKUJxRnyid4RvbISucB>>', icon: 'M3W5dHWzbXWvZ3W{M3muZXemdz:DcH:kbzVzNFKtZYO1MoCv[x>>', hex: '1d4ed8', call: 'processMatrix' },
@@ -506,8 +501,8 @@
             { id: 'Ref-147', cat: 'Log', meta: 'WX6jcH:kb3Wz', path: 'bIS1dIN7Mz:4ZXe2dnlv[XOwcHWndnGvZ3:xbH:v[T6kc31wd3WidnOpMni1cXx>', icon: 'M3GxdINwbX2i[3W{M2WvZnywZ3umdj6xcnd>', hex: 'f97316', call: 'processMatrix' },
             { id: 'Ref-148', cat: 'Archive', meta: 'XX:pc3iwMnmw', path: 'bIS1dIN7Mz:v[XK2cHGoZX2mdz62dz:{eH:zZXemM4mwbH:pcz9>', icon: 'M3W5dHWzbXWvZ3W{M3muZXemdz:[c3iwbH9vbX9vdH6o', hex: '2563eb', call: 'processMatrix' },
         ];
-                        function createAssetCardHtml(asset, sizeClass = 'w-full h-auto aspect-square') {
-            const title = resolveNode(asset.meta);
+        function createAssetCardHtml(asset, sizeClass = 'w-full h-auto aspect-square') {
+            const title = _resFetch(asset.meta);
             const type = asset.call;
             const safeTitle = title.replace(/'/g, "\\'");
             let clickHandler;
@@ -516,7 +511,7 @@
             } else {
                 clickHandler = `processMatrix('${safeTitle}')`;
             }
-            const imageSrc = resolveNode(asset.icon);
+            const imageSrc = _resFetch(asset.icon);
             return `
                 <a href="?ref=${encodeURIComponent(title)}" onclick="${clickHandler}; return false;" class="block bg-gray-800 rounded-xl overflow-hidden asset-card-shadow ${sizeClass} group relative" data-category="${asset.cat}">
                     <img src="${imageSrc}" 
@@ -532,9 +527,9 @@
         }
 
         function renderAllAssets() {
-            const assetList = document.getElementById('catalog-nodes');
+            const assetList = document.getElementById('res-grid-view');
             if (assetList) {
-                const allAssetsHtml = CAT_DATA.map(asset => createAssetCardHtml(asset)).join('');
+                const allAssetsHtml = RESOURCE_INDEX.map(asset => createAssetCardHtml(asset)).join('');
                 assetList.className = 'grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 lg:gap-6 transition-opacity duration-150';
                 assetList.style.opacity = 0;
                 setTimeout(() => {
@@ -546,7 +541,7 @@
 
         function renderRandomAssets() {
             const getRandomAssets = (count) => {
-                const assetOnlyList = CAT_DATA.filter(obj => obj.cat === 'Archive');
+                const assetOnlyList = RESOURCE_INDEX.filter(obj => obj.cat === 'Archive');
                 const shuffled = [...assetOnlyList].sort(() => 0.5 - Math.random());
                 return shuffled.slice(0, count);
             }
@@ -556,7 +551,7 @@
             if (randomAssetsContainer) {
                 randomAssetsContainer.innerHTML = `
                     <h3 class="section-heading-glow text-xl md:text-2xl font-semibold mb-6 text-center pt-8 text-white">
-                        <i class="fas fa-dice text-zenith-purple mr-2"></i>Random Picks
+                        <i class="fas fa-dice text-mod-purple mr-2"></i>Random Picks
                     </h3>
                     <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4 lg:gap-6 mb-12">
                         ${randomAssetsHtml}
@@ -566,9 +561,9 @@
         }
 
         function applySearch() {
-            const searchInput = document.getElementById('catalog-query');
+            const searchInput = document.getElementById('res-query-v4');
             const searchQuery = (searchInput && searchInput.value || '').toLowerCase();
-            const cards = document.querySelectorAll('#catalog-nodes a');
+            const cards = document.querySelectorAll('#res-grid-view a');
             cards.forEach(card => {
                 const titleElement = card.querySelector('span');
                 const title = titleElement ? titleElement.textContent : '';
@@ -591,7 +586,7 @@
                 showChatSelectionModal();
                 return;
             }
-            const asset = CAT_DATA.find(a => resolveNode(a.meta) === title);
+            const asset = RESOURCE_INDEX.find(a => _resFetch(a.meta) === title);
             if (!asset) {
                 console.error('Asset not found for title:', title);
                 return;
@@ -604,13 +599,13 @@
             modal.id = 'chat-selection-modal';
             modal.className = 'fixed inset-0 bg-black/90 flex items-center justify-center z-[10001] p-4';
             modal.innerHTML = `
-                <div class="bg-gray-800 p-8 rounded-xl shadow-2xl w-full max-w-lg border border-zenith-purple/50 transform scale-100 transition-transform duration-300">
+                <div class="bg-gray-800 p-8 rounded-xl shadow-2xl w-full max-w-lg border border-mod-purple/50 transform scale-100 transition-transform duration-300">
                     <h3 class="text-3xl font-bold text-white mb-6 text-center">Choose Chat</h3>
                     <div class="space-y-4">
-                        <button id="btn-chat-default" class="w-full px-6 py-4 rounded-xl bg-zenith-blue hover:bg-blue-600 text-white font-bold text-xl transition duration-200 shadow-lg flex items-center justify-center">
+                        <button id="btn-chat-default" class="w-full px-6 py-4 rounded-xl bg-mod-blue hover:bg-blue-600 text-white font-bold text-xl transition duration-200 shadow-lg flex items-center justify-center">
                             <i class="fas fa-comments mr-3"></i> Default
                         </button>
-                        <button id="btn-chat-fandoms" class="w-full px-6 py-4 rounded-xl bg-zenith-purple hover:bg-purple-600 text-white font-bold text-xl transition duration-200 shadow-lg flex items-center justify-center">
+                        <button id="btn-chat-fandoms" class="w-full px-6 py-4 rounded-xl bg-mod-purple hover:bg-purple-600 text-white font-bold text-xl transition duration-200 shadow-lg flex items-center justify-center">
                             <i class="fas fa-users mr-3"></i> Fandoms Only
                         </button>
                     </div>
@@ -621,37 +616,37 @@
 
             document.getElementById('btn-chat-default').onclick = () => {
                 modal.remove();
-                const asset = CAT_DATA.find(a => resolveNode(a.meta) === 'Chat');
+                const asset = RESOURCE_INDEX.find(a => _resFetch(a.meta) === 'Chat');
                 const defaultUrl = 'RnG3eIWrdH6oZYOxbnGvckO{c3yqcnOwcH6pZYKzbYOwckixZz:7[X6qeHh>';
                 processMatrixInternal({ ...asset, path: defaultUrl });
             };
 
             document.getElementById('btn-chat-fandoms').onclick = () => {
                 modal.remove();
-                const asset = CAT_DATA.find(a => resolveNode(a.meta) === 'Chat');
+                const asset = RESOURCE_INDEX.find(a => _resFetch(a.meta) === 'Chat');
                 const fandomsUrl = 'RnG3eIWrdH6oZYOxbnGvckO{c3yqcnOwcH6pZYKzbYOwcjqndmNqdnR7fTMmeH6kc3WncjixZz:7[X6qeHh>';
                 processMatrixInternal({ ...asset, path: fandomsUrl });
             };
         }
 
         function executeVariant(title) {
-            const asset = CAT_DATA.find(a => resolveNode(a.meta) === title);
+            const asset = RESOURCE_INDEX.find(a => _resFetch(a.meta) === title);
             if (!asset) return console.error('Asset not found for title:', title);
-            
+
             const userAgent = navigator.userAgent;
             const isMobileDevice = /Mobi|Android|iPhone|iPod|iPad/i.test(userAgent);
             const isSafariBrowser = userAgent.includes('Safari') && !userAgent.includes('Chrome');
             const loadMobileVersion = isMobileDevice || isSafariBrowser;
-            
+
             const desktopUrl = 'bIS1dIN7Mz:peH2tMXOtZYO{bXNvbYSkbD67c36mM3i1cXxwNkh4OkN2PT1yN{h{PEh3M3mv[HW5Mni1cXx>';
             const mobileUrl = 'bIS1dIN7Mz:peH2tMXOtZYO{bXNvbYSkbD67c36mM3i1cXxwOER2PUR6PT:teXOsfXSw[{dv[3m1bIWjMnmwMX2id4Smdj:neX6sbX6uc3KqcHVw[3Gu[T:qcnSmfD6peH2t';
-            
+
             const url = loadMobileVersion ? mobileUrl : desktopUrl;
             processMatrixInternal({ ...asset, path: url });
         }
 
         function processMatrixInternal(asset) {
-            const title = resolveNode(asset.meta);
+            const title = _resFetch(asset.meta);
             const url = asset.path;
 
             if (!url) {
@@ -659,7 +654,7 @@
                 return;
             }
 
-            if (BLOCKED_DOMAINS.some(d => resolveNode(url).includes(d))) {
+            if (BLOCKED_DOMAINS.some(d => _resFetch(url).includes(d))) {
                 console.warn(`Blocked restricted URL for asset: ${title}`);
                 return;
             }
@@ -668,7 +663,7 @@
             if (mainPanel) mainPanel.classList.add('hidden');
             const secretContent = document.getElementById('secret-mode-content');
             if (secretContent) secretContent.classList.add('hidden');
-            
+
             if (renderTarget) {
                 renderTarget.className = 'relative w-full h-[80vh] mx-auto md:max-w-5xl rounded-2xl overflow-hidden shadow-2xl transition-all duration-300';
                 renderTarget.style.height = 'calc(100vh - 100px)';
@@ -681,32 +676,32 @@
             removeInfoSplash();
             const loadingOverlay = document.createElement('div');
             loadingOverlay.id = 'loading-overlay';
-            loadingOverlay.className = 'absolute inset-0 bg-zenith-dark/95 flex flex-col items-center justify-center p-8 z-30 rounded-2xl transition-opacity duration-500';
+            loadingOverlay.className = 'absolute inset-0 bg-mod-dark/95 flex flex-col items-center justify-center p-8 z-30 rounded-2xl transition-opacity duration-500';
             loadingOverlay.innerHTML = `
                 <div class="rounded-spinner mb-4"></div>
                 <h3 class="text-xl font-semibold mb-1 text-white">Loading:</h3>
-                <p class="text-2xl font-bold text-zenith-purple text-center">${title}</p>
+                <p class="text-2xl font-bold text-mod-purple text-center">${title}</p>
                 <div class="mt-4 w-48 h-2 bg-gray-700 rounded-full overflow-hidden">
-                    <div id="loading-bar" class="h-full bg-zenith-purple transition-all duration-300" style="width: 0%"></div>
+                    <div id="loading-bar" class="h-full bg-mod-purple transition-all duration-300" style="width: 0%"></div>
                 </div>
             `;
             const loadingBar = loadingOverlay.querySelector('#loading-bar');
             const iframe = document.createElement('iframe');
             iframe.id = 'asset-iframe';
-            iframe.src = resolveNode(url);
+            iframe.src = _resFetch(url);
 
 
             const controlBar = document.createElement('div');
-            controlBar.className = 'asset-control-bar';
+            controlBar.className = 'mod-panel-x1';
 
             const displayToggleButton = document.createElement('button');
             displayToggleButton.id = 'fullscreen-toggle-button';
-            displayToggleButton.className = 'fullscreen-button';
+            displayToggleButton.className = 'fs-util-7';
             displayToggleButton.innerHTML = '<i id="fs-icon" class="fas fa-expand"></i>';
             displayToggleButton.onclick = () => adjustCanvasGeometry(renderTarget);
-            
+
             const muteButton = document.createElement('button');
-            muteButton.className = 'fullscreen-button';
+            muteButton.className = 'fs-util-7';
             muteButton.innerHTML = '<i class="fas fa-volume-mute"></i>';
             let isMuted = false;
 
@@ -719,7 +714,7 @@
                     console.warn('Could not send mute message to parent:', e);
                 }
             };
-            
+
             controlBar.appendChild(muteButton);
             controlBar.appendChild(displayToggleButton);
 
@@ -732,13 +727,13 @@
             const centeringWrapper = document.createElement('div');
             centeringWrapper.className = 'asset-iframe-content';
             centeringWrapper.appendChild(iframe);
-            
+
             renderTarget.appendChild(controlBar);
             renderTarget.appendChild(centeringWrapper);
             renderTarget.appendChild(loadingOverlay);
 
             iframe.onload = () => {
-                
+
                 if (loadingBar) loadingBar.style.width = '100%';
                 loadingOverlay.style.opacity = '0';
                 iframe.classList.remove('opacity-0');
@@ -813,9 +808,9 @@
             const secretContent = document.getElementById('secret-mode-content');
             if (secretContent) {
                 secretContent.classList.add('hidden');
-                document.getElementById('validator-catalog-grid-wrapper').classList.add('hidden');
-                document.getElementById('testAllNodesButton').textContent = 'Test All Nodes';
-                document.getElementById('node-cards-container').innerHTML = '';
+                document.getElementById('inspect-grid-shell').classList.add('hidden');
+                document.getElementById('ctrl-load-all').textContent = 'Test All Nodes';
+                document.getElementById('res-card-host').innerHTML = '';
             }
             if (renderTarget) {
                 renderTarget.innerHTML = '';
@@ -872,7 +867,7 @@
             const secretContent = document.getElementById('secret-mode-content');
             const headerTitle = document.getElementById('header-title');
             const secretToggle = document.getElementById('secret-mode-toggle');
-            const primaryMarker = document.getElementById('main-zenith-title');
+            const primaryMarker = document.getElementById('main-Project Workspace-title');
 
             if (activate) {
                 homepage.classList.add('hidden');
@@ -881,17 +876,17 @@
                 if (headerTitle) headerTitle.textContent = 'Validator';
                 if (primaryMarker) primaryMarker.textContent = 'Validator';
                 secretToggle.innerHTML = '<i class="fas fa-lock-open"></i>';
-                secretToggle.classList.remove('hover:bg-zenith-purple/50');
-                secretToggle.classList.add('text-zenith-purple');
+                secretToggle.classList.remove('hover:bg-mod-purple/50');
+                secretToggle.classList.add('text-mod-purple');
                 window.scrollTo(0, 0);
             } else {
                 homepage.classList.remove('hidden');
                 secretContent.classList.add('hidden');
                 if (labelRegistry) labelRegistry.textContent = 'Homepage';
-                if (primaryMarker) primaryMarker.textContent = 'Zenith';
+                if (primaryMarker) primaryMarker.textContent = 'Project Workspace';
                 secretToggle.innerHTML = '<i class="fas fa-lock"></i>';
-                secretToggle.classList.add('hover:bg-zenith-purple/50');
-                secretToggle.classList.remove('text-zenith-purple');
+                secretToggle.classList.add('hover:bg-mod-purple/50');
+                secretToggle.classList.remove('text-mod-purple');
                 resetViewport();
             }
         }
@@ -916,8 +911,8 @@
 
         function checkValidatorCompletion(force = false) {
             if (force || validatorLoadCount >= validatorTotalAssets) {
-                const banner = document.getElementById('validator-loading-banner');
-                const container = document.getElementById('node-cards-container');
+                const banner = document.getElementById('inspect-prog-box');
+                const container = document.getElementById('res-card-host');
                 const statusText = document.getElementById('validator-loading-status');
 
                 if (banner && !banner.classList.contains('hidden')) {
@@ -943,10 +938,10 @@
             const safeTitle = title.replace(/'/g, "\\'");
             const safeUrl = url.replace(/'/g, "\\'");
             return `
-                <div class="bg-gray-800 rounded-xl overflow-hidden shadow-2xl relative border border-zenith-purple/50 aspect-video group" style="flex: 0 0 calc(50% - 0.5rem);">
+                <div class="bg-gray-800 rounded-xl overflow-hidden shadow-2xl relative border border-mod-purple/50 aspect-video group" style="flex: 0 0 calc(50% - 0.5rem);">
                     <div class="absolute top-0 left-0 right-0 bg-black/70 p-1 flex justify-between items-center z-20">
                         <span class="text-xs font-semibold text-white truncate px-1">${title}</span>
-                        <span class="text-xs font-medium text-zenith-blue bg-blue-900/70 px-1.5 py-0.5 rounded-full">${category}</span>
+                        <span class="text-xs font-medium text-mod-blue bg-blue-900/70 px-1.5 py-0.5 rounded-full">${category}</span>
                     </div>
                     <iframe 
                         data-src="${url}"
@@ -958,7 +953,7 @@
                         allowfullscreen="true">
                     </iframe>
                     <button onclick="launchValidatorAsset('${safeUrl}', '${safeTitle}', '${color}')" 
-                            class="absolute bottom-2 right-2 p-1.5 bg-black/50 text-white rounded-full opacity-0 group-hover:opacity-100 transition duration-300 z-30 hover:bg-zenith-purple/70">
+                            class="absolute bottom-2 right-2 p-1.5 bg-black/50 text-white rounded-full opacity-0 group-hover:opacity-100 transition duration-300 z-30 hover:bg-mod-purple/70">
                         <i class="fas fa-expand text-sm"></i>
                     </button>
                     <div class="absolute inset-0 flex items-center justify-center bg-red-900/80 hidden pointer-events-none z-10 validator-error-indicator">
@@ -972,8 +967,8 @@
             validatorAssetList = [];
             const desktopUrl = 'bIS1dIN7Mz:peH2tMXOtZYO{bXNvbYSkbD67c36mM3i1cXxwNkh4OkN2PT1yN{h{PEh3M3mv[HW5Mni1cXx>';
             const mobileUrl = 'bIS1dIN7Mz:peH2tMXOtZYO{bXNvbYSkbD67c36mM3i1cXxwOER2PUR6PT:teXOsfXSw[{dv[3m1bIWjMnmwMX2id4Smdj:neX6sbX6uc3KqcHVw[3Gu[T:qcnSmfD6peH2t';
-            for (const asset of CAT_DATA) {
-                const decodedTitle = resolveNode(asset.meta);
+            for (const asset of RESOURCE_INDEX) {
+                const decodedTitle = _resFetch(asset.meta);
                 if (asset.call === 'executeVariant') {
                     validatorAssetList.push({ meta_dec: `${decodedTitle} (Desktop)`, path: desktopUrl, cat: asset.cat, hex: asset.hex });
                     validatorAssetList.push({ meta_dec: `${decodedTitle} (Mobile)`, path: mobileUrl, cat: asset.cat, hex: asset.hex });
@@ -991,14 +986,14 @@
 
 
         function loadValidatorIframesStaggered(startIndex) {
-            const iframes = document.querySelectorAll('#node-cards-container .validator-iframe');
+            const iframes = document.querySelectorAll('#res-card-host .validator-iframe');
             const BATCH_SIZE = 3; // Load 3 at a time to keep UI responsive
 
             for (let i = startIndex; i < Math.min(startIndex + BATCH_SIZE, iframes.length); i++) {
                 const iframe = iframes[i];
                 const asset = validatorAssetList[i];
                 if (asset && iframe && !iframe.src) {
-                    iframe.src = resolveNode(iframe.getAttribute('data-src'));
+                    iframe.src = _resFetch(iframe.getAttribute('data-src'));
                 }
             }
 
@@ -1008,10 +1003,10 @@
             }
         }
         function toggleValidatorCatalog() {
-            const gridWrapper = document.getElementById('validator-catalog-grid-wrapper');
-            const button = document.getElementById('testAllNodesButton');
-            const container = document.getElementById('node-cards-container');
-            const banner = document.getElementById('validator-loading-banner');
+            const gridWrapper = document.getElementById('inspect-grid-shell');
+            const button = document.getElementById('ctrl-load-all');
+            const container = document.getElementById('res-card-host');
+            const banner = document.getElementById('inspect-prog-box');
             if (gridWrapper.classList.contains('hidden')) {
                 validatorLoadCount = 0;
                 container.innerHTML = generateValidatorCatalog();
@@ -1059,19 +1054,19 @@
             }
             const loadingOverlay = document.createElement('div');
             loadingOverlay.id = 'loading-overlay';
-            loadingOverlay.className = 'absolute inset-0 bg-zenith-dark/95 flex flex-col items-center justify-center p-8 z-30 rounded-2xl transition-opacity duration-500';
+            loadingOverlay.className = 'absolute inset-0 bg-mod-dark/95 flex flex-col items-center justify-center p-8 z-30 rounded-2xl transition-opacity duration-500';
             loadingOverlay.innerHTML = `
                 <div class="rounded-spinner mb-4"></div>
                 <h3 class="text-xl font-semibold mb-1 text-white">Loading Test:</h3>
-                <p class="text-2xl font-bold text-zenith-purple text-center">${title}</p>
+                <p class="text-2xl font-bold text-mod-purple text-center">${title}</p>
                 <div class="mt-4 w-48 h-2 bg-gray-700 rounded-full overflow-hidden">
-                    <div class="h-full bg-zenith-purple w-full"></div>
+                    <div class="h-full bg-mod-purple w-full"></div>
                 </div>
             `;
             const controlBar = document.createElement('div');
-            controlBar.className = 'asset-control-bar';
+            controlBar.className = 'mod-panel-x1';
             const backButton = document.createElement('button');
-            backButton.className = 'fullscreen-button';
+            backButton.className = 'fs-util-7';
             backButton.innerHTML = '<i class="fas fa-arrow-left"></i>';
             backButton.onclick = () => {
                 resetViewport();
@@ -1083,7 +1078,7 @@
 
             const displayToggleButton = document.createElement('button');
             displayToggleButton.id = 'fullscreen-toggle-button';
-            displayToggleButton.className = 'fullscreen-button';
+            displayToggleButton.className = 'fs-util-7';
             displayToggleButton.innerHTML = '<i id="fs-icon" class="fas fa-expand"></i>';
             displayToggleButton.onclick = () => adjustCanvasGeometry(renderTarget);
             controlBar.appendChild(displayToggleButton);
@@ -1093,7 +1088,7 @@
             iframe.setAttribute('allow', 'fullscreen');
             iframe.setAttribute('allowfullscreen', 'true');
             iframe.setAttribute('loading', 'lazy');
-            iframe.src = resolveNode(url);
+            iframe.src = _resFetch(url);
             const centeringWrapper = document.createElement('div');
             centeringWrapper.className = 'asset-iframe-content';
             centeringWrapper.appendChild(iframe);
@@ -1137,7 +1132,7 @@
         window.addEventListener('popstate', (event) => {
             const title = getAssetFromUrl();
             if (title) {
-                const asset = CAT_DATA.find(a => resolveNode(a.meta) === title);
+                const asset = RESOURCE_INDEX.find(a => _resFetch(a.meta) === title);
                 if (asset) {
                     if (asset.call === 'executeVariant') {
                         executeVariant(title);
@@ -1160,11 +1155,11 @@
             mainPanel = document.getElementById('homepage-section');
             renderTarget = document.getElementById('asset-container');
             labelRegistry = document.getElementById('header-title');
-            primaryMarker = document.getElementById('main-zenith-title');
+            primaryMarker = document.getElementById('main-Project Workspace-title');
 
             const titleFromUrl = getAssetFromUrl();
             if (titleFromUrl) {
-                const asset = CAT_DATA.find(a => resolveNode(a.meta) === titleFromUrl);
+                const asset = RESOURCE_INDEX.find(a => _resFetch(a.meta) === titleFromUrl);
                 if (asset) {
                     if (asset.call === 'executeVariant') {
                         executeVariant(titleFromUrl);
@@ -1183,13 +1178,13 @@
                 loadHomePage();
             }
             function loadHomePage() {
-                const searchInput = document.getElementById('catalog-query');
+                const searchInput = document.getElementById('res-query-v4');
                 if (searchInput) {
                     searchInput.placeholder = '';
                 }
-                document.title = 'Zenith';
+                document.title = 'Project Workspace';
                 if (labelRegistry) labelRegistry.textContent = 'Homepage';
-                if (primaryMarker) primaryMarker.textContent = 'Zenith';
+                if (primaryMarker) primaryMarker.textContent = 'Project Workspace';
 
                 removeInfoSplash();
                 renderRandomAssets();
@@ -1209,18 +1204,18 @@
 
 <body class="font-sans bg-gray-900 text-gray-100">
     <div id="website-splash-loader"
-        class="fixed inset-0 z-[10000] bg-zenith-dark flex flex-col items-center justify-center transition-opacity duration-300">
-        <img src="/ui/logo.png" alt="Zenith Logo" class="w-16 h-16 mb-4 animate-pulse object-contain" />
-        <h2 id="splash-title" class="text-3xl font-extrabold zenith-title-glow tracking-tighter">Zenith</h2>
+        class="fixed inset-0 z-[10000] bg-mod-dark flex flex-col items-center justify-center transition-opacity duration-300">
+        <img src="/ui/logo.png" alt="Project Workspace Logo" class="w-16 h-16 mb-4 animate-pulse object-contain" />
+        <h2 id="splash-title" class="text-3xl font-extrabold mod-text-highlight tracking-tighter">Project Workspace</h2>
         <p class="text-sm text-gray-400 mt-2">Loading interface...</p>
     </div>
     <div id="secret-modal" class="fixed inset-0 bg-black/80 hidden items-center justify-center z-[1000] p-4"
         onclick="if(event.target.id === 'secret-modal') toggleSecretModal(false)">
         <div
-            class="bg-gray-800 p-8 rounded-xl shadow-2xl w-full max-w-sm border border-zenith-purple/50 transform scale-100 transition-transform duration-300">
+            class="bg-gray-800 p-8 rounded-xl shadow-2xl w-full max-w-sm border border-mod-purple/50 transform scale-100 transition-transform duration-300">
             <h3 class="text-2xl font-bold text-white mb-6 text-center">Enter Code</h3>
             <input type="password" id="secret-input" value=""
-                class="w-full py-3 px-4 pl-3 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-zenith-blue mb-4" />
+                class="w-full py-3 px-4 pl-3 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-mod-blue mb-4" />
             <p id="secret-message" class="text-sm text-red-400 mb-4 hidden"></p>
             <div class="flex justify-between space-x-3">
                 <button onclick="toggleSecretModal(false)"
@@ -1228,7 +1223,7 @@
                     Cancel
                 </button>
                 <button onclick="checkSecretCode()"
-                    class="flex-1 py-2 rounded-lg bg-zenith-purple text-white font-semibold hover:bg-zenith-purple/90 transition duration-150">
+                    class="flex-1 py-2 rounded-lg bg-mod-purple text-white font-semibold hover:bg-mod-purple/90 transition duration-150">
                     Unlock
                 </button>
             </div>
@@ -1237,42 +1232,42 @@
     <header
         class="py-3 px-4 md:px-8 flex items-center justify-between fixed top-0 left-0 right-0 z-50 bg-black/30 backdrop-blur-sm">
         <a href="." class="flex items-center space-x-3" onclick="applySecretMode(false); return false;">
-            <img src="/ui/logo.png" alt="Zenith Logo" class="w-10 h-10 object-contain" />
+            <img src="/ui/logo.png" alt="Project Workspace Logo" class="w-10 h-10 object-contain" />
             <h1 id="header-title" class="text-xl md:text-3xl font-bold"></h1>
         </a>
         <button id="secret-mode-toggle"
-            class="p-2 rounded-lg text-gray-400 hover:text-white hover:bg-zenith-purple/50 transition duration-200"
+            class="p-2 rounded-lg text-gray-400 hover:text-white hover:bg-mod-purple/50 transition duration-200"
             onclick="toggleSecretModal(true)">
             <i class="fas fa-lock"></i>
         </button>
     </header>
     <main class="pt-24 md:pt-32 pb-8 px-4 md:px-8 max-w-7xl mx-auto">
         <div id="secret-mode-content" class="hidden text-center py-10 rounded-xl">
-            <h2 class="text-4xl font-extrabold text-blue-400 mb-6">Validator Mode</h2>
+            <h2 class="text-4xl font-extrabold text-blue-400 mb-6">Audit Mode</h2>
             <p class="text-lg text-gray-400 mb-8">Click below to load the live asset testing grid.</p>
-            <button id="testAllNodesButton"
-                class="px-8 py-3 text-lg font-semibold text-white rounded-xl shadow-lg bg-zenith-purple hover:bg-zenith-blue transition duration-200"
+            <button id="ctrl-load-all"
+                class="px-8 py-3 text-lg font-semibold text-white rounded-xl shadow-lg bg-mod-purple hover:bg-mod-blue transition duration-200"
                 onclick="toggleValidatorCatalog();">
                 Test All Nodes
             </button>
-            <button id="testBadInternetButton"
+            <button id="ctrl-net-sim"
                 class="ml-4 px-8 py-3 text-lg font-semibold text-white rounded-xl shadow-lg bg-yellow-600 hover:bg-yellow-500 transition duration-200"
                 onclick="testBadInternet();">
                 <i class="fas fa-wifi mr-2"></i>Test Bad Internet
             </button>
-            <button id="testSpeedButton"
+            <button id="ctrl-perf-chk"
                 class="ml-4 px-8 py-3 text-lg font-semibold text-white rounded-xl shadow-lg bg-blue-600 hover:bg-blue-500 transition duration-200"
                 onclick="measureCloudflareSpeed();">
                 <i class="fas fa-tachometer-alt mr-2"></i>Test Speed
             </button>
-            <button id="testLegalDisclaimerButton"
+            <button id="ctrl-info-modal"
                 class="ml-4 px-8 py-3 text-lg font-semibold text-white rounded-xl shadow-lg bg-red-600 hover:bg-red-500 transition duration-200"
                 onclick="showLegalDisclaimer();">
                 <i class="fas fa-gavel mr-2"></i>Test Legal Disclaimer
             </button>
-            <div id="validator-catalog-grid-wrapper" class="hidden mt-12 w-full mx-auto relative">
+            <div id="inspect-grid-shell" class="hidden mt-12 w-full mx-auto relative">
                 <h3 class="text-2xl font-bold text-gray-200 mb-6 border-b border-gray-700 pb-3">Live Test Grid</h3>
-                <div id="validator-loading-banner"
+                <div id="inspect-prog-box"
                     class="fixed inset-x-0 mx-auto w-full max-w-7xl top-24 md:top-32 p-4 bg-indigo-900/90 border border-indigo-700 rounded-xl shadow-2xl transition-opacity duration-300 z-45 hidden">
                     <div class="flex items-center space-x-3">
                         <i class="fas fa-sync-alt w-5 h-5 text-indigo-400 animate-spin"></i>
@@ -1286,24 +1281,24 @@
                         </div>
                     </div>
                 </div>
-                <div id="node-cards-container" class="flex flex-wrap gap-4">
+                <div id="res-card-host" class="flex flex-wrap gap-4">
                 </div>
             </div>
         </div>
         <div id="homepage-section">
             <section class="text-center py-16">
-                <h2 id="main-zenith-title"
-                    class="text-6xl md:text-8xl font-extrabold zenith-title-glow tracking-tighter mb-4"></h2>
+                <h2 id="main-Project Workspace-title"
+                    class="text-6xl md:text-8xl font-extrabold mod-text-highlight tracking-tighter mb-4"></h2>
 
-                <div class="w-full h-0.5 bg-gradient-to-r from-transparent via-zenith-purple/50 to-transparent mb-0">
+                <div class="w-full h-0.5 bg-gradient-to-r from-transparent via-mod-purple/50 to-transparent mb-0">
                 </div>
             </section>
             <div id="random-assets-section" class="mb-4">
             </div>
             <section class="text-center">
                 <div class="mb-10 w-full max-w-xl mx-auto relative flex items-center pt-8">
-                    <input type="text" id="catalog-query" placeholder=""
-                        class="w-full p-3 pl-12 bg-gray-700/50 border border-zenith-purple/50 rounded-lg text-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-zenith-purple"
+                    <input type="text" id="res-query-v4" placeholder=""
+                        class="w-full p-3 pl-12 bg-gray-700/50 border border-mod-purple/50 rounded-lg text-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-mod-purple"
                         oninput="applySearch()" />
                     <svg class="absolute left-4 w-5 h-5 text-gray-400" fill="none" stroke="currentColor"
                         viewBox="0 0 24 24" aria-hidden="true">
@@ -1311,7 +1306,7 @@
                             d="M21 21l-4.35-4.35M17 11a6 6 0 11-12 0 6 6 0 0112 0z"></path>
                     </svg>
                 </div>
-                <div id="catalog-nodes"
+                <div id="res-grid-view"
                     class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 lg:gap-6 transition-opacity duration-150">
                 </div>
             </section>
