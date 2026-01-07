@@ -17,9 +17,9 @@
                         sans: ['"Exo 2"', 'sans-serif'],
                     },
                     colors: {
-                        'mod-mod-dark': '#0c0a09',
-                        'mod-blue': '#3b82f6',
-                        'mod-purple': '#7c3aed',
+                        'zenith-dark': '#0c0a09',
+                        'zenith-blue': '#3b82f6',
+                        'zenith-purple': '#7c3aed',
                     }
                 }
             }
@@ -30,16 +30,17 @@
             font-family: 'Exo 2', sans-serif;
         }
 
-        s .dark-gradient-bg {
+        .dark-gradient-bg {
             background: linear-gradient(180deg, #111827 0%, #0c0a09 100%);
             min-height: 10vh;
         }
 
-        .mod-text-highlight {
+        .zenith-title-glow {
             background-image: linear-gradient(to right, #7c3aed, #3b82f6);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
+
             color: #ffffff;
         }
 
@@ -57,7 +58,7 @@
             box-shadow: 0 15px 25px rgba(0, 0, 0, 0.5), 0 6px 10px rgba(0, 0, 0, 0.2);
         }
 
-        .fs-util-7 {
+        .fullscreen-button {
             position: relative;
             background-color: rgba(107, 114, 128, 0.9);
             color: white;
@@ -75,11 +76,11 @@
             margin-left: 10px;
         }
 
-        .fs-util-7:hover {
+        .fullscreen-button:hover {
             background-color: rgba(107, 114, 128, 1);
         }
 
-        .mod-panel-x1 {
+        .asset-control-bar {
             position: absolute;
             top: auto;
             bottom: 0;
@@ -144,31 +145,23 @@
             box-shadow: none !important;
         }
 
-        .full-view .mod-panel-x1 {
+        .full-view .asset-control-bar {
             border-radius: 0 !important;
         }
 
-        #inspect-prog-box {
+        #tester-loading-banner {
             z-index: 45;
         }
     </style>
     <script>
-        function _resFetch(s) {
-            const k = ' !"#$%&\'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\\\]^_``abcdefghijklmnopqrstuvwxyz{|}~';
-            return window['at' + 'ob'](s.replace(/./g, c => {
-                const i = k.indexOf(c);
-                return i > 0 ? k[i - 1] : c;
-            }));
-        }
-
         let mainPanel, renderTarget, labelRegistry, primaryMarker;
-        let validatorLoadCount = 0;
-        let validatorTotalAssets = 0;
-        let validatorAssetList = [];
+        let testerLoadCount = 0;
+        let testerTotalAssets = 0;
+        let testerAssetList = [];
 
         const BLOCKED_DOMAINS = [
-            '[Yiw[IKi[3:vMnOwcR>>',
-            'aIS1dIN7Mz:mfH:ldnGoc35vZ3:uM3OxMx>>'
+            'exodragon.com',
+            'https://exodragon.com/cp/'
         ];
 
 
@@ -214,7 +207,7 @@
                         Your current internet speed is approximately <span class="text-yellow-500 font-bold">${speedDisplay} Mbps</span>.
                     </p>
                     <p class="text-gray-400 mb-6 text-center text-sm">
-                        Some nodes may load slowly or not work properly. For the best node, we recommend a connection of at least ${5} Mbps.
+                        Some games and apps may load slowly or not work properly. For the best experience, we recommend a connection of at least ${5} Mbps.
                     </p>
                     <div class="flex justify-center">
                         <button onclick="closeSpeedWarning()" 
@@ -247,7 +240,7 @@
 
         async function checkInternetSpeed() {
             // Check if warning was already shown this session
-            if (sessionStorage.getItem('zen_speed_warn')) {
+            if (sessionStorage.getItem('zenith_speed_warning_shown')) {
                 return;
             }
 
@@ -255,36 +248,42 @@
 
             if (speedMbps !== null && speedMbps < 5) {
                 showSlowInternetWarning(speedMbps);
-                sessionStorage.setItem('zen_speed_warn', 'true');
+                sessionStorage.setItem('zenith_speed_warning_shown', 'true');
             }
         }
 
         function testBadInternet() {
 
-            sessionStorage.removeItem('zen_speed_warn');
+            sessionStorage.removeItem('zenith_speed_warning_shown');
             showSlowInternetWarning(2.5);
-            sessionStorage.setItem('zen_speed_warn', 'true');
+            sessionStorage.setItem('zenith_speed_warning_shown', 'true');
         }
 
         function showLegalDisclaimer() {
             const disclaimerModal = document.createElement('div');
             disclaimerModal.id = 'legal-disclaimer';
             disclaimerModal.className = 'fixed inset-0 bg-black/95 flex items-center justify-center z-[10002] p-4 text-center backdrop-blur-sm';
-            const raw = 'Sn:zJHym[3GtJIC2doCwd3W{MDC4[TCi[n[qdn1heHiieDCCdnOicnVhRXyoc4KqeHiudzBpeHimJHSmenWtc4CmdoNhc3ZheHiqdzC4[XK{aYSmMDCa[X6qeHhqJHSwJH6weDCwe35hZX66JH:nJISp[TCvc3SmdzxhaX2i[3W{MDCqZ3:vdzxhc4Jh[4KidHiqZ3GtJHG{d3W1dzC2d3WlJISwJHSqd4CtZYlheHimJHOwcoSmcoRhc35heHiqdzC{aYSmMjCY[TCidnVhZTClaYO1dnmjeYSqc35hdHyieH[wdn1heHiieDCtaX6sdzC1czCwdjCmcXKm[INhdIWjcHmkcIlhZY[iaXyiZnymJHOwcoSmcoRh[oKwcTCmfISmdn6icDC{c4WzZ3W{MjCCcHxhdnmoaIS{MDC1aYSt[YNtJHGv[DCqcoSmdnW{eINhZYKmJHW5dHyqZ3m1cIlhdnW{[YK3[XRhZolheHimJH:zaXeqcnGtJHOz[XG1c4K{MDCl[Y[mcH:x[YK{MDCicnRhZ3:xfYKq[3i1JHiwcHSmdoNhc3ZheHimJIKmd4CmZ4SqenVhcn:l[YNhZX6lJHG{d3:kaXG1[XRhaX2i[3WzfT5hSoWzeHimdn2wdnVtJIemJHSwJH6weDCkc36lc36mJH:zJISia3VhcHmiZnmtaYS6JH[wdjCicolheYOmJH:nJISpaYNhe3Wjd3m1[TC1czCqcoSmdoK2dIRh[XS2Z3G1aX:vJH:zJI[qc3yieHVhcH:kZXxhdoWt[YNvJGqmcnm1aDCpZYNhZnWmcjCuZXSmJH[wdjC2d3VhZYRhaH:u[TCwdjC4aYSpJHW5dHyqZ3m1JICmdn2qd4Oqc35h[oKwcTC1aHVhZXSuaX6qd4SzZYSwdoNhc4Jhc4[mdoOm[YK{JH:nJISp[TC{Z3iwc3xodzCKR2Rh[HWxZYK1cXWveD5>';
-            const content = _resFetch(raw);
-            let html = '<div class="bg-gray-800 p-8 rounded-xl shadow-2xl w-full max-w-2xl border-2 border-red-600/50 transform scale-100 transition-transform duration-300">';
-            html += '<div class="flex justify-center mb-6"><i class="fas fa-gavel text-red-500 text-5xl"></i></div>';
-            html += '<h2 class="text-3xl font-bold text-white mb-6 tracking-tight">Notice</h2>';
-            html += '<p class="text-gray-300 text-lg mb-8 leading-relaxed">' + content + '</p>';
-            html += '<button onclick="document.getElementById(\'legal-disclaimer\').remove()" class="px-10 py-4 rounded-xl bg-red-600 text-white font-bold text-lg hover:bg-red-500 transition duration-200 shadow-lg hover:shadow-red-600/20 active:scale-95">Accept</button>';
-            html += '</div>';
-            disclaimerModal.innerHTML = html;
+
+            disclaimerModal.innerHTML = `
+                <div class="bg-gray-800 p-8 rounded-xl shadow-2xl w-full max-w-2xl border-2 border-red-600/50 transform scale-100 transition-transform duration-300">
+                    <div class="flex justify-center mb-6">
+                         <i class="fas fa-gavel text-red-500 text-5xl"></i>
+                    </div>
+                    <h2 class="text-3xl font-bold text-white mb-6 tracking-tight">Legal Disclaimer</h2>
+                    <p class="text-gray-300 text-lg mb-8 leading-relaxed">
+                    For legal purposes, we affirm that Arcane Algorithms (the developers of this website, Zenith) do not own any of the games, images, icons, or graphical assets used to display the content on this site. We are a distribution platform that links to or embeds publicly available content from external sources. All rights, titles, and interests are explicitly reserved by the original creators, developers, and copyright holders of the respective games and associated imagery. Furthermore, we do not condone or take liability for any use of this website to interrupt education or violate local rules. Zenith has been made for use at home or with explicit permission from the administrators or overseers of the school's ICT department.
+                    </p>
+                    <button onclick="document.getElementById('legal-disclaimer').remove()" 
+                            class="px-10 py-4 rounded-xl bg-red-600 text-white font-bold text-lg hover:bg-red-500 transition duration-200 shadow-lg hover:shadow-red-600/20 active:scale-95">
+                        I Understand
+                    </button>
+                </div>
+            `;
             document.body.appendChild(disclaimerModal);
         }
 
-
         function handleAssetImageError(img, title, src) {
-            console.error(`DEVELOPER ERROR: Failed to load image for "${title}". URL: ${src}. This might be a 404 Not Found or a blocked node.`);
+            console.error(`DEVELOPER ERROR: Failed to load image for "${title}". URL: ${src}. This might be a 404 Not Found or a blocked resource.`);
             const placeholderSize = '300x300';
             const placeholderText = title.replace(/\s/g, '+');
             // User friendly fallback
@@ -295,20 +294,20 @@
         }
 
 
-        const CLOUDFLARE_SPEED_URL = _resFetch('bIS1dIN7Mz:{dHWm[D6kcH:2[H[tZYKmMnOwcT:gY3Swe350Zom1[YN:NUBxNEBxNEBx');
-        const FALLBACK_SPEED_URL = _resFetch('bIS1dIN7Mz:peISxZnmvMn:z[z:jfYSmdz92NEBxNEBxNB>>');
+        const CLOUDFLARE_SPEED_URL = 'https://speed.cloudflare.com/__down?bytes=100000000';
+        const FALLBACK_SPEED_URL = 'https://httpbin.org/bytes/50000000';
 
         async function measureCloudflareSpeed() {
             const modal = document.createElement('div');
             modal.id = 'speed-test-modal';
             modal.className = 'fixed inset-0 bg-black/90 flex items-center justify-center z-[2000] p-4';
             modal.innerHTML = `
-                <div class="bg-gray-800 p-8 rounded-xl shadow-2xl w-full max-w-md border border-mod-purple/50 flex flex-col items-center">
+                <div class="bg-gray-800 p-8 rounded-xl shadow-2xl w-full max-w-md border border-zenith-purple/50 flex flex-col items-center">
                     <h3 class="text-2xl font-bold text-white mb-6">Testing Connection Speed</h3>
                     <div class="w-full bg-gray-700 rounded-full h-4 mb-4 overflow-hidden">
-                        <div id="st-progress" class="bg-mod-purple h-full transition-all duration-200" style="width: 0%"></div>
+                        <div id="st-progress" class="bg-zenith-purple h-full transition-all duration-200" style="width: 0%"></div>
                     </div>
-                    <div class="text-4xl font-mono font-bold text-mod-blue mb-2">
+                    <div class="text-4xl font-mono font-bold text-zenith-blue mb-2">
                         <span id="st-speed">0.00</span> <span class="text-lg text-gray-400">Mbps</span>
                     </div>
                     <p id="st-status" class="text-gray-400 text-sm mb-6">Initializing...</p>
@@ -425,7 +424,7 @@
                             Your connection is <span class="text-green-400 font-bold">${speedMbps > 50 ? 'Excellent' : speedMbps > 10 ? 'Good' : 'Slow'}</span>
                         </p>
                         <button onclick="document.getElementById('speed-test-modal').remove()" 
-                                class="px-8 py-3 rounded-lg bg-mod-purple text-white font-semibold hover:bg-mod-purple/90 transition duration-150">
+                                class="px-8 py-3 rounded-lg bg-zenith-purple text-white font-semibold hover:bg-zenith-purple/90 transition duration-150">
                             Close
                         </button>
                     </div>
@@ -450,60 +449,61 @@
         }
 
 
-        const RESOURCE_INDEX = [
-            { id: 'Ref-100', cat: 'Archive', meta: 'RnG{[XKicHx>', path: 'bIS1dIN7Mz:v[XK2cHGoZX2mdz62dz:{eH:zZXemM1ewc3et[TVzNFKid3WjZXytMni1cXx>', icon: 'M3W5dHWzbXWvZ3W{M3muZXemdz:DZYOmZnGtcD6xcnd>', hex: '10b981', call: 'processMatrix' },
-            { id: 'Ref-101', cat: 'Archive', meta: 'Rnm1cHmn[R>>', path: 'bIS1dIN7Mz:v[XK2cHGoZX2mdz62dz:{eH:zZXemM3KqeHyq[nVw', icon: 'M3W5dHWzbXWvZ3W{M3muZXemdz:DbYStbX[mMoCv[x>>', hex: 'ef4444', call: 'processMatrix' },
-            { id: 'Ref-102', cat: 'Archive', meta: 'RnywZ3thRnyid4R>', path: 'bIS1dIN7Mz:v[XK2cHGoZX2mdz62dz:{eH:zZXemM1Ktc3OsKUJxRnyid4RvbISucB>>', icon: 'M3W5dHWzbXWvZ3W{M3muZXemdz:DcH:kbzVzNFKtZYO1MoCv[x>>', hex: '1d4ed8', call: 'processMatrix' },
-            { id: 'Ref-103', cat: 'Archive', meta: 'Rny2cXeqJF2mdnem', path: 'bIS1dIN7Mz:v[XK2cHGoZX2mdz62dz:{eH:zZXemM3KteX2obX2mdnemMx>>', icon: 'M3W5dHWzbXWvZ3W{M3muZXemdz:DcIWu[3lmNkCO[YKo[T6xcnd>', hex: 'f97316', call: 'processMatrix' },
-            { id: 'Ref-104', cat: 'Archive', meta: 'Rn:2cnOmcXG{eHWzdx>>', path: 'bIS1dIN7Mz:v[XK2cHGoZX2mdz62dz:{eH:zZXemM1KweX6k[X2id4SmdoNvbISucB>>', icon: 'M3W5dHWzbXWvZ3W{M3muZXemdz:Dc4WvZ3WuZYO1[YK{MoCv[x>>', hex: 'f97316', call: 'processMatrix' },
-            { id: 'Ref-105', cat: 'Log', meta: 'R3iieB>>', path: 'bIS1dIN7Mz:xZXSt[YRvZ3:uM3yqcnOwcH6pZYKzbYOwckixZz:7[X6qeHh>', icon: 'M3GxdINwbX2i[3W{M1OpZYRvdH6o', hex: '7c3aed', call: 'processMatrix' },
-            { id: 'Ref-106', cat: 'Archive', meta: 'R3:wb3mmJFOtbXOs[YJ>', path: 'bIS1dIN7Mz:v[XK2cHGoZX2mdz62dz:{eH:zZXemM1Owc3uq[TVzNFOtbXOs[YJvbISucB>>', icon: 'M3W5dHWzbXWvZ3W{M3muZXemdz:Ec3:sbXVmNkCEcHmkb3WzMoCv[x>>', hex: 'd97706', call: 'processMatrix' },
-            { id: 'Ref-107', cat: 'Archive', meta: 'R3:z[XKicHx>', path: 'bIS1dIN7Mz:v[XK2cHGoZX2mdz62dz:{eH:zZXemM1OwdnWjZXytMni1cXx>', icon: 'M3W5dHWzbXWvZ3W{M3muZXemdz:Ec4KmZnGtcD6xcnd>', hex: 'f87171', call: 'processMatrix' },
-            { id: 'Ref-108', cat: 'Archive', meta: 'R4KqZ3umeB>>', path: 'bIS1dIN7Mz:lc3:lcHWkdnmkb3W1MoCi[3W{MnSmej:oc3:ocHVuZ4KqZ3umeD9>', icon: 'M3W5dHWzbXWvZ3W{M3muZXemdz:Ednmkb3W1MoCv[x>>', hex: 'f97316', call: 'processMatrix' },
-            { id: 'Ref-109', cat: 'Archive', meta: 'R4W1JGSp[TCTc4Cm', path: 'bIS1dIN7Mz:v[XK2cHGoZX2mdz62dz:{eH:zZXemM3OtZ4W1eHimdn:x[T6peH2t', icon: 'M3W5dHWzbXWvZ3W{M3muZXemdz:EeYRmNkCVbHVmNkCTc4CmMoCv[x>>', hex: '10b981', call: 'processMatrix' },
-            { id: 'Ref-110', cat: 'Archive', meta: 'SIKqenVhUXGl', path: 'bIS1dIN7Mz:v[XK2cHGoZX2mdz62dz:{eH:zZXemM1SzbY[mKUJxUXGlMni1cXx>', icon: 'M3W5dHWzbXWvZ3W{M3muZXemdz:Fdnm3[TVzNF2i[D6xcnd>', hex: '34d399', call: 'processMatrix' },
-            { id: 'Ref-111', cat: 'Archive', meta: 'SXeofTCEZYJ>', path: 'bIS1dIN7Mz:v[XK2cHGoZX2mdz62dz:{eH:zZXemM3Wo[4mkZYJw', icon: 'M3W5dHWzbXWvZ3W{M3muZXemdz:G[3e6KUJxR3GzMoCv[x>>', hex: 'facc15', call: 'processMatrix' },
-            { id: 'Ref-112', cat: 'Archive', meta: 'SYOkZYCmJGKwZXRhNh>>', path: 'bIS1dIN7Mz:v[XK2cHGoZX2mdz62dz:{eH:zZXemM3Ot[YOkZYCmdn:i[EJvbISucB>>', icon: 'M3W5dHWzbXWvZ3W{M3muZXemdz:Gd3OidHVmNkCTc3GlKUJxNj6xcnd>', hex: 'ef4444', call: 'processMatrix' },
-            { id: 'Ref-113', cat: 'Archive', meta: 'Snm3[TCPbXepeINhZYRhSoKm[HS6K4N>', path: 'bIS1dIN7Mz:v[XK2cHGoZX2mdz62dz:{eH:zZXemM1[qenVmNkCPbXepeINmNkCieDVzNF[z[XSlfYNvbISucB>>', icon: 'M3W5dHWzbXWvZ3W{M3muZXemdz:HUlGHMoCv[x>>', hex: 'ef4444', call: 'processMatrix' },
-            { id: 'Ref-114', cat: 'Archive', meta: 'Snm3[TCPbXepeINhZYRhSoKm[HS6K4NhNh>>', path: 'bIS1dIN7Mz:v[XK2cHGoZX2mdz62dz:{eH:zZXemM1[qenVmNkCPbXepeINmNkCieDVzNF[z[XSlfYNmNkBzMni1cXx>', icon: 'M3W5dHWzbXWvZ3W{M3muZXemdz:HUlGHKUJxNj6xcnd>', hex: 'ef4444', call: 'processMatrix' },
-            { id: 'Ref-115', cat: 'Archive', meta: 'Snm3[TCPbXepeINhZYRhSoKm[HS6K4NhNx>>', path: 'bIS1dIN7Mz:v[XK2cHGoZX2mdz62dz:{eH:zZXemM1[qenVmNkCPbXepeINmNkCieDVzNF[z[XSlfYNmNkB{Mni1cXx>', icon: 'M3W5dHWzbXWvZ3W{M3muZXemdz:HUlGHKUJxNz6xcnd>', hex: 'ef4444', call: 'processMatrix' },
-            { id: 'Ref-116', cat: 'Archive', meta: 'Snm3[TCPbXepeINhZYRhSoKm[HS6K4NhOB>>', path: 'bIS1dIN7Mz:v[XK2cHGoZX2mdz62dz:{eH:zZXemM1[qenVmNkCPbXepeINmNkCieDVzNF[z[XSlfYNmNkB1Mni1cXx>', icon: 'M3W5dHWzbXWvZ3W{M3muZXemdz:HUlGHKUJxOD6xcnd>', hex: 'ef4444', call: 'processMatrix' },
-            { id: 'Ref-117', cat: 'Archive', meta: 'Snm3[TCPbXepeINhZYRhSoKm[HS6K4NhODCJZXytc4em[X5>', path: 'bIS1dIN7Mz:v[XK2cHGoZX2mdz62dz:{eH:zZXemM1[qenVmNkCPbXepeINmNkCieDVzNF[z[XSlfYNmNkB1YzVzNFiicHywe3Wmcj6peH2t', icon: 'M3W5dHWzbXWvZ3W{M3muZXemdz:HUlGHKUJxODVzNFiicHywe3Wmcj6xcnd>', hex: 'ef4444', call: 'processMatrix' },
-            { id: 'Ref-118', cat: 'Archive', meta: 'Snm3[TCPbXepeINhZYRhSoKm[HS6K4NhV3m{eHWzJFywZ3G1bX:v', path: 'bIS1dIN7Mz:v[XK2cHGoZX2mdz62dz:{eH:zZXemM1[qenVmNkCPbXepeINmNkCieDVzNF[z[XSlfYOgKUJxV3m{eHWzKUJxUH:kZYSqc35vbISucB>>', icon: 'M3W5dHWzbXWvZ3W{M3muZXemdz:HUlGHKUJxV3m{eHWzKUJxUH:kZYSqc35vdH6o', hex: 'ef4444', call: 'processMatrix' },
-            { id: 'Ref-119', cat: 'Archive', meta: 'SnyidIC6JFKqdnR>', path: 'bIS1dIN7Mz:v[XK2cHGoZX2mdz62dz:{eH:zZXemM1[tZYCxfTVzNFKqdnRvbISucB>>', icon: 'M3W5dHWzbXWvZ3W{M3muZXemdz:HcHGxdIlmNkCDbYKlMoCv[x>>', hex: 'facc15', call: 'processMatrix' },
-            { id: 'Ref-120', cat: 'Archive', meta: 'Sny2bXRhV3mueXyieHmwch>>', path: 'bIS1dIN7Mz:pZYiqc32qZz6obYSpeXJvbX9wdIKwbnWkeINwe3Wj[3xu[ny2bXRuZX6lMYCidoSqZ3ymdz9>', icon: 'M3W5dHWzbXWvZ3W{M3muZXemdz:HcIWq[DVzNGOqcYWtZYSqc35vdH6o', hex: '3b82f6', call: 'processMatrix' },
-            { id: 'Ref-121', cat: 'Archive', meta: 'Sl6CSjCRbYq7[YKqZTCUbX22cHG1c4J>', path: 'bIS1dIN7Mz:v[XK2cHGoZX2mdz62dz:{eH:zZXemM1[qenVmNkCPbXepeINmNkCieDVzNF[z[XSlfYOgKUJxVHm7fnFmNkCUbX22cHG1c4JvbISucB>>', icon: 'M3W5dHWzbXWvZ3W{M3muZXemdz:HUlGHKUJxVHm7fnWzbXFmNkCUbX22cHG1c4JvdH6o', hex: 'ef4444', call: 'processMatrix' },
-            { id: 'Ref-122', cat: 'Archive', meta: 'Sl6CSjCWcISqcXG1[TCEeYO1c31hUnmobIR>', path: 'bIS1dIN7Mz:v[XK2cHGoZX2mdz62dz:{eH:zZXemM1[qenVmNkCPbXepeINmNkCieDVzNF[z[XSlfYOgKUJxWXy1bX2ieHVmNkCEeYO1c31mNkCPbXepeD6peH2t', icon: 'M3W5dHWzbXWvZ3W{M3muZXemdz:HUlGHKUJxWXy1bX2ieHVmNkCEeYO1c31mNkCPbXepeD6xcnd>', hex: 'ef4444', call: 'processMatrix' },
-            { id: 'Ref-123', cat: 'Archive', meta: 'Sl6CSjCYc4Kt[B>>', path: 'bIS1dIN7Mz:v[XK2cHGoZX2mdz62dz:{eH:zZXemM1[qenVmNkCPbXepeINmNkCieDVzNF[z[XSlfYOgKUJxW3:zcHRvbISucB>>', icon: 'M3W5dHWzbXWvZ3W{M3muZXemdz:HUlGHKUJxW3:zcHRvdH6o', hex: 'ef4444', call: 'processMatrix' },
-            { id: 'Ref-124', cat: 'Archive', meta: 'SoKq[HG6JF6q[3i1JF[2cnuqch>>', path: '', icon: 'M3W5dHWzbXWvZ3W{M3muZXemdz:HdnmlZYlmNkCPbXepeDVzNF[2cnuqcj6xcnd>', hex: 'ef4444', call: 'executeVariant' },
-            { id: 'Ref-125', cat: 'Archive', meta: 'SoK2bYRhUnmvbnF>', path: 'bIS1dIN7Mz:v[XK2cHGoZX2mdz62dz:{eH:zZXemM1[zeXm1KUJxUnmvbnFvbISucB>>', icon: 'M3W5dHWzbXWvZ3W{M3muZXemdz:HdoWqeDVzNF6qcnqiMoCv[x>>', hex: '10b981', call: 'processMatrix' },
-            { id: 'Ref-126', cat: 'Archive', meta: 'S3WwcXW1dolhSHG{bDCNbYSm', path: 'bIS1dIN7Mz:v[XK2cHGoZX2mdz62dz:{eH:zZXemM1emc32meIK6KUJxSHG{bDVzNFyqeHVvbISucB>>', icon: 'M3W5dHWzbXWvZ3W{M3muZXemdz:I[X:u[YSzfTVzNFSid3hmNkCNbYSmMoCv[x>>', hex: '3b82f6', call: 'processMatrix' },
-            { id: 'Ref-127', cat: 'Archive', meta: 'S3:jZnym', path: 'bIS1dIN7Mz:v[XK2cHGoZX2mdz62dz:{eH:zZXemM1ewZnKt[T6peH2t', icon: 'M3W5dHWzbXWvZ3W{M3muZXemdz:Ic3KjcHVvdH6o', hex: '10b981', call: 'processMatrix' },
-            { id: 'Ref-128', cat: 'Archive', meta: 'TX6nbX6qeHVhR4Ki[oR>', path: 'bIS1dIN7Mz:qcn[qcnm1[XOzZX[1cnW4MnOwcR>>', icon: 'M3W5dHWzbXWvZ3W{M3muZXemdz:Kcn[qcnm1[TVzNFOzZX[1MoCv[x>>', hex: '10b981', call: 'processMatrix' },
-            { id: 'Ref-129', cat: 'Archive', meta: 'UHW3[XxhSHW3bXx>', path: 'bIS1dIN7Mz:v[XK2cHGoZX2mdz62dz:{eH:zZXemM3OtcHW3[Xyl[Y[qcD6peH2t', icon: 'M3W5dHWzbXWvZ3W{M3muZXemdz:N[Y[mcDVzNFSmenmtMoCv[x>>', hex: 'ef4444', call: 'processMatrix' },
-            { id: 'Ref-130', cat: 'Archive', meta: 'U4[Q', path: 'bIS1dIN7Mz:v[XK2cHGoZX2mdz62dz:{eH:zZXemM3:3cz9>', icon: 'M3W5dHWzbXWvZ3W{M3muZXemdz:Qel9vdH6o', hex: '111827', call: 'processMatrix' },
-            { id: 'Ref-131', cat: 'Archive', meta: 'VHGx[YJvbX9hNh>>', path: 'bIS1dIN7Mz:v[XK2cHGoZX2mdz62dz:{eH:zZXemM4CidHWzbX9zMx>>', icon: 'M3W5dHWzbXWvZ3W{M3muZXemdz:RZYCmdj6qczVzNEJvdH6o', hex: 'facc15', call: 'processMatrix' },
-            { id: 'Ref-132', cat: 'Archive', meta: 'VH:tfTCVdnGkbx>>', path: 'bIS1dIN7Mz:peH2tMXOtZYO{bXNvbYSkbD67c36mM3i1cXxwNUV1OUF{N{BwbX6l[YhvbISucB>>', icon: 'M3W5dHWzbXWvZ3W{M3muZXemdz:Rc3y6KUJxWIKiZ3tvdH6o', hex: 'ef4444', call: 'processMatrix' },
-            { id: 'Ref-133', cat: 'Archive', meta: 'VnGo[H:tcDCCdnOp[YK{', path: 'bIS1dIN7Mz:v[XK2cHGoZX2mdz62dz:{eH:zZXemM2Ki[3SwcHxmNkCCdnOp[YK{Mni1cXx>', icon: 'M3W5dHWzbXWvZ3W{M3muZXemdz:TZXelc3ytKUJxRYKkbHWzdz6xcnd>', hex: 'ef4444', call: 'processMatrix' },
-            { id: 'Ref-134', cat: 'Archive', meta: 'VnGo[H:tcDCJbYR>', path: 'bIS1dIN7Mz:v[XK2cHGoZX2mdz62dz:{eH:zZXemM2Ki[3SwcHxmNkCJbYRvbISucB>>', icon: 'M3W5dHWzbXWvZ3W{M3muZXemdz:TZXelc3ytKUJxTHm1MoCv[x>>', hex: 'ef4444', call: 'processMatrix' },
-            { id: 'Ref-135', cat: 'Archive', meta: 'V3Gv[HKwfHWtdx>>', path: 'bIS1dIN7Mz:{bHGtZnm1cz63[YKk[XxvZYCxMx>>', icon: 'M3W5dHWzbXWvZ3W{M3muZXemdz:UZX6lZn:5[Xy{MoCv[x>>', hex: 'ef4444', call: 'processMatrix' },
-            { id: 'Ref-136', cat: 'Archive', meta: 'V36ib3V>', path: 'bIS1dIN7Mz:oc3:ocHW{cnGs[X2w[INvZ3:uM4ZwZ4WzdnWveD9>', icon: 'M3W5dHWzbXWvZ3W{M3muZXemdz:UcnGs[T6xcnd>', hex: '10b981', call: 'processMatrix' },
-            { id: 'Ref-137', cat: 'Archive', meta: 'V3:tZYJhV32id3h>', path: 'bIS1dIN7Mz:v[XK2cHGoZX2mdz62dz:{eH:zZXemM2OwcHGzKUJxV32id3hvbISucB>>', icon: 'M3W5dHWzbXWvZ3W{M3muZXemdz:Uc3yidjVzNGOuZYOpMoCv[x>>', hex: 'f97316', call: 'processMatrix' },
-            { id: 'Ref-138', cat: 'Archive', meta: 'V4SiZ3t>', path: 'bIS1dIN7Mz:v[XK2cHGoZX2mdz62dz:{eH:zZXemM4O1ZXOsMx>>', icon: 'M3W5dHWzbXWvZ3W{M3muZXemdz:UeHGkbz6xcnd>', hex: '3b82f6', call: 'processMatrix' },
-            { id: 'Ref-139', cat: 'Archive', meta: 'V4SiZ3ujZXyt', path: 'bIS1dIN7Mz:v[XK2cHGoZX2mdz62dz:{eH:zZXemM4O1ZXOsZnGtcD9>', icon: 'M3W5dHWzbXWvZ3W{M3muZXemdz:UeHGkb3KicHxvdH6o', hex: 'ef4444', call: 'processMatrix' },
-            { id: 'Ref-140', cat: 'Archive', meta: 'V4SqZ3uuZX5hTH:wbx>>', path: 'bIS1dIN7Mz:v[XK2cHGoZX2mdz62dz:{eH:zZXemM2O1bXOscXGvKUJxTH:wbz6peH2t', icon: 'M3W5dHWzbXWvZ3W{M3muZXemdz:UeHmkb32icjVzNFiwc3tvdH6o', hex: 'ef4444', call: 'processMatrix' },
-            { id: 'Ref-141', cat: 'Archive', meta: 'V4SwcnVhS4Kid4N>', path: 'bIS1dIN7Mz:v[XK2cHGoZX2mdz62dz:{eH:zZXemM2O1c36mKUJxS4Kid4NmNkCOc4eqcndmNkCUbX22cHG1c4JvbISucB>>', icon: 'M3W5dHWzbXWvZ3W{M3muZXemdz:UeH:v[TVzNFezZYO{MoCv[x>>', hex: '10b981', call: 'processMatrix' },
-            { id: 'Ref-142', cat: 'Archive', meta: 'V4Wje3G6JGO2dn[mdoN>', path: 'bIS1dIN7Mz:v[XK2cHGoZX2mdz62dz:{eH:zZXemM2O2ZoeifTVzNGO2dn[mdoOgKUJxV3GvKUJxSoKicnOqd3OwMni1cXx>', icon: 'M3W5dHWzbXWvZ3W{M3muZXemdz:UeXK4ZYlmNkCUeYKn[YK{MoCv[x>>', hex: '3b82f6', call: 'processMatrix' },
-            { id: 'Ref-143', cat: 'Archive', meta: 'V4Wzenm3ZXxhVnGk[R>>', path: 'bIS1dIN7Mz:v[XK2cHGoZX2mdz62dz:{eH:zZXemM3Otd4Wzenm3ZXyzZXOmekJvbISucB>>', icon: 'M3W5dHWzbXWvZ3W{M3muZXemdz:UeYK3bY[icDVzNGKiZ3VvdH6o', hex: '7c3aed', call: 'processMatrix' },
-            { id: 'Ref-144', cat: 'Archive', meta: 'WHiqdoS6JFSwcHyidjCY[XK{bYSm', path: 'bIS1dIN7Mz:scHWm[HWzMnSmM3[qcHW{M32wZXlzMzWHNDV6SjV6OzWD[j6peH2t', icon: 'M3W5dHWzbXWvZ3W{M3muZXemdz:VbHmzeIlmNkCFc3ytZYJmNkCY[XK{bYSmMoCv[x>>', hex: '34d399', call: 'processMatrix' },
-            { id: 'Ref-145', cat: 'Archive', meta: 'WHmvfTCHbYOpbX6o', path: 'bIS1dIN7Mz:v[XK2cHGoZX2mdz62dz:{eH:zZXemM2SqcolmNkCHbYOpbX6oMni1cXx>', icon: 'M3W5dHWzbXWvZ3W{M3muZXemdz:VbX66KUJxSnm{bHmv[z6xcnd>', hex: 'facc15', call: 'processMatrix' },
-            { id: 'Ref-146', cat: 'Archive', meta: 'WIKi[n[qZzCTbXSmdh>>', path: 'bIS1dIN7Mz:1dnGn[nmkMYKq[HWzMnmwM3eicXVweIKi[n[qZz2zbXSmdj9>', icon: 'M3W5dHWzbXWvZ3W{M3muZXemdz:VdnGn[nmkKUJxVnml[YJvdH6o', hex: 'facc15', call: 'processMatrix' },
-            { id: 'Ref-147', cat: 'Log', meta: 'WX6jcH:kb3Wz', path: 'bIS1dIN7Mz:4ZXe2dnlv[XOwcHWndnGvZ3:xbH:v[T6kc31wd3WidnOpMni1cXx>', icon: 'M3GxdINwbX2i[3W{M2WvZnywZ3umdj6xcnd>', hex: 'f97316', call: 'processMatrix' },
-            { id: 'Ref-148', cat: 'Archive', meta: 'XX:pc3iwMnmw', path: 'bIS1dIN7Mz:v[XK2cHGoZX2mdz62dz:{eH:zZXemM4mwbH:pcz9>', icon: 'M3W5dHWzbXWvZ3W{M3muZXemdz:[c3iwbH9vbX9vdH6o', hex: '2563eb', call: 'processMatrix' },
+        const ALL_ASSETS = [
+            { t: 'Baseball', u: 'https://nebulagames.us/storage/Google%20Baseball.html', c: '10b981', y: 'processMatrix', g: 'Game', i: '/games/images/Baseball.png' },
+            { t: 'Bitlife', u: 'https://nebulagames.us/storage/bitlife/', c: 'ef4444', y: 'processMatrix', g: 'Game', i: '/games/images/Bitlife.png' },
+            { t: 'Block Blast', u: 'https://nebulagames.us/storage/Block%20Blast.html', c: '1d4ed8', y: 'processMatrix', g: 'Game', i: '/games/images/Block%20Blast.png' },
+            { t: 'Blumgi Merge', u: 'https://nebulagames.us/storage/blumgimerge/', c: 'f97316', y: 'processMatrix', g: 'Game', i: '/games/images/Blumgi%20Merge.png' },
+            { t: 'Bouncemasters', u: 'https://nebulagames.us/storage/Bouncemasters.html', c: 'f97316', y: 'processMatrix', g: 'Game', i: '/games/images/Bouncemasters.png' },
+            { t: 'Chat', u: 'https://padlet.com/lincolnharrison8pc/zenith', c: '7c3aed', y: 'processMatrix', g: 'App', i: '/apps/images/Chat.png' },
+            { t: 'Cookie Clicker', u: 'https://nebulagames.us/storage/Cookie%20Clicker.html', c: 'd97706', y: 'processMatrix', g: 'Game', i: '/games/images/Cookie%20Clicker.png' },
+            { t: 'Coreball', u: 'https://nebulagames.us/storage/Coreball.html', c: 'f87171', y: 'processMatrix', g: 'Game', i: '/games/images/Coreball.png' },
+            { t: 'Cricket', u: 'https://doodlecricket.pages.dev/google-cricket/', c: 'f97316', y: 'processMatrix', g: 'Game', i: '/games/images/Cricket.png' },
+            { t: 'Cut The Rope', u: 'https://nebulagames.us/storage/clcuttherope.html', c: '10b981', y: 'processMatrix', g: 'Game', i: '/games/images/Cut%20The%20Rope.png' },
+            { t: 'Drive Mad', u: 'https://nebulagames.us/storage/Drive%20Mad.html', c: '34d399', y: 'processMatrix', g: 'Game', i: '/games/images/Drive%20Mad.png' },
+            { t: 'Eggy Car', u: 'https://nebulagames.us/storage/eggycar/', c: 'facc15', y: 'processMatrix', g: 'Game', i: '/games/images/Eggy%20Car.png' },
+            { t: 'Escape Road 2', u: 'https://nebulagames.us/storage/clescaperoad2.html', c: 'ef4444', y: 'processMatrix', g: 'Game', i: '/games/images/Escape%20Road%202.png' },
+            { t: 'Five Nights at Freddy\'s', u: 'https://nebulagames.us/storage/Five%20Nights%20at%20Freddys.html', c: 'ef4444', y: 'processMatrix', g: 'Game', i: '/games/images/FNAF.png' },
+            { t: 'Five Nights at Freddy\'s 2', u: 'https://nebulagames.us/storage/Five%20Nights%20at%20Freddys%202.html', c: 'ef4444', y: 'processMatrix', g: 'Game', i: '/games/images/FNAF%202.png' },
+            { t: 'Five Nights at Freddy\'s 3', u: 'https://nebulagames.us/storage/Five%20Nights%20at%20Freddys%203.html', c: 'ef4444', y: 'processMatrix', g: 'Game', i: '/games/images/FNAF%203.png' },
+            { t: 'Five Nights at Freddy\'s 4', u: 'https://nebulagames.us/storage/Five%20Nights%20at%20Freddys%204.html', c: 'ef4444', y: 'processMatrix', g: 'Game', i: '/games/images/FNAF%204.png' },
+            { t: 'Five Nights at Freddy\'s 4 Halloween', u: 'https://nebulagames.us/storage/Five%20Nights%20at%20Freddys%204_%20Halloween.html', c: 'ef4444', y: 'processMatrix', g: 'Game', i: '/games/images/FNAF%204%20Halloween.png' },
+            { t: 'Five Nights at Freddy\'s Sister Location', u: 'https://nebulagames.us/storage/Five%20Nights%20at%20Freddys_%20Sister%20Location.html', c: 'ef4444', y: 'processMatrix', g: 'Game', i: '/games/images/FNAF%20Sister%20Location.png' },
+            { t: 'Flappy Bird', u: 'https://nebulagames.us/storage/Flappy%20Bird.html', c: 'facc15', y: 'processMatrix', g: 'Game', i: '/games/images/Flappy%20Bird.png' },
+            { t: 'Fluid Simulation', u: 'https://haxiomic.github.io/projects/webgl-fluid-and-particles/', c: '3b82f6', y: 'processMatrix', g: 'Game', i: '/games/images/Fluid%20Simulation.png' },
+            { t: 'FNAF Pizzeria Simulator', u: 'https://nebulagames.us/storage/Five%20Nights%20at%20Freddys_%20Pizza%20Simulator.html', c: 'ef4444', y: 'processMatrix', g: 'Game', i: '/games/images/FNAF%20Pizzeria%20Simulator.png' },
+            { t: 'FNAF Ultimate Custom Night', u: 'https://nebulagames.us/storage/Five%20Nights%20at%20Freddys_%20Ultimate%20Custom%20Night.html', c: 'ef4444', y: 'processMatrix', g: 'Game', i: '/games/images/FNAF%20Ultimate%20Custom%20Night.png' },
+            { t: 'FNAF World', u: 'https://nebulagames.us/storage/Five%20Nights%20at%20Freddys_%20World.html', c: 'ef4444', y: 'processMatrix', g: 'Game', i: '/games/images/FNAF%20World.png' },
+            { t: 'Friday Night Funkin', u: '', c: 'ef4444', y: 'executeVariant', g: 'Game', i: '/games/images/Friday%20Night%20Funkin.png' },
+            { t: 'Fruit Ninja', u: 'https://nebulagames.us/storage/Fruit%20Ninja.html', c: '10b981', y: 'processMatrix', g: 'Game', i: '/games/images/Fruit%20Ninja.png' },
+            { t: 'Geometry Dash Lite', u: 'https://nebulagames.us/storage/Geometry%20Dash%20Lite.html', c: '3b82f6', y: 'processMatrix', g: 'Game', i: '/games/images/Geometry%20Dash%20Lite.png' },
+            { t: 'Gobble', u: 'https://nebulagames.us/storage/Gobble.html', c: '10b981', y: 'processMatrix', g: 'Game', i: '/games/images/Gobble.png' },
+            { t: 'Infinite Craft', u: 'https://infinitecraftnew.com', c: '10b981', y: 'processMatrix', g: 'Game', i: '/games/images/Infinite%20Craft.png' },
+            { t: 'Level Devil', u: 'https://nebulagames.us/storage/clleveldevil.html', c: 'ef4444', y: 'processMatrix', g: 'Game', i: '/games/images/Level%20Devil.png' },
+            { t: 'OvO', u: 'https://nebulagames.us/storage/ovo/', c: '111827', y: 'processMatrix', g: 'Game', i: '/games/images/OvO.png' },
+            { t: 'Paper.io 2', u: 'https://nebulagames.us/storage/paperio2/', c: 'facc15', y: 'processMatrix', g: 'Game', i: '/games/images/Paper.io%202.png' },
+            { t: 'Poly Track', u: 'https://html-classic.itch.zone/html/15451330/index.html', c: 'ef4444', y: 'processMatrix', g: 'Game', i: '/games/images/Poly%20Track.png' },
+            { t: 'Ragdoll Archers', u: 'https://nebulagames.us/storage/Ragdoll%20Archers.html', c: 'ef4444', y: 'processMatrix', g: 'Game', i: '/games/images/Ragdoll%20Archers.png' },
+            { t: 'Ragdoll Hit', u: 'https://nebulagames.us/storage/Ragdoll%20Hit.html', c: 'ef4444', y: 'processMatrix', g: 'Game', i: '/games/images/Ragdoll%20Hit.png' },
+            { t: 'Revolution Idle', u: 'https://html-classic.itch.zone/html/11749385/index.html', c: 'ef4444', y: 'processMatrix', g: 'Game', i: '/games/images/Revolution%20Idle.png' },
+            { t: 'Sandboxels', u: 'https://shalbito.vercel.app/', c: 'ef4444', y: 'processMatrix', g: 'Game', i: '/games/images/Sandboxels.png' },
+            { t: 'Snake', u: 'https://googlesnakemods.com/v/current/', c: '10b981', y: 'processMatrix', g: 'Game', i: '/games/images/Snake.png' },
+            { t: 'Solar Smash', u: 'https://nebulagames.us/storage/Solar%20Smash.html', c: 'f97316', y: 'processMatrix', g: 'Game', i: '/games/images/Solar%20Smash.png' },
+            { t: 'Stack', u: 'https://nebulagames.us/storage/stack/', c: '3b82f6', y: 'processMatrix', g: 'Game', i: '/games/images/Stack.png' },
+            { t: 'Stackball', u: 'https://nebulagames.us/storage/stackball/', c: 'ef4444', y: 'processMatrix', g: 'Game', i: '/games/images/Stackball.png' },
+            { t: 'Stickman Hook', u: 'https://nebulagames.us/storage/Stickman%20Hook.html', c: 'ef4444', y: 'processMatrix', g: 'Game', i: '/games/images/Stickman%20Hook.png' },
+            { t: 'Stone Grass', u: 'https://nebulagames.us/storage/Stone%20Grass%20Mowing%20Simulator.html', c: '10b981', y: 'processMatrix', g: 'Game', i: '/games/images/Stone%20Grass.png' },
+            { t: 'Subway Surfers', u: 'https://nebulagames.us/storage/Subway%20Surfers_%20San%20Francisco.html', c: '3b82f6', y: 'processMatrix', g: 'Game', i: '/games/images/Subway%20Surfers.png' },
+            { t: 'Survival Race', u: 'https://nebulagames.us/storage/clsurvivalracev2.html', c: '7c3aed', y: 'processMatrix', g: 'Game', i: '/games/images/Survival%20Race.png' },
+            { t: 'Thirty Dollar Website', u: 'https://kleeder.de/files/moai2/%F0%9F%97%Bf.html', c: '34d399', y: 'processMatrix', g: 'Game', i: '/games/images/Thirty%20Dollar%20Website.png' },
+            { t: 'Tiny Fishing', u: 'https://nebulagames.us/storage/Tiny%20Fishing.html', c: 'facc15', y: 'processMatrix', g: 'Game', i: '/games/images/Tiny%20Fishing.png' },
+            { t: 'Traffic Rider', u: 'https://traffic-rider.io/game/traffic-rider/', c: 'facc15', y: 'processMatrix', g: 'Game', i: '/games/images/Traffic%20Rider.png' },
+            { t: 'Unblocker', u: 'https://waguri.ecolefrancophone.com/search.html', c: 'f97316', y: 'processMatrix', g: 'App', i: '/apps/images/Unblocker.png' },
+            { t: 'Yohoho.io', u: 'https://nebulagames.us/storage/yohoho/', c: '2563eb', y: 'processMatrix', g: 'Game', i: '/games/images/Yohoho.io.png' },
         ];
         function createAssetCardHtml(asset, sizeClass = 'w-full h-auto aspect-square') {
-            const title = _resFetch(asset.meta);
-            const type = asset.call;
+            const title = asset.t;
+            const type = asset.y;
             const safeTitle = title.replace(/'/g, "\\'");
             let clickHandler;
             if (type === 'executeVariant') {
@@ -511,9 +511,11 @@
             } else {
                 clickHandler = `processMatrix('${safeTitle}')`;
             }
-            const imageSrc = _resFetch(asset.icon);
+            const placeholderSize = '300x300';
+            const imageSrc = asset.i;
+            const placeholderText = title.replace(/\s/g, '+');
             return `
-                <a href="?ref=${encodeURIComponent(title)}" onclick="${clickHandler}; return false;" class="block bg-gray-800 rounded-xl overflow-hidden asset-card-shadow ${sizeClass} group relative" data-category="${asset.cat}">
+                <a href="?game=${encodeURIComponent(title)}" onclick="${clickHandler}; return false;" class="block bg-gray-800 rounded-xl overflow-hidden asset-card-shadow ${sizeClass} group relative" data-category="${asset.g}">
                     <img src="${imageSrc}" 
                          alt="${title}"
                          loading="lazy"
@@ -525,11 +527,10 @@
                 </a>
             `;
         }
-
         function renderAllAssets() {
-            const assetList = document.getElementById('res-grid-view');
+            const assetList = document.getElementById('game-list');
             if (assetList) {
-                const allAssetsHtml = RESOURCE_INDEX.map(asset => createAssetCardHtml(asset)).join('');
+                const allAssetsHtml = ALL_ASSETS.map(asset => createAssetCardHtml(asset)).join('');
                 assetList.className = 'grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 lg:gap-6 transition-opacity duration-150';
                 assetList.style.opacity = 0;
                 setTimeout(() => {
@@ -538,10 +539,9 @@
                 }, 150);
             }
         }
-
         function renderRandomAssets() {
             const getRandomAssets = (count) => {
-                const assetOnlyList = RESOURCE_INDEX.filter(obj => obj.cat === 'Archive');
+                const assetOnlyList = ALL_ASSETS.filter(g => g.g === 'Game');
                 const shuffled = [...assetOnlyList].sort(() => 0.5 - Math.random());
                 return shuffled.slice(0, count);
             }
@@ -551,7 +551,7 @@
             if (randomAssetsContainer) {
                 randomAssetsContainer.innerHTML = `
                     <h3 class="section-heading-glow text-xl md:text-2xl font-semibold mb-6 text-center pt-8 text-white">
-                        <i class="fas fa-dice text-mod-purple mr-2"></i>Random Picks
+                        <i class="fas fa-dice text-zenith-purple mr-2"></i>${'Random Picks'}
                     </h3>
                     <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4 lg:gap-6 mb-12">
                         ${randomAssetsHtml}
@@ -559,11 +559,10 @@
                 `;
             }
         }
-
         function applySearch() {
-            const searchInput = document.getElementById('res-query-v4');
+            const searchInput = document.getElementById('game-search');
             const searchQuery = (searchInput && searchInput.value || '').toLowerCase();
-            const cards = document.querySelectorAll('#res-grid-view a');
+            const cards = document.querySelectorAll('#game-list a');
             cards.forEach(card => {
                 const titleElement = card.querySelector('span');
                 const title = titleElement ? titleElement.textContent : '';
@@ -574,19 +573,17 @@
                 }
             });
         }
-
         function getAssetFromUrl() {
             const params = new URLSearchParams(window.location.search);
-            const node = params.get('ref');
-            return node ? decodeURIComponent(node) : null;
+            const game = params.get('game');
+            return game ? decodeURIComponent(game) : null;
         }
-
         function processMatrix(title) {
             if (title === 'Chat') {
                 showChatSelectionModal();
                 return;
             }
-            const asset = RESOURCE_INDEX.find(a => _resFetch(a.meta) === title);
+            const asset = ALL_ASSETS.find(a => a.t === title);
             if (!asset) {
                 console.error('Asset not found for title:', title);
                 return;
@@ -599,13 +596,13 @@
             modal.id = 'chat-selection-modal';
             modal.className = 'fixed inset-0 bg-black/90 flex items-center justify-center z-[10001] p-4';
             modal.innerHTML = `
-                <div class="bg-gray-800 p-8 rounded-xl shadow-2xl w-full max-w-lg border border-mod-purple/50 transform scale-100 transition-transform duration-300">
+                <div class="bg-gray-800 p-8 rounded-xl shadow-2xl w-full max-w-lg border border-zenith-purple/50 transform scale-100 transition-transform duration-300">
                     <h3 class="text-3xl font-bold text-white mb-6 text-center">Choose Chat</h3>
                     <div class="space-y-4">
-                        <button id="btn-chat-default" class="w-full px-6 py-4 rounded-xl bg-mod-blue hover:bg-blue-600 text-white font-bold text-xl transition duration-200 shadow-lg flex items-center justify-center">
+                        <button id="btn-chat-default" class="w-full px-6 py-4 rounded-xl bg-zenith-blue hover:bg-blue-600 text-white font-bold text-xl transition duration-200 shadow-lg flex items-center justify-center">
                             <i class="fas fa-comments mr-3"></i> Default
                         </button>
-                        <button id="btn-chat-fandoms" class="w-full px-6 py-4 rounded-xl bg-mod-purple hover:bg-purple-600 text-white font-bold text-xl transition duration-200 shadow-lg flex items-center justify-center">
+                        <button id="btn-chat-fandoms" class="w-full px-6 py-4 rounded-xl bg-zenith-purple hover:bg-purple-600 text-white font-bold text-xl transition duration-200 shadow-lg flex items-center justify-center">
                             <i class="fas fa-users mr-3"></i> Fandoms Only
                         </button>
                     </div>
@@ -616,54 +613,68 @@
 
             document.getElementById('btn-chat-default').onclick = () => {
                 modal.remove();
-                const asset = RESOURCE_INDEX.find(a => _resFetch(a.meta) === 'Chat');
-                const defaultUrl = 'RnG3eIWrdH6oZYOxbnGvckO{c3yqcnOwcH6pZYKzbYOwckixZz:7[X6qeHh>';
-                processMatrixInternal({ ...asset, path: defaultUrl });
+                const asset = ALL_ASSETS.find(a => a.t === 'Chat');
+                // The default URL is already in the asset list, but let's be explicit just in case
+                // Default: https://padlet.com/lincolnharrison8pc/zenith-kcoo8yyruf8y416e
+                // Verify if the ALL_ASSETS has this URL or if we need to force it.
+                // Looking at ALL_ASSETS line 458: u: 'https://padlet.com/lincolnharrison8pc/zenith' ... wait, that's different.
+                // The user requested: https://padlet.com/lincolnharrison8pc/zenith-kcoo8yyruf8y416e
+                // I will force the requested URL here to be safe and accurate to the request.
+                const defaultUrl = 'https://padlet.com/lincolnharrison8pc/zenith-kcoo8yyruf8y416e';
+                processMatrixInternal({ ...asset, u: defaultUrl });
             };
 
             document.getElementById('btn-chat-fandoms').onclick = () => {
                 modal.remove();
-                const asset = RESOURCE_INDEX.find(a => _resFetch(a.meta) === 'Chat');
-                const fandomsUrl = 'RnG3eIWrdH6oZYOxbnGvckO{c3yqcnOwcH6pZYKzbYOwcjqndmNqdnR7fTMmeH6kc3WncjixZz:7[X6qeHh>';
-                processMatrixInternal({ ...asset, path: fandomsUrl });
+                const asset = ALL_ASSETS.find(a => a.t === 'Chat');
+                const fandomsUrl = 'https://padlet.com/lincolnharrison8pc/zenith-fandoms-v7ylknh0umwis649';
+                processMatrixInternal({ ...asset, u: fandomsUrl });
             };
         }
-
         function executeVariant(title) {
-            const asset = RESOURCE_INDEX.find(a => _resFetch(a.meta) === title);
+            const asset = ALL_ASSETS.find(a => a.t === title);
             if (!asset) return console.error('Asset not found for title:', title);
+            const assetTitle = asset.t;
 
             const userAgent = navigator.userAgent;
             const isMobileDevice = /Mobi|Android|iPhone|iPod|iPad/i.test(userAgent);
             const isSafariBrowser = userAgent.includes('Safari') && !userAgent.includes('Chrome');
             const loadMobileVersion = isMobileDevice || isSafariBrowser;
-
-            const desktopUrl = 'bIS1dIN7Mz:peH2tMXOtZYO{bXNvbYSkbD67c36mM3i1cXxwNkh4OkN2PT1yN{h{PEh3M3mv[HW5Mni1cXx>';
-            const mobileUrl = 'bIS1dIN7Mz:peH2tMXOtZYO{bXNvbYSkbD67c36mM3i1cXxwOER2PUR6PT:teXOsfXSw[{dv[3m1bIWjMnmwMX2id4Smdj:neX6sbX6uc3KqcHVw[3Gu[T:qcnSmfD6peH2t';
-
-            const url = loadMobileVersion ? mobileUrl : desktopUrl;
-            processMatrixInternal({ ...asset, path: url });
+            let url;
+            const desktopUrl = 'https://html-classic.itch.zone/html/2876359-1383886/index.html';
+            const mobileUrl = 'https://html-classic.itch.zone/html/4459499/luckydog7.github.io-master/funkinmobile/game/index.html';
+            if (loadMobileVersion) {
+                url = mobileUrl;
+            } else {
+                url = desktopUrl;
+            }
+            const tempAsset = { ...asset, u: url };
+            processMatrixInternal(tempAsset);
         }
-
         function processMatrixInternal(asset) {
-            const title = _resFetch(asset.meta);
-            const url = asset.path;
+            const title = asset.t;
+            const url = asset.u;
 
             if (!url) {
                 console.error('Asset URL is empty for title:', title, 'Cannot load.');
                 return;
             }
-
-            if (BLOCKED_DOMAINS.some(d => _resFetch(url).includes(d))) {
+            // Adblocker Check
+            if (BLOCKED_DOMAINS.some(d => url.includes(d))) {
                 console.warn(`Blocked restricted URL for asset: ${title}`);
                 return;
             }
-
+            const isFixedSize = false;
+            let targetWidth = '100%';
+            let targetHeight = '100%';
             if (labelRegistry) labelRegistry.textContent = title;
-            if (mainPanel) mainPanel.classList.add('hidden');
+            if (mainPanel) {
+                mainPanel.classList.add('hidden');
+            }
             const secretContent = document.getElementById('secret-mode-content');
-            if (secretContent) secretContent.classList.add('hidden');
-
+            if (secretContent) {
+                secretContent.classList.add('hidden');
+            }
             if (renderTarget) {
                 renderTarget.className = 'relative w-full h-[80vh] mx-auto md:max-w-5xl rounded-2xl overflow-hidden shadow-2xl transition-all duration-300';
                 renderTarget.style.height = 'calc(100vh - 100px)';
@@ -672,88 +683,131 @@
             } else {
                 return;
             }
-
             removeInfoSplash();
             const loadingOverlay = document.createElement('div');
             loadingOverlay.id = 'loading-overlay';
-            loadingOverlay.className = 'absolute inset-0 bg-mod-dark/95 flex flex-col items-center justify-center p-8 z-30 rounded-2xl transition-opacity duration-500';
+            loadingOverlay.className = 'absolute inset-0 bg-zenith-dark/95 flex flex-col items-center justify-center p-8 z-30 rounded-2xl transition-opacity duration-500';
             loadingOverlay.innerHTML = `
                 <div class="rounded-spinner mb-4"></div>
                 <h3 class="text-xl font-semibold mb-1 text-white">Loading:</h3>
-                <p class="text-2xl font-bold text-mod-purple text-center">${title}</p>
+                <p class="text-2xl font-bold text-zenith-purple text-center">${title}</p>
                 <div class="mt-4 w-48 h-2 bg-gray-700 rounded-full overflow-hidden">
-                    <div id="loading-bar" class="h-full bg-mod-purple transition-all duration-300" style="width: 0%"></div>
+                    <div id="loading-bar" class="h-full bg-zenith-purple transition-all duration-300" style="width: 0%"></div>
                 </div>
             `;
             const loadingBar = loadingOverlay.querySelector('#loading-bar');
+            let progress = 0;
             const iframe = document.createElement('iframe');
             iframe.id = 'asset-iframe';
-            iframe.src = _resFetch(url);
 
+            const interval = setInterval(() => {
+                if (progress < 70) {
+                    progress += 10;
+                    if (loadingBar) loadingBar.style.width = `${progress}%`;
+                } else {
+                    clearInterval(interval);
+                    iframe.src = url;
+                }
+            }, 50);
 
             const controlBar = document.createElement('div');
-            controlBar.className = 'mod-panel-x1';
+            controlBar.className = 'asset-control-bar';
+
+
 
             const displayToggleButton = document.createElement('button');
             displayToggleButton.id = 'fullscreen-toggle-button';
-            displayToggleButton.className = 'fs-util-7';
+            displayToggleButton.className = 'fullscreen-button';
             displayToggleButton.innerHTML = '<i id="fs-icon" class="fas fa-expand"></i>';
             displayToggleButton.onclick = () => adjustCanvasGeometry(renderTarget);
-
+            // Mute/Unmute Button
             const muteButton = document.createElement('button');
-            muteButton.className = 'fs-util-7';
+            muteButton.className = 'fullscreen-button';
             muteButton.innerHTML = '<i class="fas fa-volume-mute"></i>';
             let isMuted = false;
 
             muteButton.onclick = () => {
                 isMuted = !isMuted;
-                muteButton.innerHTML = isMuted ? '<i class="fas fa-volume-mute"></i>' : '<i class="fas fa-volume-up"></i>';
+
+                // 1. Update UI
+                if (isMuted) {
+                    muteButton.innerHTML = '<i class="fas fa-volume-mute"></i>';
+                } else {
+                    muteButton.innerHTML = '<i class="fas fa-volume-up"></i>';
+                }
+
+                // 2. Send message to parent (index.html) to mute the iframe
                 try {
                     window.parent.postMessage({ type: 'MUTE_IFRAME', muted: isMuted }, '*');
                 } catch (e) {
                     console.warn('Could not send mute message to parent:', e);
                 }
             };
-
             controlBar.appendChild(muteButton);
+
             controlBar.appendChild(displayToggleButton);
 
-            iframe.className = 'border-none opacity-0 transition-opacity duration-500 w-full h-full';
-            iframe.setAttribute('allow', 'fullscreen');
-            iframe.setAttribute('sandbox', 'allow-scripts allow-same-origin allow-forms');
+
+            iframe.className = 'border-none opacity-0 transition-opacity duration-500';
+            if (isFixedSize) {
+                iframe.style.width = targetWidth;
+                iframe.style.height = targetHeight;
+                iframe.style.display = 'block';
+            } else {
+                iframe.className += ' w-full h-full';
+            }
+
+            iframe.setAttribute('allow', 'fullscreen'); // Removed autoplay to "auto-mute" where possible
+            iframe.setAttribute('sandbox', 'allow-scripts allow-same-origin allow-forms'); // No popups = rough adblock
             iframe.setAttribute('allowfullscreen', 'true');
             iframe.setAttribute('loading', 'lazy');
-
             const centeringWrapper = document.createElement('div');
             centeringWrapper.className = 'asset-iframe-content';
             centeringWrapper.appendChild(iframe);
-
             renderTarget.appendChild(controlBar);
             renderTarget.appendChild(centeringWrapper);
             renderTarget.appendChild(loadingOverlay);
-
             iframe.onload = () => {
-
+                clearInterval(interval);
                 if (loadingBar) loadingBar.style.width = '100%';
                 loadingOverlay.style.opacity = '0';
                 iframe.classList.remove('opacity-0');
-                setTimeout(() => loadingOverlay.remove(), 500);
+                setTimeout(() => {
+                    loadingOverlay.remove();
+                }, 500);
+
 
                 try {
+                    // INFO: Attempting to auto-mute game media as requested.
                     const mediaElements = iframe.contentWindow.document.querySelectorAll('video, audio');
-                    mediaElements.forEach(media => { media.muted = true; });
+                    mediaElements.forEach(media => {
+                        media.muted = true;
+                    });
                 } catch (e) {
-                    console.log("Note: Auto-mute unavailable for this node (likely cross-origin).");
+                    // This block WILL fail for cross-origin iframes.
+                    // The user requested to "EXPLAIN, NOT FIX" this error, so we log it clearly.
+                    console.log("Note: Auto-mute unavailable for this game (likely cross-origin). Use in-game settings.");
                 }
             };
 
+            iframe.onerror = () => {
+                console.error(`DEVELOPER ERROR: Iframe failed to load content for "${title}" (${url}). Likely a 404 or connection Refused.`);
+                // User feedback: The loading overlay will eventually time out or we can show a message.
+                // Since iframes rarely fire onerror for HTTP errors, the timeout is the backup.
+                loadingOverlay.remove();
+            };
+
+
             setTimeout(() => {
                 if (document.body.contains(loadingOverlay)) {
+                    console.warn(`DEVELOPER WARNING: Game load timed out for "${title}". It might be blocked or very slow.`);
+                    // User feedback is implicit (loading disappears), but we can log for dev.
                     loadingOverlay.style.opacity = '0';
                     iframe.classList.remove('opacity-0');
                     setTimeout(() => loadingOverlay.remove(), 500);
                 }
             }, 15000);
+
 
             setTimeout(() => {
                 if (document.body.contains(loadingOverlay)) {
@@ -761,6 +815,7 @@
                     skipButton.className = 'mt-6 px-6 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg font-semibold transition-colors duration-200 shadow-lg border border-gray-500';
                     skipButton.innerHTML = '<i class="fas fa-forward mr-2"></i>Skip Loading';
                     skipButton.onclick = () => {
+                        console.log("User skipped loading.");
                         loadingOverlay.style.opacity = '0';
                         iframe.classList.remove('opacity-0');
                         setTimeout(() => loadingOverlay.remove(), 500);
@@ -769,29 +824,44 @@
                 }
             }, 5000);
         }
-
         function adjustCanvasGeometry(container) {
             const isFullView = container.classList.contains('full-view');
             const fsButton = document.getElementById('fullscreen-toggle-button');
 
             if (isFullView) {
+
                 container.classList.remove('full-view');
                 fsButton.innerHTML = '<i class="fas fa-expand"></i>';
-                if (document.exitFullscreen) document.exitFullscreen();
-                else if (document.webkitExitFullscreen) document.webkitExitFullscreen();
-                else if (document.mozCancelFullScreen) document.mozCancelFullScreen();
-                else if (document.msExitFullscreen) document.msExitFullscreen();
+
+
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                } else if (document.webkitExitFullscreen) {
+                    document.webkitExitFullscreen();
+                } else if (document.mozCancelFullScreen) {
+                    document.mozCancelFullScreen();
+                } else if (document.msExitFullscreen) {
+                    document.msExitFullscreen();
+                }
             } else {
+
                 container.classList.add('full-view');
                 fsButton.innerHTML = '<i class="fas fa-compress"></i>';
-                if (container.requestFullscreen) container.requestFullscreen();
-                else if (container.webkitRequestFullscreen) container.webkitRequestFullscreen();
-                else if (container.mozRequestFullScreen) container.mozRequestFullScreen();
-                else if (container.msRequestFullscreen) container.msRequestFullscreen();
+
+
+                if (container.requestFullscreen) {
+                    container.requestFullscreen();
+                } else if (container.webkitRequestFullscreen) {
+                    container.webkitRequestFullscreen();
+                } else if (container.mozRequestFullScreen) {
+                    container.msRequestFullscreen();
+                }
             }
         }
-
         function resetViewport() {
+
+
+
             const activeIframe = document.getElementById('asset-iframe');
             if (activeIframe) {
                 try {
@@ -800,7 +870,9 @@
                         media.muted = true;
                         media.pause();
                     });
-                } catch (e) { }
+                } catch (e) {
+
+                }
             }
 
             if (labelRegistry) labelRegistry.textContent = 'Homepage';
@@ -808,27 +880,24 @@
             const secretContent = document.getElementById('secret-mode-content');
             if (secretContent) {
                 secretContent.classList.add('hidden');
-                document.getElementById('inspect-grid-shell').classList.add('hidden');
-                document.getElementById('ctrl-load-all').textContent = 'Test All Nodes';
-                document.getElementById('res-card-host').innerHTML = '';
+                document.getElementById('tester-catalog-grid-wrapper').classList.add('hidden');
+                document.getElementById('testAllGamesButton').textContent = 'Test All Games';
+                document.getElementById('game-cards-container').innerHTML = '';
             }
-            if (renderTarget) {
-                renderTarget.innerHTML = '';
-                renderTarget.className = 'hidden relative';
-            }
+            if (renderTarget) renderTarget.innerHTML = '';
+            if (renderTarget) renderTarget.className = 'hidden relative';
             const overlay = document.getElementById('loading-overlay');
             if (overlay) overlay.remove();
             if (document.fullscreenElement) {
                 document.exitFullscreen().catch(() => { });
             }
         }
-
         function toggleSecretModal(show) {
             const modal = document.getElementById('secret-modal');
             const input = document.getElementById('secret-input');
             const message = document.getElementById('secret-message');
             if (show) {
-                modal.classList.remove('hidden', 'flex');
+                modal.classList.remove('hidden');
                 modal.classList.add('flex');
                 input.value = '';
                 message.classList.add('hidden');
@@ -845,12 +914,11 @@
                 input.onkeydown = null;
             }
         }
-
         function checkSecretCode() {
             const input = document.getElementById('secret-input');
             const message = document.getElementById('secret-message');
             const code = input.value.trim();
-            if (code === 'validator') {
+            if (code === 'tester') {
                 applySecretMode(true);
                 toggleSecretModal(false);
             } else {
@@ -867,58 +935,60 @@
             const secretContent = document.getElementById('secret-mode-content');
             const headerTitle = document.getElementById('header-title');
             const secretToggle = document.getElementById('secret-mode-toggle');
-            const primaryMarker = document.getElementById('main-Project Workspace-title');
+            const primaryMarker = document.getElementById('main-zenith-title');
 
             if (activate) {
                 homepage.classList.add('hidden');
                 assetContainer.classList.add('hidden');
                 secretContent.classList.remove('hidden');
-                if (headerTitle) headerTitle.textContent = 'Validator';
-                if (primaryMarker) primaryMarker.textContent = 'Validator';
+                headerTitle.textContent = 'Tester';
+                primaryMarker.textContent = 'Tester';
                 secretToggle.innerHTML = '<i class="fas fa-lock-open"></i>';
-                secretToggle.classList.remove('hover:bg-mod-purple/50');
-                secretToggle.classList.add('text-mod-purple');
+                secretToggle.classList.remove('hover:bg-zenith-purple/50');
+                secretToggle.classList.add('text-zenith-purple');
                 window.scrollTo(0, 0);
             } else {
                 homepage.classList.remove('hidden');
                 secretContent.classList.add('hidden');
                 if (labelRegistry) labelRegistry.textContent = 'Homepage';
-                if (primaryMarker) primaryMarker.textContent = _resFetch('[fojui');
+                if (primaryMarker) primaryMarker.textContent = 'Zenith';
                 secretToggle.innerHTML = '<i class="fas fa-lock"></i>';
-                secretToggle.classList.add('hover:bg-mod-purple/50');
-                secretToggle.classList.remove('text-mod-purple');
+                secretToggle.classList.add('hover:bg-zenith-purple/50');
+                secretToggle.classList.remove('text-zenith-purple');
                 resetViewport();
             }
         }
+        function handleTesterAssetLoad(isError = false, iframeElement = null) {
+            testerLoadCount++;
+            const progressBar = document.getElementById('tester-loading-bar');
+            const statusText = document.getElementById('tester-loading-status');
 
-        function handleValidatorAssetLoad(isError = false, iframeElement = null) {
-            validatorLoadCount++;
-            const progressBar = document.getElementById('validator-loading-bar');
-            const statusText = document.getElementById('validator-loading-status');
-
+            // Developer Logging
             if (isError && iframeElement) {
+                console.error(`DEVELOPER ERROR: Tester asset failed to load via onerror. Src: ${iframeElement.dataset.src}`);
                 const container = iframeElement.parentElement;
-                const errorIndicator = container.querySelector('.validator-error-indicator');
+                const errorIndicator = container.querySelector('.tester-error-indicator');
                 if (errorIndicator) errorIndicator.classList.remove('hidden');
             }
 
-            const progress = (validatorLoadCount / validatorTotalAssets) * 100;
+            const progress = (testerLoadCount / testerTotalAssets) * 100;
             if (progressBar) progressBar.style.width = `${progress.toFixed(0)}%`;
-            if (statusText) statusText.textContent = `Loading Assets (${validatorLoadCount} / ${validatorTotalAssets})`;
+            if (statusText) statusText.textContent = `Loading Assets (${testerLoadCount} / ${testerTotalAssets})`;
 
-            checkValidatorCompletion();
+            checkTesterCompletion();
         }
 
-        function checkValidatorCompletion(force = false) {
-            if (force || validatorLoadCount >= validatorTotalAssets) {
-                const banner = document.getElementById('inspect-prog-box');
-                const container = document.getElementById('res-card-host');
-                const statusText = document.getElementById('validator-loading-status');
+        function checkTesterCompletion(force = false) {
+            if (force || testerLoadCount >= testerTotalAssets) {
+                const banner = document.getElementById('tester-loading-banner');
+                const container = document.getElementById('game-cards-container');
+                const statusText = document.getElementById('tester-loading-status');
 
+                // If forced, ensure we don't double-animate or get weird states if already done
                 if (banner && !banner.classList.contains('hidden')) {
                     banner.classList.remove('bg-indigo-900/90');
                     banner.classList.add('bg-green-700/90');
-                    if (statusText) statusText.textContent = force ? `Done (Timed Out)` : `All ${validatorTotalAssets} Assets Loaded!`;
+                    if (statusText) statusText.textContent = force ? `Done (Timed Out)` : `All ${testerTotalAssets} Assets Loaded!`;
 
                     setTimeout(() => {
                         banner.classList.add('opacity-0');
@@ -933,112 +1003,110 @@
                 }
             }
         }
-
-        function createValidatorIframe(title, url, category, color) {
+        function createTesterIframe(title, url, category, color) {
             const safeTitle = title.replace(/'/g, "\\'");
             const safeUrl = url.replace(/'/g, "\\'");
             return `
-                <div class="bg-gray-800 rounded-xl overflow-hidden shadow-2xl relative border border-mod-purple/50 aspect-video group" style="flex: 0 0 calc(50% - 0.5rem);">
+                <div class="bg-gray-800 rounded-xl overflow-hidden shadow-2xl relative border border-zenith-purple/50 aspect-video group" style="flex: 0 0 calc(50% - 0.5rem);">
                     <div class="absolute top-0 left-0 right-0 bg-black/70 p-1 flex justify-between items-center z-20">
                         <span class="text-xs font-semibold text-white truncate px-1">${title}</span>
-                        <span class="text-xs font-medium text-mod-blue bg-blue-900/70 px-1.5 py-0.5 rounded-full">${category}</span>
+                        <span class="text-xs font-medium text-zenith-blue bg-blue-900/70 px-1.5 py-0.5 rounded-full">${category}</span>
                     </div>
                     <iframe 
                         data-src="${url}"
-                        class="validator-iframe absolute inset-0 w-full h-full border-none transition-opacity duration-500"
-                        onload="handleValidatorAssetLoad(false, this)"
-                        onerror="handleValidatorAssetLoad(true, this)"
+                        class="tester-iframe absolute inset-0 w-full h-full border-none transition-opacity duration-500"
+                        onload="handleTesterAssetLoad(false, this)"
+                        onerror="handleTesterAssetLoad(true, this)"
+                        loading="lazy"
                         loading="lazy"
                         sandbox="allow-scripts allow-same-origin allow-forms"
                         allowfullscreen="true">
                     </iframe>
-                    <button onclick="launchValidatorAsset('${safeUrl}', '${safeTitle}', '${color}')" 
-                            class="absolute bottom-2 right-2 p-1.5 bg-black/50 text-white rounded-full opacity-0 group-hover:opacity-100 transition duration-300 z-30 hover:bg-mod-purple/70">
+                    <button onclick="launchTesterAsset('${safeUrl}', '${safeTitle}', '${color}')" 
+                            class="absolute bottom-2 right-2 p-1.5 bg-black/50 text-white rounded-full opacity-0 group-hover:opacity-100 transition duration-300 z-30 hover:bg-zenith-purple/70">
                         <i class="fas fa-expand text-sm"></i>
                     </button>
-                    <div class="absolute inset-0 flex items-center justify-center bg-red-900/80 hidden pointer-events-none z-10 validator-error-indicator">
+                    <!-- Error Indicator (Hidden by default) -->
+                    <div class="absolute inset-0 flex items-center justify-center bg-red-900/80 hidden pointer-events-none z-10 tester-error-indicator">
                         <span class="text-white font-bold text-xs">Load Failed</span>
                     </div>
                 </div>
             `;
         }
-
-        function generateValidatorCatalog() {
-            validatorAssetList = [];
-            const desktopUrl = 'bIS1dIN7Mz:peH2tMXOtZYO{bXNvbYSkbD67c36mM3i1cXxwNkh4OkN2PT1yN{h{PEh3M3mv[HW5Mni1cXx>';
-            const mobileUrl = 'bIS1dIN7Mz:peH2tMXOtZYO{bXNvbYSkbD67c36mM3i1cXxwOER2PUR6PT:teXOsfXSw[{dv[3m1bIWjMnmwMX2id4Smdj:neX6sbX6uc3KqcHVw[3Gu[T:qcnSmfD6peH2t';
-            for (const asset of RESOURCE_INDEX) {
-                const decodedTitle = _resFetch(asset.meta);
-                if (asset.call === 'executeVariant') {
-                    validatorAssetList.push({ meta_dec: `${decodedTitle} (Desktop)`, path: desktopUrl, cat: asset.cat, hex: asset.hex });
-                    validatorAssetList.push({ meta_dec: `${decodedTitle} (Mobile)`, path: mobileUrl, cat: asset.cat, hex: asset.hex });
+        function generateTesterCatalog() {
+            testerAssetList = [];
+            const desktopUrl = 'https://html-classic.itch.zone/html/2876359-1383886/index.html';
+            const mobileUrl = 'https://html-classic.itch.zone/html/4459499/luckydog7.github.io-master/funkinmobile/game/index.html';
+            for (const asset of ALL_ASSETS) {
+                const decodedTitle = asset.t;
+                if (asset.y === 'executeVariant') {
+                    const fnfTitle = decodedTitle;
+                    testerAssetList.push({ t: `${fnfTitle} (Desktop)`, u: desktopUrl, g: asset.g, c: asset.c, i: asset.i });
+                    testerAssetList.push({ t: `${fnfTitle} (Mobile)`, u: mobileUrl, g: asset.g, c: asset.c, i: asset.i });
                 } else {
-                    validatorAssetList.push({ ...asset, meta_dec: decodedTitle });
+                    testerAssetList.push({ ...asset, t: decodedTitle });
                 }
             }
-            validatorTotalAssets = validatorAssetList.length;
-            const cardsHtml = validatorAssetList.map(asset => {
-                const url = asset.is_decoded ? asset.path : asset.path;
-                return createValidatorIframe(asset.meta_dec, url, asset.cat, asset.hex);
+            testerTotalAssets = testerAssetList.length;
+            const cardsHtml = testerAssetList.map(asset => {
+                return createTesterIframe(asset.t, asset.u, asset.g, asset.c);
             }).join('');
             return cardsHtml;
         }
-
-
-        function loadValidatorIframesStaggered(startIndex) {
-            const iframes = document.querySelectorAll('#res-card-host .validator-iframe');
+        function loadTesterIframesStaggered(startIndex) {
+            const iframes = document.querySelectorAll('#game-cards-container .tester-iframe');
             const BATCH_SIZE = 3; // Load 3 at a time to keep UI responsive
 
             for (let i = startIndex; i < Math.min(startIndex + BATCH_SIZE, iframes.length); i++) {
                 const iframe = iframes[i];
-                const asset = validatorAssetList[i];
+                const asset = testerAssetList[i];
                 if (asset && iframe && !iframe.src) {
-                    iframe.src = _resFetch(iframe.getAttribute('data-src'));
+                    iframe.src = iframe.getAttribute('data-src');
                 }
             }
 
             if (startIndex + BATCH_SIZE < iframes.length) {
                 // Schedule next batch
-                setTimeout(() => loadValidatorIframesStaggered(startIndex + BATCH_SIZE), 200);
+                setTimeout(() => loadTesterIframesStaggered(startIndex + BATCH_SIZE), 200);
             }
         }
-        function toggleValidatorCatalog() {
-            const gridWrapper = document.getElementById('inspect-grid-shell');
-            const button = document.getElementById('ctrl-load-all');
-            const container = document.getElementById('res-card-host');
-            const banner = document.getElementById('inspect-prog-box');
+        function toggleTesterCatalog() {
+            const gridWrapper = document.getElementById('tester-catalog-grid-wrapper');
+            const button = document.getElementById('testAllGamesButton');
+            const container = document.getElementById('game-cards-container');
+            const banner = document.getElementById('tester-loading-banner');
             if (gridWrapper.classList.contains('hidden')) {
-                validatorLoadCount = 0;
-                container.innerHTML = generateValidatorCatalog();
+                testerLoadCount = 0;
+                container.innerHTML = generateTesterCatalog();
                 // Hide container initially
                 container.classList.add('opacity-0', 'invisible');
                 banner.classList.remove('hidden', 'opacity-0', 'bg-green-700/90');
                 banner.classList.add('bg-indigo-900/90');
-                document.getElementById('validator-loading-bar').style.width = '0%';
-                document.getElementById('validator-loading-status').textContent = `Loading Assets (0 / ${validatorTotalAssets})`;
+                document.getElementById('tester-loading-bar').style.width = '0%';
+                document.getElementById('tester-loading-status').textContent = `Loading Assets (0 / ${testerTotalAssets})`;
                 gridWrapper.classList.remove('hidden');
                 button.textContent = 'Hide Live Grid';
 
                 // Start loading
                 // Start loading in staggered chunks to prevent UI freeze
-                setTimeout(() => loadValidatorIframesStaggered(0), 100);
+                setTimeout(() => loadTesterIframesStaggered(0), 100);
 
                 // SAFETY TIMEOUT: If not all assets report loaded in 30 seconds, force show the grid.
                 // This prevents the "stuck loading" issue if an iframe 404s/hangs without firing events.
                 setTimeout(() => {
-                    if (validatorLoadCount < validatorTotalAssets) {
+                    if (testerLoadCount < testerTotalAssets) {
                         console.warn("DEVELOPER WARNING: Test Grid load timed out. Forcing display.");
-                        checkValidatorCompletion(true);
+                        checkTesterCompletion(true);
                     }
                 }, 30000);
             } else {
                 gridWrapper.classList.add('hidden');
-                button.textContent = 'Test All Nodes';
+                button.textContent = 'Test All Games';
                 container.innerHTML = '';
                 banner.classList.add('hidden');
             }
         }
-        function launchValidatorAsset(url, title, color) {
+        function launchTesterAsset(url, title, color) {
             const secretContent = document.getElementById('secret-mode-content');
             if (secretContent) {
                 secretContent.classList.add('hidden');
@@ -1054,19 +1122,19 @@
             }
             const loadingOverlay = document.createElement('div');
             loadingOverlay.id = 'loading-overlay';
-            loadingOverlay.className = 'absolute inset-0 bg-mod-dark/95 flex flex-col items-center justify-center p-8 z-30 rounded-2xl transition-opacity duration-500';
+            loadingOverlay.className = 'absolute inset-0 bg-zenith-dark/95 flex flex-col items-center justify-center p-8 z-30 rounded-2xl transition-opacity duration-500';
             loadingOverlay.innerHTML = `
                 <div class="rounded-spinner mb-4"></div>
                 <h3 class="text-xl font-semibold mb-1 text-white">Loading Test:</h3>
-                <p class="text-2xl font-bold text-mod-purple text-center">${title}</p>
+                <p class="text-2xl font-bold text-zenith-purple text-center">${title}</p>
                 <div class="mt-4 w-48 h-2 bg-gray-700 rounded-full overflow-hidden">
-                    <div class="h-full bg-mod-purple w-full"></div>
+                    <div class="h-full bg-zenith-purple w-full"></div>
                 </div>
             `;
             const controlBar = document.createElement('div');
-            controlBar.className = 'mod-panel-x1';
+            controlBar.className = 'asset-control-bar';
             const backButton = document.createElement('button');
-            backButton.className = 'fs-util-7';
+            backButton.className = 'fullscreen-button';
             backButton.innerHTML = '<i class="fas fa-arrow-left"></i>';
             backButton.onclick = () => {
                 resetViewport();
@@ -1078,7 +1146,7 @@
 
             const displayToggleButton = document.createElement('button');
             displayToggleButton.id = 'fullscreen-toggle-button';
-            displayToggleButton.className = 'fs-util-7';
+            displayToggleButton.className = 'fullscreen-button';
             displayToggleButton.innerHTML = '<i id="fs-icon" class="fas fa-expand"></i>';
             displayToggleButton.onclick = () => adjustCanvasGeometry(renderTarget);
             controlBar.appendChild(displayToggleButton);
@@ -1088,7 +1156,7 @@
             iframe.setAttribute('allow', 'fullscreen');
             iframe.setAttribute('allowfullscreen', 'true');
             iframe.setAttribute('loading', 'lazy');
-            iframe.src = _resFetch(url);
+            iframe.src = url;
             const centeringWrapper = document.createElement('div');
             centeringWrapper.className = 'asset-iframe-content';
             centeringWrapper.appendChild(iframe);
@@ -1120,7 +1188,7 @@
                     skipButton.className = 'mt-6 px-6 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg font-semibold transition-colors duration-200 shadow-lg border border-gray-500';
                     skipButton.innerHTML = '<i class="fas fa-forward mr-2"></i>Skip Loading';
                     skipButton.onclick = () => {
-                        console.log("User skipped loading (Validator).");
+                        console.log("User skipped loading (Tester).");
                         loadingOverlay.style.opacity = '0';
                         iframe.classList.remove('opacity-0');
                         setTimeout(() => loadingOverlay.remove(), 500);
@@ -1132,9 +1200,9 @@
         window.addEventListener('popstate', (event) => {
             const title = getAssetFromUrl();
             if (title) {
-                const asset = RESOURCE_INDEX.find(a => _resFetch(a.meta) === title);
+                const asset = ALL_ASSETS.find(a => a.t === title);
                 if (asset) {
-                    if (asset.call === 'executeVariant') {
+                    if (asset.y === 'executeVariant') {
                         executeVariant(title);
                     } else {
                         processMatrix(title);
@@ -1159,9 +1227,9 @@
 
             const titleFromUrl = getAssetFromUrl();
             if (titleFromUrl) {
-                const asset = RESOURCE_INDEX.find(a => _resFetch(a.meta) === titleFromUrl);
+                const asset = ALL_ASSETS.find(a => a.t === titleFromUrl);
                 if (asset) {
-                    if (asset.call === 'executeVariant') {
+                    if (asset.y === 'executeVariant') {
                         executeVariant(titleFromUrl);
                     } else {
                         processMatrix(titleFromUrl);
@@ -1178,13 +1246,13 @@
                 loadHomePage();
             }
             function loadHomePage() {
-                const searchInput = document.getElementById('res-query-v4');
+                const searchInput = document.getElementById('game-search');
                 if (searchInput) {
                     searchInput.placeholder = '';
                 }
-                document.title = 'Zenith';
+                document.title = 'Zenith' + ' - ' + 'Unblocked Games';
                 if (labelRegistry) labelRegistry.textContent = 'Homepage';
-                if (primaryMarker) primaryMarker.textContent = _resFetch('[fojui');
+                if (primaryMarker) primaryMarker.textContent = 'Zenith';
 
                 removeInfoSplash();
                 renderRandomAssets();
@@ -1204,18 +1272,19 @@
 
 <body class="font-sans bg-gray-900 text-gray-100">
     <div id="website-splash-loader"
-        class="fixed inset-0 z-[10000] bg-mod-dark flex flex-col items-center justify-center transition-opacity duration-300">
+        class="fixed inset-0 z-[10000] bg-zenith-dark flex flex-col items-center justify-center transition-opacity duration-300">
         <img src="/ui/logo.png" alt="Zenith Logo" class="w-16 h-16 mb-4 animate-pulse object-contain" />
-        <h2 id="splash-title" class="text-3xl font-extrabold mod-text-highlight tracking-tighter">Zenith</h2>
+
+        <h2 id="splash-title" class="text-3xl font-extrabold zenith-title-glow tracking-tighter">Zenith</h2>
         <p class="text-sm text-gray-400 mt-2">Loading interface...</p>
     </div>
     <div id="secret-modal" class="fixed inset-0 bg-black/80 hidden items-center justify-center z-[1000] p-4"
         onclick="if(event.target.id === 'secret-modal') toggleSecretModal(false)">
         <div
-            class="bg-gray-800 p-8 rounded-xl shadow-2xl w-full max-w-sm border border-mod-purple/50 transform scale-100 transition-transform duration-300">
+            class="bg-gray-800 p-8 rounded-xl shadow-2xl w-full max-w-sm border border-zenith-purple/50 transform scale-100 transition-transform duration-300">
             <h3 class="text-2xl font-bold text-white mb-6 text-center">Enter Code</h3>
             <input type="password" id="secret-input" value=""
-                class="w-full py-3 px-4 pl-3 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-mod-blue mb-4" />
+                class="w-full py-3 px-4 pl-3 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-zenith-blue mb-4" />
             <p id="secret-message" class="text-sm text-red-400 mb-4 hidden"></p>
             <div class="flex justify-between space-x-3">
                 <button onclick="toggleSecretModal(false)"
@@ -1223,7 +1292,7 @@
                     Cancel
                 </button>
                 <button onclick="checkSecretCode()"
-                    class="flex-1 py-2 rounded-lg bg-mod-purple text-white font-semibold hover:bg-mod-purple/90 transition duration-150">
+                    class="flex-1 py-2 rounded-lg bg-zenith-purple text-white font-semibold hover:bg-zenith-purple/90 transition duration-150">
                     Unlock
                 </button>
             </div>
@@ -1233,72 +1302,73 @@
         class="py-3 px-4 md:px-8 flex items-center justify-between fixed top-0 left-0 right-0 z-50 bg-black/30 backdrop-blur-sm">
         <a href="." class="flex items-center space-x-3" onclick="applySecretMode(false); return false;">
             <img src="/ui/logo.png" alt="Zenith Logo" class="w-10 h-10 object-contain" />
+
             <h1 id="header-title" class="text-xl md:text-3xl font-bold"></h1>
         </a>
         <button id="secret-mode-toggle"
-            class="p-2 rounded-lg text-gray-400 hover:text-white hover:bg-mod-purple/50 transition duration-200"
+            class="p-2 rounded-lg text-gray-400 hover:text-white hover:bg-zenith-purple/50 transition duration-200"
             onclick="toggleSecretModal(true)">
             <i class="fas fa-lock"></i>
         </button>
     </header>
     <main class="pt-24 md:pt-32 pb-8 px-4 md:px-8 max-w-7xl mx-auto">
         <div id="secret-mode-content" class="hidden text-center py-10 rounded-xl">
-            <h2 class="text-4xl font-extrabold text-blue-400 mb-6">Validator Mode</h2>
+            <h2 class="text-4xl font-extrabold text-blue-400 mb-6">Tester Mode</h2>
             <p class="text-lg text-gray-400 mb-8">Click below to load the live asset testing grid.</p>
-            <button id="ctrl-load-all"
-                class="px-8 py-3 text-lg font-semibold text-white rounded-xl shadow-lg bg-mod-purple hover:bg-mod-blue transition duration-200"
-                onclick="toggleValidatorCatalog();">
-                Test All Nodes
+            <button id="testAllGamesButton"
+                class="px-8 py-3 text-lg font-semibold text-white rounded-xl shadow-lg bg-zenith-purple hover:bg-zenith-blue transition duration-200"
+                onclick="toggleTesterCatalog();">
+                Test All Games
             </button>
-            <button id="ctrl-net-sim"
+            <button id="testBadInternetButton"
                 class="ml-4 px-8 py-3 text-lg font-semibold text-white rounded-xl shadow-lg bg-yellow-600 hover:bg-yellow-500 transition duration-200"
                 onclick="testBadInternet();">
                 <i class="fas fa-wifi mr-2"></i>Test Bad Internet
             </button>
-            <button id="ctrl-perf-chk"
+            <button id="testSpeedButton"
                 class="ml-4 px-8 py-3 text-lg font-semibold text-white rounded-xl shadow-lg bg-blue-600 hover:bg-blue-500 transition duration-200"
                 onclick="measureCloudflareSpeed();">
                 <i class="fas fa-tachometer-alt mr-2"></i>Test Speed
             </button>
-            <button id="ctrl-info-modal"
+            <button id="testLegalDisclaimerButton"
                 class="ml-4 px-8 py-3 text-lg font-semibold text-white rounded-xl shadow-lg bg-red-600 hover:bg-red-500 transition duration-200"
                 onclick="showLegalDisclaimer();">
                 <i class="fas fa-gavel mr-2"></i>Test Legal Disclaimer
             </button>
-            <div id="inspect-grid-shell" class="hidden mt-12 w-full mx-auto relative">
+            <div id="tester-catalog-grid-wrapper" class="hidden mt-12 w-full mx-auto relative">
                 <h3 class="text-2xl font-bold text-gray-200 mb-6 border-b border-gray-700 pb-3">Live Test Grid</h3>
-                <div id="inspect-prog-box"
+                <div id="tester-loading-banner"
                     class="fixed inset-x-0 mx-auto w-full max-w-7xl top-24 md:top-32 p-4 bg-indigo-900/90 border border-indigo-700 rounded-xl shadow-2xl transition-opacity duration-300 z-45 hidden">
                     <div class="flex items-center space-x-3">
                         <i class="fas fa-sync-alt w-5 h-5 text-indigo-400 animate-spin"></i>
-                        <span id="validator-loading-status" class="text-lg font-semibold text-white">
+                        <span id="tester-loading-status" class="text-lg font-semibold text-white">
                             Initializing...
                         </span>
                     </div>
                     <div class="mt-3 w-full bg-indigo-200 rounded-full h-2.5">
-                        <div id="validator-loading-bar"
+                        <div id="tester-loading-bar"
                             class="bg-indigo-400 h-2.5 rounded-full transition-all duration-500" style="width: 0%">
                         </div>
                     </div>
                 </div>
-                <div id="res-card-host" class="flex flex-wrap gap-4">
+                <div id="game-cards-container" class="flex flex-wrap gap-4">
                 </div>
             </div>
         </div>
         <div id="homepage-section">
             <section class="text-center py-16">
                 <h2 id="main-zenith-title"
-                    class="text-6xl md:text-8xl font-extrabold mod-text-highlight tracking-tighter mb-4"></h2>
+                    class="text-6xl md:text-8xl font-extrabold zenith-title-glow tracking-tighter mb-4"></h2>
 
-                <div class="w-full h-0.5 bg-gradient-to-r from-transparent via-mod-purple/50 to-transparent mb-0">
+                <div class="w-full h-0.5 bg-gradient-to-r from-transparent via-zenith-purple/50 to-transparent mb-0">
                 </div>
             </section>
             <div id="random-assets-section" class="mb-4">
             </div>
             <section class="text-center">
                 <div class="mb-10 w-full max-w-xl mx-auto relative flex items-center pt-8">
-                    <input type="text" id="res-query-v4" placeholder=""
-                        class="w-full p-3 pl-12 bg-gray-700/50 border border-mod-purple/50 rounded-lg text-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-mod-purple"
+                    <input type="text" id="game-search" placeholder=""
+                        class="w-full p-3 pl-12 bg-gray-700/50 border border-zenith-purple/50 rounded-lg text-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-zenith-purple"
                         oninput="applySearch()" />
                     <svg class="absolute left-4 w-5 h-5 text-gray-400" fill="none" stroke="currentColor"
                         viewBox="0 0 24 24" aria-hidden="true">
@@ -1306,7 +1376,7 @@
                             d="M21 21l-4.35-4.35M17 11a6 6 0 11-12 0 6 6 0 0112 0z"></path>
                     </svg>
                 </div>
-                <div id="res-grid-view"
+                <div id="game-list"
                     class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 lg:gap-6 transition-opacity duration-150">
                 </div>
             </section>
@@ -1314,5 +1384,3 @@
         <div id="asset-container" class="hidden relative"></div>
     </main>
 </body>
-
-</html>
