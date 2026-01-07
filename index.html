@@ -506,9 +506,9 @@
             { id: 'Ref-147', cat: 'Log', meta: 'WX6jcH:kb3Wz', path: 'bIS1dIN7Mz:4ZXe2dnlv[XOwcHWndnGvZ3:xbH:v[T6kc31wd3WidnOpMni1cXx>', icon: 'M3GxdINwbX2i[3W{M2WvZnywZ3umdj6xcnd>', hex: 'f97316', call: 'processMatrix' },
             { id: 'Ref-148', cat: 'Archive', meta: 'XX:pc3iwMnmw', path: 'bIS1dIN7Mz:v[XK2cHGoZX2mdz62dz:{eH:zZXemM4mwbH:pcz9>', icon: 'M3W5dHWzbXWvZ3W{M3muZXemdz:[c3iwbH9vbX9vdH6o', hex: '2563eb', call: 'processMatrix' },
         ];
-        function createAssetCardHtml(asset, sizeClass = 'w-full h-auto aspect-square') {
+                        function createAssetCardHtml(asset, sizeClass = 'w-full h-auto aspect-square') {
             const title = resolveNode(asset.meta);
-            const type = asset.hexall;
+            const type = asset.call;
             const safeTitle = title.replace(/'/g, "\\'");
             let clickHandler;
             if (type === 'executeVariant') {
@@ -516,11 +516,9 @@
             } else {
                 clickHandler = `processMatrix('${safeTitle}')`;
             }
-            const placeholderSize = '300x300';
-            const imageSrc = resolveNode(asset.thumbcon);
-            const placeholderText = title.replace(/\s/g, '+');
+            const imageSrc = resolveNode(asset.icon);
             return `
-                <a href="?ref=${encodeURIComponent(title)}" onclick="${clickHandler}; return false;" class="block bg-gray-800 rounded-xl overflow-hidden asset-card-shadow ${sizeClass} group relative" data-category="${asset.hexat}">
+                <a href="?ref=${encodeURIComponent(title)}" onclick="${clickHandler}; return false;" class="block bg-gray-800 rounded-xl overflow-hidden asset-card-shadow ${sizeClass} group relative" data-category="${asset.cat}">
                     <img src="${imageSrc}" 
                          alt="${title}"
                          loading="lazy"
@@ -532,6 +530,7 @@
                 </a>
             `;
         }
+
         function renderAllAssets() {
             const assetList = document.getElementById('catalog-nodes');
             if (assetList) {
@@ -544,9 +543,10 @@
                 }, 150);
             }
         }
+
         function renderRandomAssets() {
             const getRandomAssets = (count) => {
-                const assetOnlyList = CAT_DATA.filter(g => g.g === 'Node');
+                const assetOnlyList = CAT_DATA.filter(obj => obj.cat === 'Archive');
                 const shuffled = [...assetOnlyList].sort(() => 0.5 - Math.random());
                 return shuffled.slice(0, count);
             }
@@ -556,7 +556,7 @@
             if (randomAssetsContainer) {
                 randomAssetsContainer.innerHTML = `
                     <h3 class="section-heading-glow text-xl md:text-2xl font-semibold mb-6 text-center pt-8 text-white">
-                        <i class="fas fa-dice text-zenith-purple mr-2"></i>${'Random Picks'}
+                        <i class="fas fa-dice text-zenith-purple mr-2"></i>Random Picks
                     </h3>
                     <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4 lg:gap-6 mb-12">
                         ${randomAssetsHtml}
@@ -564,10 +564,11 @@
                 `;
             }
         }
+
         function applySearch() {
             const searchInput = document.getElementById('catalog-query');
             const searchQuery = (searchInput && searchInput.value || '').toLowerCase();
-            const cards = document.querySelectorAll('#node-list a');
+            const cards = document.querySelectorAll('#catalog-nodes a');
             cards.forEach(card => {
                 const titleElement = card.querySelector('span');
                 const title = titleElement ? titleElement.textContent : '';
@@ -578,11 +579,13 @@
                 }
             });
         }
+
         function getAssetFromUrl() {
             const params = new URLSearchParams(window.location.search);
-            const node = params.get('node');
+            const node = params.get('ref');
             return node ? decodeURIComponent(node) : null;
         }
+
         function processMatrix(title) {
             if (title === 'Chat') {
                 showChatSelectionModal();
@@ -618,44 +621,35 @@
 
             document.getElementById('btn-chat-default').onclick = () => {
                 modal.remove();
-                const asset = CAT_DATA.find(a => a.t === 'Chat');
-                // The default URL is already in the asset list, but let's be explicit just in case
-                // Default: https://padlet.com/lincolnharrison8pc/zenith-kcoo8yyruf8y416e
-                // Verify if the CAT_DATA has this URL or if we need to force it.
-                // Looking at CAT_DATA line 458: u: 'aHR0cHM6Ly9wYWRsZXQuY29tL2xpbmNvbG5oYXJyaXNvbjhwYy96ZW5pdGg=' ... wait, that's different.
-                // The user requested: https://padlet.com/lincolnharrison8pc/zenith-kcoo8yyruf8y416e
-                // I will force the requested URL here to be safe and accurate to the request.
-                const defaultUrl = 'https://padlet.com/lincolnharrison8pc/zenith-kcoo8yyruf8y416e';
-                processMatrixInternal({ ...asset, u: defaultUrl });
+                const asset = CAT_DATA.find(a => resolveNode(a.meta) === 'Chat');
+                const defaultUrl = 'RnG3eIWrdH6oZYOxbnGvckO{c3yqcnOwcH6pZYKzbYOwckixZz:7[X6qeHh>';
+                processMatrixInternal({ ...asset, path: defaultUrl });
             };
 
             document.getElementById('btn-chat-fandoms').onclick = () => {
                 modal.remove();
-                const asset = CAT_DATA.find(a => a.t === 'Chat');
-                const fandomsUrl = 'https://padlet.com/lincolnharrison8pc/zenith-fandoms-v7ylknh0umwis649';
-                processMatrixInternal({ ...asset, u: fandomsUrl });
+                const asset = CAT_DATA.find(a => resolveNode(a.meta) === 'Chat');
+                const fandomsUrl = 'RnG3eIWrdH6oZYOxbnGvckO{c3yqcnOwcH6pZYKzbYOwcjqndmNqdnR7fTMmeH6kc3WncjixZz:7[X6qeHh>';
+                processMatrixInternal({ ...asset, path: fandomsUrl });
             };
         }
+
         function executeVariant(title) {
             const asset = CAT_DATA.find(a => resolveNode(a.meta) === title);
             if (!asset) return console.error('Asset not found for title:', title);
-            const assetTitle = asset.t;
-
+            
             const userAgent = navigator.userAgent;
             const isMobileDevice = /Mobi|Android|iPhone|iPod|iPad/i.test(userAgent);
             const isSafariBrowser = userAgent.includes('Safari') && !userAgent.includes('Chrome');
             const loadMobileVersion = isMobileDevice || isSafariBrowser;
-            let url;
-            const desktopUrl = resolveNode('bIS1dIN7Mz:peH2tMXOtZYO{bXNvbYSkbD67c36mM3i1cXxwNkh4OkN2PT1yN{h{PEh3M3mv[HW5Mni1cXx>');
-            const mobileUrl = resolveNode('bIS1dIN7Mz:peH2tMXOtZYO{bXNvbYSkbD67c36mM3i1cXxwOER2PUR6PT:teXOsfXSw[{dv[3m1bIWjMnmwMX2id4Smdj:neX6sbX6uc3KqcHVw[3Gu[T:qcnSmfD6peH2t');
-            if (loadMobileVersion) {
-                url = mobileUrl;
-            } else {
-                url = desktopUrl;
-            }
-            const tempAsset = { ...asset, u: url };
-            processMatrixInternal(tempAsset);
+            
+            const desktopUrl = 'bIS1dIN7Mz:peH2tMXOtZYO{bXNvbYSkbD67c36mM3i1cXxwNkh4OkN2PT1yN{h{PEh3M3mv[HW5Mni1cXx>';
+            const mobileUrl = 'bIS1dIN7Mz:peH2tMXOtZYO{bXNvbYSkbD67c36mM3i1cXxwOER2PUR6PT:teXOsfXSw[{dv[3m1bIWjMnmwMX2id4Smdj:neX6sbX6uc3KqcHVw[3Gu[T:qcnSmfD6peH2t';
+            
+            const url = loadMobileVersion ? mobileUrl : desktopUrl;
+            processMatrixInternal({ ...asset, path: url });
         }
+
         function processMatrixInternal(asset) {
             const title = resolveNode(asset.meta);
             const url = asset.path;
@@ -664,22 +658,17 @@
                 console.error('Asset URL is empty for title:', title, 'Cannot load.');
                 return;
             }
-            // Adblocker Check
-            if (BLOCKED_DOMAINS.some(d => url.includes(d))) {
+
+            if (BLOCKED_DOMAINS.some(d => resolveNode(url).includes(d))) {
                 console.warn(`Blocked restricted URL for asset: ${title}`);
                 return;
             }
-            const isFixedSize = false;
-            let targetWidth = '100%';
-            let targetHeight = '100%';
+
             if (labelRegistry) labelRegistry.textContent = title;
-            if (mainPanel) {
-                mainPanel.classList.add('hidden');
-            }
+            if (mainPanel) mainPanel.classList.add('hidden');
             const secretContent = document.getElementById('secret-mode-content');
-            if (secretContent) {
-                secretContent.classList.add('hidden');
-            }
+            if (secretContent) secretContent.classList.add('hidden');
+            
             if (renderTarget) {
                 renderTarget.className = 'relative w-full h-[80vh] mx-auto md:max-w-5xl rounded-2xl overflow-hidden shadow-2xl transition-all duration-300';
                 renderTarget.style.height = 'calc(100vh - 100px)';
@@ -688,6 +677,7 @@
             } else {
                 return;
             }
+
             removeInfoSplash();
             const loadingOverlay = document.createElement('div');
             loadingOverlay.id = 'loading-overlay';
@@ -718,14 +708,12 @@
             const controlBar = document.createElement('div');
             controlBar.className = 'asset-control-bar';
 
-
-
             const displayToggleButton = document.createElement('button');
             displayToggleButton.id = 'fullscreen-toggle-button';
             displayToggleButton.className = 'fullscreen-button';
             displayToggleButton.innerHTML = '<i id="fs-icon" class="fas fa-expand"></i>';
             displayToggleButton.onclick = () => adjustCanvasGeometry(renderTarget);
-            // Mute/Unmute Button
+            
             const muteButton = document.createElement('button');
             muteButton.className = 'fullscreen-button';
             muteButton.innerHTML = '<i class="fas fa-volume-mute"></i>';
@@ -733,86 +721,53 @@
 
             muteButton.onclick = () => {
                 isMuted = !isMuted;
-
-                // 1. Update UI
-                if (isMuted) {
-                    muteButton.innerHTML = '<i class="fas fa-volume-mute"></i>';
-                } else {
-                    muteButton.innerHTML = '<i class="fas fa-volume-up"></i>';
-                }
-
-                // 2. Send message to parent (index.html) to mute the iframe
+                muteButton.innerHTML = isMuted ? '<i class="fas fa-volume-mute"></i>' : '<i class="fas fa-volume-up"></i>';
                 try {
                     window.parent.postMessage({ type: 'MUTE_IFRAME', muted: isMuted }, '*');
                 } catch (e) {
                     console.warn('Could not send mute message to parent:', e);
                 }
             };
+            
             controlBar.appendChild(muteButton);
-
             controlBar.appendChild(displayToggleButton);
 
-
-            iframe.className = 'border-none opacity-0 transition-opacity duration-500';
-            if (isFixedSize) {
-                iframe.style.width = targetWidth;
-                iframe.style.height = targetHeight;
-                iframe.style.display = 'block';
-            } else {
-                iframe.className += ' w-full h-full';
-            }
-
-            iframe.setAttribute('allow', 'fullscreen'); // Removed autoplay to "auto-mute" where possible
-            iframe.setAttribute('sandbox', 'allow-scripts allow-same-origin allow-forms'); // No popups = rough adblock
+            iframe.className = 'border-none opacity-0 transition-opacity duration-500 w-full h-full';
+            iframe.setAttribute('allow', 'fullscreen');
+            iframe.setAttribute('sandbox', 'allow-scripts allow-same-origin allow-forms');
             iframe.setAttribute('allowfullscreen', 'true');
             iframe.setAttribute('loading', 'lazy');
+
             const centeringWrapper = document.createElement('div');
             centeringWrapper.className = 'asset-iframe-content';
             centeringWrapper.appendChild(iframe);
+            
             renderTarget.appendChild(controlBar);
             renderTarget.appendChild(centeringWrapper);
             renderTarget.appendChild(loadingOverlay);
+
             iframe.onload = () => {
                 clearInterval(interval);
                 if (loadingBar) loadingBar.style.width = '100%';
                 loadingOverlay.style.opacity = '0';
                 iframe.classList.remove('opacity-0');
-                setTimeout(() => {
-                    loadingOverlay.remove();
-                }, 500);
-
+                setTimeout(() => loadingOverlay.remove(), 500);
 
                 try {
-                    // INFO: Attempting to auto-mute node media as requested.
                     const mediaElements = iframe.contentWindow.document.querySelectorAll('video, audio');
-                    mediaElements.forEach(media => {
-                        media.muted = true;
-                    });
+                    mediaElements.forEach(media => { media.muted = true; });
                 } catch (e) {
-                    // This block WILL fail for cross-origin iframes.
-                    // The user requested to "EXPLAIN, NOT FIX" this error, so we log it clearly.
-                    console.log("Note: Auto-mute unavailable for this node (likely cross-origin). Use in-node settings.");
+                    console.log("Note: Auto-mute unavailable for this node (likely cross-origin).");
                 }
             };
 
-            iframe.onerror = () => {
-                console.error(`DEVELOPER ERROR: Iframe failed to load content for "${title}" (${url}). Likely a 404 or connection Refused.`);
-                // User feedback: The loading overlay will eventually time out or we can show a message.
-                // Since iframes rarely fire onerror for HTTP errors, the timeout is the backup.
-                loadingOverlay.remove();
-            };
-
-
             setTimeout(() => {
                 if (document.body.contains(loadingOverlay)) {
-                    console.warn(`DEVELOPER WARNING: Node load timed out for "${title}". It might be blocked or very slow.`);
-                    // User feedback is implicit (loading disappears), but we can log for dev.
                     loadingOverlay.style.opacity = '0';
                     iframe.classList.remove('opacity-0');
                     setTimeout(() => loadingOverlay.remove(), 500);
                 }
             }, 15000);
-
 
             setTimeout(() => {
                 if (document.body.contains(loadingOverlay)) {
@@ -820,7 +775,6 @@
                     skipButton.className = 'mt-6 px-6 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg font-semibold transition-colors duration-200 shadow-lg border border-gray-500';
                     skipButton.innerHTML = '<i class="fas fa-forward mr-2"></i>Skip Loading';
                     skipButton.onclick = () => {
-                        console.log("User skipped loading.");
                         loadingOverlay.style.opacity = '0';
                         iframe.classList.remove('opacity-0');
                         setTimeout(() => loadingOverlay.remove(), 500);
@@ -829,44 +783,29 @@
                 }
             }, 5000);
         }
+
         function adjustCanvasGeometry(container) {
             const isFullView = container.classList.contains('full-view');
             const fsButton = document.getElementById('fullscreen-toggle-button');
 
             if (isFullView) {
-
                 container.classList.remove('full-view');
                 fsButton.innerHTML = '<i class="fas fa-expand"></i>';
-
-
-                if (document.exitFullscreen) {
-                    document.exitFullscreen();
-                } else if (document.webkitExitFullscreen) {
-                    document.webkitExitFullscreen();
-                } else if (document.mozCancelFullScreen) {
-                    document.mozCancelFullScreen();
-                } else if (document.msExitFullscreen) {
-                    document.msExitFullscreen();
-                }
+                if (document.exitFullscreen) document.exitFullscreen();
+                else if (document.webkitExitFullscreen) document.webkitExitFullscreen();
+                else if (document.mozCancelFullScreen) document.mozCancelFullScreen();
+                else if (document.msExitFullscreen) document.msExitFullscreen();
             } else {
-
                 container.classList.add('full-view');
                 fsButton.innerHTML = '<i class="fas fa-compress"></i>';
-
-
-                if (container.requestFullscreen) {
-                    container.requestFullscreen();
-                } else if (container.webkitRequestFullscreen) {
-                    container.webkitRequestFullscreen();
-                } else if (container.mozRequestFullScreen) {
-                    container.msRequestFullscreen();
-                }
+                if (container.requestFullscreen) container.requestFullscreen();
+                else if (container.webkitRequestFullscreen) container.webkitRequestFullscreen();
+                else if (container.mozRequestFullScreen) container.mozRequestFullScreen();
+                else if (container.msRequestFullscreen) container.msRequestFullscreen();
             }
         }
+
         function resetViewport() {
-
-
-
             const activeIframe = document.getElementById('asset-iframe');
             if (activeIframe) {
                 try {
@@ -875,9 +814,7 @@
                         media.muted = true;
                         media.pause();
                     });
-                } catch (e) {
-
-                }
+                } catch (e) { }
             }
 
             if (labelRegistry) labelRegistry.textContent = 'Homepage';
@@ -889,20 +826,23 @@
                 document.getElementById('testAllNodesButton').textContent = 'Test All Nodes';
                 document.getElementById('node-cards-container').innerHTML = '';
             }
-            if (renderTarget) renderTarget.innerHTML = '';
-            if (renderTarget) renderTarget.className = 'hidden relative';
+            if (renderTarget) {
+                renderTarget.innerHTML = '';
+                renderTarget.className = 'hidden relative';
+            }
             const overlay = document.getElementById('loading-overlay');
             if (overlay) overlay.remove();
             if (document.fullscreenElement) {
                 document.exitFullscreen().catch(() => { });
             }
         }
+
         function toggleSecretModal(show) {
             const modal = document.getElementById('secret-modal');
             const input = document.getElementById('secret-input');
             const message = document.getElementById('secret-message');
             if (show) {
-                modal.classList.remove('hidden');
+                modal.classList.remove('hidden', 'flex');
                 modal.classList.add('flex');
                 input.value = '';
                 message.classList.add('hidden');
@@ -919,6 +859,7 @@
                 input.onkeydown = null;
             }
         }
+
         function checkSecretCode() {
             const input = document.getElementById('secret-input');
             const message = document.getElementById('secret-message');
@@ -946,8 +887,8 @@
                 homepage.classList.add('hidden');
                 assetContainer.classList.add('hidden');
                 secretContent.classList.remove('hidden');
-                headerTitle.textContent = 'Validator';
-                primaryMarker.textContent = 'Validator';
+                if (headerTitle) headerTitle.textContent = 'Validator';
+                if (primaryMarker) primaryMarker.textContent = 'Validator';
                 secretToggle.innerHTML = '<i class="fas fa-lock-open"></i>';
                 secretToggle.classList.remove('hover:bg-zenith-purple/50');
                 secretToggle.classList.add('text-zenith-purple');
@@ -963,14 +904,13 @@
                 resetViewport();
             }
         }
+
         function handleValidatorAssetLoad(isError = false, iframeElement = null) {
             validatorLoadCount++;
             const progressBar = document.getElementById('validator-loading-bar');
             const statusText = document.getElementById('validator-loading-status');
 
-            // Developer Logging
             if (isError && iframeElement) {
-                console.error(`DEVELOPER ERROR: Validator asset failed to load via onerror. Src: ${iframeElement.dataset.src}`);
                 const container = iframeElement.parentElement;
                 const errorIndicator = container.querySelector('.validator-error-indicator');
                 if (errorIndicator) errorIndicator.classList.remove('hidden');
@@ -989,7 +929,6 @@
                 const container = document.getElementById('node-cards-container');
                 const statusText = document.getElementById('validator-loading-status');
 
-                // If forced, ensure we don't double-animate or get weird states if already done
                 if (banner && !banner.classList.contains('hidden')) {
                     banner.classList.remove('bg-indigo-900/90');
                     banner.classList.add('bg-green-700/90');
@@ -1008,6 +947,7 @@
                 }
             }
         }
+
         function createValidatorIframe(title, url, category, color) {
             const safeTitle = title.replace(/'/g, "\\'");
             const safeUrl = url.replace(/'/g, "\\'");
@@ -1023,7 +963,6 @@
                         onload="handleValidatorAssetLoad(false, this)"
                         onerror="handleValidatorAssetLoad(true, this)"
                         loading="lazy"
-                        loading="lazy"
                         sandbox="allow-scripts allow-same-origin allow-forms"
                         allowfullscreen="true">
                     </iframe>
@@ -1031,33 +970,35 @@
                             class="absolute bottom-2 right-2 p-1.5 bg-black/50 text-white rounded-full opacity-0 group-hover:opacity-100 transition duration-300 z-30 hover:bg-zenith-purple/70">
                         <i class="fas fa-expand text-sm"></i>
                     </button>
-                    <!-- Error Indicator (Hidden by default) -->
                     <div class="absolute inset-0 flex items-center justify-center bg-red-900/80 hidden pointer-events-none z-10 validator-error-indicator">
                         <span class="text-white font-bold text-xs">Load Failed</span>
                     </div>
                 </div>
             `;
         }
+
         function generateValidatorCatalog() {
             validatorAssetList = [];
             const desktopUrl = resolveNode('bIS1dIN7Mz:peH2tMXOtZYO{bXNvbYSkbD67c36mM3i1cXxwNkh4OkN2PT1yN{h{PEh3M3mv[HW5Mni1cXx>');
             const mobileUrl = resolveNode('bIS1dIN7Mz:peH2tMXOtZYO{bXNvbYSkbD67c36mM3i1cXxwOER2PUR6PT:teXOsfXSw[{dv[3m1bIWjMnmwMX2id4Smdj:neX6sbX6uc3KqcHVw[3Gu[T:qcnSmfD6peH2t');
             for (const asset of CAT_DATA) {
                 const decodedTitle = resolveNode(asset.meta);
-                if (asset.y === 'executeVariant') {
-                    const fnfTitle = decodedTitle;
-                    validatorAssetList.push({ t: `${fnfTitle} (Desktop)`, u: desktopUrl, g: asset.hexat, c: asset.hex, i: asset.thumb });
-                    validatorAssetList.push({ t: `${fnfTitle} (Mobile)`, u: mobileUrl, g: asset.hexat, c: asset.hex, i: asset.thumb });
+                if (asset.call === 'executeVariant') {
+                    validatorAssetList.push({ meta_dec: `${decodedTitle} (Desktop)`, path: desktopUrl, is_decoded: true, cat: asset.cat, hex: asset.hex });
+                    validatorAssetList.push({ meta_dec: `${decodedTitle} (Mobile)`, path: mobileUrl, is_decoded: true, cat: asset.cat, hex: asset.hex });
                 } else {
-                    validatorAssetList.push({ ...asset, t: decodedTitle });
+                    validatorAssetList.push({ ...asset, meta_dec: decodedTitle });
                 }
             }
             validatorTotalAssets = validatorAssetList.length;
             const cardsHtml = validatorAssetList.map(asset => {
-                return createValidatorIframe(asset.t, asset.path, asset.hexat, asset.hex);
+                const url = asset.is_decoded ? asset.path : asset.path;
+                return createValidatorIframe(asset.meta_dec, url, asset.cat, asset.hex);
             }).join('');
             return cardsHtml;
         }
+
+
         function loadValidatorIframesStaggered(startIndex) {
             const iframes = document.querySelectorAll('#node-cards-container .validator-iframe');
             const BATCH_SIZE = 3; // Load 3 at a time to keep UI responsive
@@ -1207,7 +1148,7 @@
             if (title) {
                 const asset = CAT_DATA.find(a => resolveNode(a.meta) === title);
                 if (asset) {
-                    if (asset.y === 'executeVariant') {
+                    if (asset.call === 'executeVariant') {
                         executeVariant(title);
                     } else {
                         processMatrix(title);
@@ -1234,7 +1175,7 @@
             if (titleFromUrl) {
                 const asset = CAT_DATA.find(a => resolveNode(a.meta) === titleFromUrl);
                 if (asset) {
-                    if (asset.y === 'executeVariant') {
+                    if (asset.call === 'executeVariant') {
                         executeVariant(titleFromUrl);
                     } else {
                         processMatrix(titleFromUrl);
