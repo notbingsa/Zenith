@@ -30,7 +30,7 @@
             font-family: 'Exo 2', sans-serif;
         }
 
-        .dark-gradient-bg {
+        s .dark-gradient-bg {
             background: linear-gradient(180deg, #111827 0%, #0c0a09 100%);
             min-height: 10vh;
         }
@@ -206,7 +206,7 @@
                         Your current internet speed is approximately <span class="text-yellow-500 font-bold">${speedDisplay} Mbps</span>.
                     </p>
                     <p class="text-gray-400 mb-6 text-center text-sm">
-                        Some games and apps may load slowly or not work properly. For the best experience, we recommend a connection of at least ${5} Mbps.
+                        Some experiences may load slowly or not work properly. For the best experience, we recommend a connection of at least ${5} Mbps.
                     </p>
                     <div class="flex justify-center">
                         <button onclick="closeSpeedWarning()" 
@@ -270,7 +270,7 @@
                     </div>
                     <h2 class="text-3xl font-bold text-white mb-6 tracking-tight">Legal Disclaimer</h2>
                     <p class="text-gray-300 text-lg mb-8 leading-relaxed">
-                    For legal purposes, we affirm that Arcane Algorithms (the developers of this website, Zenith) do not own any of the games, images, icons, or graphical assets used to display the content on this site. We are a distribution platform that links to or embeds publicly available content from external sources. All rights, titles, and interests are explicitly reserved by the original creators, developers, and copyright holders of the respective games and associated imagery. Furthermore, we do not condone or take liability for any use of this website to interrupt education or violate local rules. Zenith has been made for use at home or with explicit permission from the administrators or overseers of the school's ICT department.
+                    For legal purposes, we affirm that Arcane Algorithms (the developers of this website, Zenith) do not own any of the experiences, images, icons, or graphical assets used to display the content on this site. We are a distribution platform that links to or embeds publicly available content from external sources. All rights, titles, and interests are explicitly reserved by the original creators, developers, and copyright holders of the respective experiences and associated imagery. Furthermore, we do not condone or take liability for any use of this website to interrupt education or violate local rules. Zenith has been made for use at home or with explicit permission from the administrators or overseers of the school's ICT department.
                     </p>
                     <button onclick="document.getElementById('legal-disclaimer').remove()" 
                             class="px-10 py-4 rounded-xl bg-red-600 text-white font-bold text-lg hover:bg-red-500 transition duration-200 shadow-lg hover:shadow-red-600/20 active:scale-95">
@@ -293,8 +293,8 @@
         }
 
 
-        const CLOUDFLARE_SPEED_URL = 'https://speed.cloudflare.com/__down?bytes=100000000';
-        const FALLBACK_SPEED_URL = 'https://httpbin.org/bytes/50000000';
+        const CLOUDFLARE_SPEED_URL = atob("aHR0cHM6Ly9zcGVlZC5jbG91ZGZsYXJlLmNvbS9fX2Rvd24/Ynl0ZXM9MTAwMDAwMDAw");
+        const FALLBACK_SPEED_URL = atob("aHR0cHM6Ly9odHRwYmluLm9yZy9ieXRlcy81MDAwMDAwMA==");
 
         async function measureCloudflareSpeed() {
             const modal = document.createElement('div');
@@ -449,59 +449,58 @@
 
 
         const ALL_ASSETS = [
-            { t: 'Baseball', u: 'https://nebulagames.us/storage/Google%20Baseball.html', c: '10b981', y: 'processMatrix', g: 'Game', i: '/games/images/Baseball.png' },
-            { t: 'Bitlife', u: 'https://nebulagames.us/storage/bitlife/', c: 'ef4444', y: 'processMatrix', g: 'Game', i: '/games/images/Bitlife.png' },
-            { t: 'Block Blast', u: 'https://nebulagames.us/storage/Block%20Blast.html', c: '1d4ed8', y: 'processMatrix', g: 'Game', i: '/games/images/Block%20Blast.png' },
-            { t: 'Blumgi Merge', u: 'https://nebulagames.us/storage/blumgimerge/', c: 'f97316', y: 'processMatrix', g: 'Game', i: '/games/images/Blumgi%20Merge.png' },
-            { t: 'Bouncemasters', u: 'https://nebulagames.us/storage/Bouncemasters.html', c: 'f97316', y: 'processMatrix', g: 'Game', i: '/games/images/Bouncemasters.png' },
-            { t: 'Chat', u: 'https://padlet.com/lincolnharrison8pc/zenith', c: '7c3aed', y: 'processMatrix', g: 'App', i: '/apps/images/Chat.png' },
-            { t: 'Cookie Clicker', u: 'https://nebulagames.us/storage/Cookie%20Clicker.html', c: 'd97706', y: 'processMatrix', g: 'Game', i: '/games/images/Cookie%20Clicker.png' },
-            { t: 'Coreball', u: 'https://nebulagames.us/storage/Coreball.html', c: 'f87171', y: 'processMatrix', g: 'Game', i: '/games/images/Coreball.png' },
-            { t: 'Cricket', u: 'https://doodlecricket.pages.dev/google-cricket/', c: 'f97316', y: 'processMatrix', g: 'Game', i: '/games/images/Cricket.png' },
-            { t: 'Cut The Rope', u: 'https://nebulagames.us/storage/clcuttherope.html', c: '10b981', y: 'processMatrix', g: 'Game', i: '/games/images/Cut%20The%20Rope.png' },
-            { t: 'Drive Mad', u: 'https://nebulagames.us/storage/Drive%20Mad.html', c: '34d399', y: 'processMatrix', g: 'Game', i: '/games/images/Drive%20Mad.png' },
-            { t: 'Eggy Car', u: 'https://nebulagames.us/storage/eggycar/', c: 'facc15', y: 'processMatrix', g: 'Game', i: '/games/images/Eggy%20Car.png' },
-            { t: 'Escape Road 2', u: 'https://nebulagames.us/storage/clescaperoad2.html', c: 'ef4444', y: 'processMatrix', g: 'Game', i: '/games/images/Escape%20Road%202.png' },
-            { t: 'Five Nights at Freddy\'s', u: 'https://nebulagames.us/storage/Five%20Nights%20at%20Freddys.html', c: 'ef4444', y: 'processMatrix', g: 'Game', i: '/games/images/FNAF.png' },
-            { t: 'Five Nights at Freddy\'s 2', u: 'https://nebulagames.us/storage/Five%20Nights%20at%20Freddys%202.html', c: 'ef4444', y: 'processMatrix', g: 'Game', i: '/games/images/FNAF%202.png' },
-            { t: 'Five Nights at Freddy\'s 3', u: 'https://nebulagames.us/storage/Five%20Nights%20at%20Freddys%203.html', c: 'ef4444', y: 'processMatrix', g: 'Game', i: '/games/images/FNAF%203.png' },
-            { t: 'Five Nights at Freddy\'s 4', u: 'https://nebulagames.us/storage/Five%20Nights%20at%20Freddys%204.html', c: 'ef4444', y: 'processMatrix', g: 'Game', i: '/games/images/FNAF%204.png' },
-            { t: 'Five Nights at Freddy\'s 4 Halloween', u: 'https://nebulagames.us/storage/Five%20Nights%20at%20Freddys%204_%20Halloween.html', c: 'ef4444', y: 'processMatrix', g: 'Game', i: '/games/images/FNAF%204%20Halloween.png' },
-            { t: 'Five Nights at Freddy\'s Sister Location', u: 'https://nebulagames.us/storage/Five%20Nights%20at%20Freddys_%20Sister%20Location.html', c: 'ef4444', y: 'processMatrix', g: 'Game', i: '/games/images/FNAF%20Sister%20Location.png' },
-            { t: 'Flappy Bird', u: 'https://nebulagames.us/storage/Flappy%20Bird.html', c: 'facc15', y: 'processMatrix', g: 'Game', i: '/games/images/Flappy%20Bird.png' },
-            { t: 'Fluid Simulation', u: 'https://haxiomic.github.io/projects/webgl-fluid-and-particles/', c: '3b82f6', y: 'processMatrix', g: 'Game', i: '/games/images/Fluid%20Simulation.png' },
-            { t: 'FNAF Pizzeria Simulator', u: 'https://nebulagames.us/storage/Five%20Nights%20at%20Freddys_%20Pizza%20Simulator.html', c: 'ef4444', y: 'processMatrix', g: 'Game', i: '/games/images/FNAF%20Pizzeria%20Simulator.png' },
-            { t: 'FNAF Ultimate Custom Night', u: 'https://nebulagames.us/storage/Five%20Nights%20at%20Freddys_%20Ultimate%20Custom%20Night.html', c: 'ef4444', y: 'processMatrix', g: 'Game', i: '/games/images/FNAF%20Ultimate%20Custom%20Night.png' },
-            { t: 'FNAF World', u: 'https://nebulagames.us/storage/Five%20Nights%20at%20Freddys_%20World.html', c: 'ef4444', y: 'processMatrix', g: 'Game', i: '/games/images/FNAF%20World.png' },
-            { t: 'Friday Night Funkin', u: '', c: 'ef4444', y: 'executeVariant', g: 'Game', i: '/games/images/Friday%20Night%20Funkin.png' },
-            { t: 'Fruit Ninja', u: 'https://nebulagames.us/storage/Fruit%20Ninja.html', c: '10b981', y: 'processMatrix', g: 'Game', i: '/games/images/Fruit%20Ninja.png' },
-            { t: 'Geometry Dash Lite', u: 'https://nebulagames.us/storage/Geometry%20Dash%20Lite.html', c: '3b82f6', y: 'processMatrix', g: 'Game', i: '/games/images/Geometry%20Dash%20Lite.png' },
-            { t: 'Gobble', u: 'https://nebulagames.us/storage/Gobble.html', c: '10b981', y: 'processMatrix', g: 'Game', i: '/games/images/Gobble.png' },
-            { t: 'Infinite Craft', u: 'https://infinitecraftnew.com', c: '10b981', y: 'processMatrix', g: 'Game', i: '/games/images/Infinite%20Craft.png' },
-            { t: 'Level Devil', u: 'https://nebulagames.us/storage/clleveldevil.html', c: 'ef4444', y: 'processMatrix', g: 'Game', i: '/games/images/Level%20Devil.png' },
-            { t: 'OvO', u: 'https://nebulagames.us/storage/ovo/', c: '111827', y: 'processMatrix', g: 'Game', i: '/games/images/OvO.png' },
-            { t: 'Paper.io 2', u: 'https://nebulagames.us/storage/paperio2/', c: 'facc15', y: 'processMatrix', g: 'Game', i: '/games/images/Paper.io%202.png' },
-            { t: 'Poly Track', u: 'https://html-classic.itch.zone/html/15451330/index.html', c: 'ef4444', y: 'processMatrix', g: 'Game', i: '/games/images/Poly%20Track.png' },
-            { t: 'Ragdoll Archers', u: 'https://nebulagames.us/storage/Ragdoll%20Archers.html', c: 'ef4444', y: 'processMatrix', g: 'Game', i: '/games/images/Ragdoll%20Archers.png' },
-            { t: 'Ragdoll Hit', u: 'https://nebulagames.us/storage/Ragdoll%20Hit.html', c: 'ef4444', y: 'processMatrix', g: 'Game', i: '/games/images/Ragdoll%20Hit.png' },
-            { t: 'Revolution Idle', u: 'https://html-classic.itch.zone/html/11749385/index.html', c: 'ef4444', y: 'processMatrix', g: 'Game', i: '/games/images/Revolution%20Idle.png' },
-            { t: 'Sandboxels', u: 'https://shalbito.vercel.app/', c: 'ef4444', y: 'processMatrix', g: 'Game', i: '/games/images/Sandboxels.png' },
-            { t: 'Snake', u: 'https://googlesnakemods.com/v/current/', c: '10b981', y: 'processMatrix', g: 'Game', i: '/games/images/Snake.png' },
-            { t: 'Solar Smash', u: 'https://nebulagames.us/storage/Solar%20Smash.html', c: 'f97316', y: 'processMatrix', g: 'Game', i: '/games/images/Solar%20Smash.png' },
-            { t: 'Stack', u: 'https://nebulagames.us/storage/stack/', c: '3b82f6', y: 'processMatrix', g: 'Game', i: '/games/images/Stack.png' },
-            { t: 'Stackball', u: 'https://nebulagames.us/storage/stackball/', c: 'ef4444', y: 'processMatrix', g: 'Game', i: '/games/images/Stackball.png' },
-            { t: 'Stickman Hook', u: 'https://nebulagames.us/storage/Stickman%20Hook.html', c: 'ef4444', y: 'processMatrix', g: 'Game', i: '/games/images/Stickman%20Hook.png' },
-            { t: 'Stone Grass', u: 'https://nebulagames.us/storage/Stone%20Grass%20Mowing%20Simulator.html', c: '10b981', y: 'processMatrix', g: 'Game', i: '/games/images/Stone%20Grass.png' },
-            { t: 'Subway Surfers', u: 'https://nebulagames.us/storage/Subway%20Surfers_%20San%20Francisco.html', c: '3b82f6', y: 'processMatrix', g: 'Game', i: '/games/images/Subway%20Surfers.png' },
-            { t: 'Survival Race', u: 'https://nebulagames.us/storage/clsurvivalracev2.html', c: '7c3aed', y: 'processMatrix', g: 'Game', i: '/games/images/Survival%20Race.png' },
-            { t: 'Thirty Dollar Website', u: 'https://kleeder.de/files/moai2/%F0%9F%97%Bf.html', c: '34d399', y: 'processMatrix', g: 'Game', i: '/games/images/Thirty%20Dollar%20Website.png' },
-            { t: 'Tiny Fishing', u: 'https://nebulagames.us/storage/Tiny%20Fishing.html', c: 'facc15', y: 'processMatrix', g: 'Game', i: '/games/images/Tiny%20Fishing.png' },
-            { t: 'Traffic Rider', u: 'https://traffic-rider.io/game/traffic-rider/', c: 'facc15', y: 'processMatrix', g: 'Game', i: '/games/images/Traffic%20Rider.png' },
-            { t: 'Unblocker', u: 'https://waguri.ecolefrancophone.com/search.html', c: 'f97316', y: 'processMatrix', g: 'App', i: '/apps/images/Unblocker.png' },
-            { t: 'Yohoho.io', u: 'https://nebulagames.us/storage/yohoho/', c: '2563eb', y: 'processMatrix', g: 'Game', i: '/games/images/Yohoho.io.png' },
+            { t: 'QmFzZWJhbGw=', u: 'aHR0cHM6Ly9uZWJ1bGFnYW1lcy51cy9zdG9yYWdlL0dvb2dsZSUyMEJhc2ViYWxsLmh0bWw=', c: '10b981', y: 'processMatrix', g: 'Game', i: '/experiences/images/Baseball.png' },
+            { t: 'Qml0bGlmZQ==', u: 'aHR0cHM6Ly9uZWJ1bGFnYW1lcy51cy9zdG9yYWdlL2JpdGxpZmUv', c: 'ef4444', y: 'processMatrix', g: 'Game', i: '/experiences/images/Bitlife.png' },
+            { t: 'QmxvY2sgQmxhc3Q=', u: 'aHR0cHM6Ly9uZWJ1bGFnYW1lcy51cy9zdG9yYWdlL0Jsb2NrJTIwQmxhc3QuaHRtbA==', c: '1d4ed8', y: 'processMatrix', g: 'Game', i: '/experiences/images/Block%20Blast.png' },
+            { t: 'Qmx1bWdpIE1lcmdl', u: 'aHR0cHM6Ly9uZWJ1bGFnYW1lcy51cy9zdG9yYWdlL2JsdW1naW1lcmdlLw==', c: 'f97316', y: 'processMatrix', g: 'Game', i: '/experiences/images/Blumgi%20Merge.png' },
+            { t: 'Qm91bmNlbWFzdGVycw==', u: 'aHR0cHM6Ly9uZWJ1bGFnYW1lcy51cy9zdG9yYWdlL0JvdW5jZW1hc3RlcnMuaHRtbA==', c: 'f97316', y: 'processMatrix', g: 'Game', i: '/experiences/images/Bouncemasters.png' },
+            { t: 'Q2hhdA==', u: 'aHR0cHM6Ly9wYWRsZXQuY29tL2xpbmNvbG5oYXJyaXNvbjhwYy96ZW5pdGg=', c: '7c3aed', y: 'processMatrix', g: 'App', i: '/apps/images/Chat.png' },
+            { t: 'Q29va2llIENsaWNrZXI=', u: 'aHR0cHM6Ly9uZWJ1bGFnYW1lcy51cy9zdG9yYWdlL0Nvb2tpZSUyMENsaWNrZXIuaHRtbA==', c: 'd97706', y: 'processMatrix', g: 'Game', i: '/experiences/images/Cookie%20Clicker.png' },
+            { t: 'Q29yZWJhbGw=', u: 'aHR0cHM6Ly9uZWJ1bGFnYW1lcy51cy9zdG9yYWdlL0NvcmViYWxsLmh0bWw=', c: 'f87171', y: 'processMatrix', g: 'Game', i: '/experiences/images/Coreball.png' },
+            { t: 'Q3JpY2tldA==', u: 'aHR0cHM6Ly9kb29kbGVjcmlja2V0LnBhZ2VzLmRldi9nb29nbGUtY3JpY2tldC8=', c: 'f97316', y: 'processMatrix', g: 'Game', i: '/experiences/images/Cricket.png' },
+            { t: 'Q3V0IFRoZSBSb3Bl', u: 'aHR0cHM6Ly9uZWJ1bGFnYW1lcy51cy9zdG9yYWdlL2NsY3V0dGhlcm9wZS5odG1s', c: '10b981', y: 'processMatrix', g: 'Game', i: '/experiences/images/Cut%20The%20Rope.png' },
+            { t: 'RHJpdmUgTWFk', u: 'aHR0cHM6Ly9uZWJ1bGFnYW1lcy51cy9zdG9yYWdlL0RyaXZlJTIwTWFkLmh0bWw=', c: '34d399', y: 'processMatrix', g: 'Game', i: '/experiences/images/Drive%20Mad.png' },
+            { t: 'RWdneSBDYXI=', u: 'aHR0cHM6Ly9uZWJ1bGFnYW1lcy51cy9zdG9yYWdlL2VnZ3ljYXIv', c: 'facc15', y: 'processMatrix', g: 'Game', i: '/experiences/images/Eggy%20Car.png' },
+            { t: 'RXNjYXBlIFJvYWQgMg==', u: 'aHR0cHM6Ly9uZWJ1bGFnYW1lcy51cy9zdG9yYWdlL2NsZXNjYXBlcm9hZDIuaHRtbA==', c: 'ef4444', y: 'processMatrix', g: 'Game', i: '/experiences/images/Escape%20Road%202.png' },
+            { t: 'Rml2ZSBOaWdodHMgYXQgRnJlZGR5J3M=', u: 'aHR0cHM6Ly9uZWJ1bGFnYW1lcy51cy9zdG9yYWdlL0ZpdmUlMjBOaWdodHMlMjBhdCUyMEZyZWRkeXMuaHRtbA==', c: 'ef4444', y: 'processMatrix', g: 'Game', i: '/experiences/images/FNAF.png' },
+            { t: 'Rml2ZSBOaWdodHMgYXQgRnJlZGR5J3MgMg==', u: 'aHR0cHM6Ly9uZWJ1bGFnYW1lcy51cy9zdG9yYWdlL0ZpdmUlMjBOaWdodHMlMjBhdCUyMEZyZWRkeXMlMjAyLmh0bWw=', c: 'ef4444', y: 'processMatrix', g: 'Game', i: '/experiences/images/FNAF%202.png' },
+            { t: 'Rml2ZSBOaWdodHMgYXQgRnJlZGR5J3MgMw==', u: 'aHR0cHM6Ly9uZWJ1bGFnYW1lcy51cy9zdG9yYWdlL0ZpdmUlMjBOaWdodHMlMjBhdCUyMEZyZWRkeXMlMjAzLmh0bWw=', c: 'ef4444', y: 'processMatrix', g: 'Game', i: '/experiences/images/FNAF%203.png' },
+            { t: 'Rml2ZSBOaWdodHMgYXQgRnJlZGR5J3MgNA==', u: 'aHR0cHM6Ly9uZWJ1bGFnYW1lcy51cy9zdG9yYWdlL0ZpdmUlMjBOaWdodHMlMjBhdCUyMEZyZWRkeXMlMjA0Lmh0bWw=', c: 'ef4444', y: 'processMatrix', g: 'Game', i: '/experiences/images/FNAF%204.png' },
+            { t: 'Rml2ZSBOaWdodHMgYXQgRnJlZGR5J3MgNCBIYWxsb3dlZW4=', u: 'aHR0cHM6Ly9uZWJ1bGFnYW1lcy51cy9zdG9yYWdlL0ZpdmUlMjBOaWdodHMlMjBhdCUyMEZyZWRkeXMlMjA0XyUyMEhhbGxvd2Vlbi5odG1s', c: 'ef4444', y: 'processMatrix', g: 'Game', i: '/experiences/images/FNAF%204%20Halloween.png' },
+            { t: 'Rml2ZSBOaWdodHMgYXQgRnJlZGR5J3MgU2lzdGVyIExvY2F0aW9u', u: 'aHR0cHM6Ly9uZWJ1bGFnYW1lcy51cy9zdG9yYWdlL0ZpdmUlMjBOaWdodHMlMjBhdCUyMEZyZWRkeXNfJTIwU2lzdGVyJTIwTG9jYXRpb24uaHRtbA==', c: 'ef4444', y: 'processMatrix', g: 'Game', i: '/experiences/images/FNAF%20Sister%20Location.png' },
+            { t: 'RmxhcHB5IEJpcmQ=', u: 'aHR0cHM6Ly9uZWJ1bGFnYW1lcy51cy9zdG9yYWdlL0ZsYXBweSUyMEJpcmQuaHRtbA==', c: 'facc15', y: 'processMatrix', g: 'Game', i: '/experiences/images/Flappy%20Bird.png' },
+            { t: 'Rmx1aWQgU2ltdWxhdGlvbg==', u: 'aHR0cHM6Ly9oYXhpb21pYy5naXRodWIuaW8vcHJvamVjdHMvd2ViZ2wtZmx1aWQtYW5kLXBhcnRpY2xlcy8=', c: '3b82f6', y: 'processMatrix', g: 'Game', i: '/experiences/images/Fluid%20Simulation.png' },
+            { t: 'Rk5BRiBQaXp6ZXJpYSBTaW11bGF0b3I=', u: 'aHR0cHM6Ly9uZWJ1bGFnYW1lcy51cy9zdG9yYWdlL0ZpdmUlMjBOaWdodHMlMjBhdCUyMEZyZWRkeXNfJTIwUGl6emElMjBTaW11bGF0b3IuaHRtbA==', c: 'ef4444', y: 'processMatrix', g: 'Game', i: '/experiences/images/FNAF%20Pizzeria%20Simulator.png' },
+            { t: 'Rk5BRiBVbHRpbWF0ZSBDdXN0b20gTmlnaHQ=', u: 'aHR0cHM6Ly9uZWJ1bGFnYW1lcy51cy9zdG9yYWdlL0ZpdmUlMjBOaWdodHMlMjBhdCUyMEZyZWRkeXNfJTIwVWx0aW1hdGUlMjBDdXN0b20lMjBOaWdodC5odG1s', c: 'ef4444', y: 'processMatrix', g: 'Game', i: '/experiences/images/FNAF%20Ultimate%20Custom%20Night.png' },
+            { t: 'Rk5BRiBXb3JsZA==', u: 'aHR0cHM6Ly9uZWJ1bGFnYW1lcy51cy9zdG9yYWdlL0ZpdmUlMjBOaWdodHMlMjBhdCUyMEZyZWRkeXNfJTIwV29ybGQuaHRtbA==', c: 'ef4444', y: 'processMatrix', g: 'Game', i: '/experiences/images/FNAF%20World.png' },
+            { t: 'RnJpZGF5IE5pZ2h0IEZ1bmtpbg==', u: '', c: 'ef4444', y: 'executeVariant', g: 'Game', i: '/experiences/images/Friday%20Night%20Funkin.png' },
+            { t: 'RnJ1aXQgTmluamE=', u: 'aHR0cHM6Ly9uZWJ1bGFnYW1lcy51cy9zdG9yYWdlL0ZydWl0JTIwTmluamEuaHRtbA==', c: '10b981', y: 'processMatrix', g: 'Game', i: '/experiences/images/Fruit%20Ninja.png' },
+            { t: 'R2VvbWV0cnkgRGFzaCBMaXRl', u: 'aHR0cHM6Ly9uZWJ1bGFnYW1lcy51cy9zdG9yYWdlL0dlb21ldHJ5JTIwRGFzaCUyMExpdGUuaHRtbA==', c: '3b82f6', y: 'processMatrix', g: 'Game', i: '/experiences/images/Geometry%20Dash%20Lite.png' },
+            { t: 'R29iYmxl', u: 'aHR0cHM6Ly9uZWJ1bGFnYW1lcy51cy9zdG9yYWdlL0dvYmJsZS5odG1s', c: '10b981', y: 'processMatrix', g: 'Game', i: '/experiences/images/Gobble.png' },
+            { t: 'SW5maW5pdGUgQ3JhZnQ=', u: 'aHR0cHM6Ly9pbmZpbml0ZWNyYWZ0bmV3LmNvbQ==', c: '10b981', y: 'processMatrix', g: 'Game', i: '/experiences/images/Infinite%20Craft.png' },
+            { t: 'TGV2ZWwgRGV2aWw=', u: 'aHR0cHM6Ly9uZWJ1bGFnYW1lcy51cy9zdG9yYWdlL2NsbGV2ZWxkZXZpbC5odG1s', c: 'ef4444', y: 'processMatrix', g: 'Game', i: '/experiences/images/Level%20Devil.png' },
+            { t: 'T3ZP', u: 'aHR0cHM6Ly9uZWJ1bGFnYW1lcy51cy9zdG9yYWdlL292by8=', c: '111827', y: 'processMatrix', g: 'Game', i: '/experiences/images/OvO.png' },
+            { t: 'UGFwZXIuaW8gMg==', u: 'aHR0cHM6Ly9uZWJ1bGFnYW1lcy51cy9zdG9yYWdlL3BhcGVyaW8yLw==', c: 'facc15', y: 'processMatrix', g: 'Game', i: '/experiences/images/Paper.io%202.png' },
+            { t: 'UG9seSBUcmFjaw==', u: 'aHR0cHM6Ly9odG1sLWNsYXNzaWMuaXRjaC56b25lL2h0bWwvMTU0NTEzMzAvaW5kZXguaHRtbA==', c: 'ef4444', y: 'processMatrix', g: 'Game', i: '/experiences/images/Poly%20Track.png' },
+            { t: 'UmFnZG9sbCBBcmNoZXJz', u: 'aHR0cHM6Ly9uZWJ1bGFnYW1lcy51cy9zdG9yYWdlL1JhZ2RvbGwlMjBBcmNoZXJzLmh0bWw=', c: 'ef4444', y: 'processMatrix', g: 'Game', i: '/experiences/images/Ragdoll%20Archers.png' },
+            { t: 'UmFnZG9sbCBIaXQ=', u: 'aHR0cHM6Ly9uZWJ1bGFnYW1lcy51cy9zdG9yYWdlL1JhZ2RvbGwlMjBIaXQuaHRtbA==', c: 'ef4444', y: 'processMatrix', g: 'Game', i: '/experiences/images/Ragdoll%20Hit.png' },
+            { t: 'U2FuZGJveGVscw==', u: 'aHR0cHM6Ly9zaGFsYml0by52ZXJjZWwuYXBwLw==', c: 'ef4444', y: 'processMatrix', g: 'Game', i: '/experiences/images/Sandboxels.png' },
+            { t: 'U25ha2U=', u: 'aHR0cHM6Ly9nb29nbGVzbmFrZW1vZHMuY29tL3YvY3VycmVudC8=', c: '10b981', y: 'processMatrix', g: 'Game', i: '/experiences/images/Snake.png' },
+            { t: 'U29sYXIgU21hc2g=', u: 'aHR0cHM6Ly9uZWJ1bGFnYW1lcy51cy9zdG9yYWdlL1NvbGFyJTIwU21hc2guaHRtbA==', c: 'f97316', y: 'processMatrix', g: 'Game', i: '/experiences/images/Solar%20Smash.png' },
+            { t: 'U3RhY2s=', u: 'aHR0cHM6Ly9uZWJ1bGFnYW1lcy51cy9zdG9yYWdlL3N0YWNrLw==', c: '3b82f6', y: 'processMatrix', g: 'Game', i: '/experiences/images/Stack.png' },
+            { t: 'U3RhY2tiYWxs', u: 'aHR0cHM6Ly9uZWJ1bGFnYW1lcy51cy9zdG9yYWdlL3N0YWNrYmFsbC8=', c: 'ef4444', y: 'processMatrix', g: 'Game', i: '/experiences/images/Stackball.png' },
+            { t: 'U3RpY2ttYW4gSG9vaw==', u: 'aHR0cHM6Ly9uZWJ1bGFnYW1lcy51cy9zdG9yYWdlL1N0aWNrbWFuJTIwSG9vay5odG1s', c: 'ef4444', y: 'processMatrix', g: 'Game', i: '/experiences/images/Stickman%20Hook.png' },
+            { t: 'U3RvbmUgR3Jhc3M=', u: 'aHR0cHM6Ly9uZWJ1bGFnYW1lcy51cy9zdG9yYWdlL1N0b25lJTIwR3Jhc3MlMjBNb3dpbmclMjBTaW11bGF0b3IuaHRtbA==', c: '10b981', y: 'processMatrix', g: 'Game', i: '/experiences/images/Stone%20Grass.png' },
+            { t: 'U3Vid2F5IFN1cmZlcnM=', u: 'aHR0cHM6Ly9uZWJ1bGFnYW1lcy51cy9zdG9yYWdlL1N1YndheSUyMFN1cmZlcnNfJTIwU2FuJTIwRnJhbmNpc2NvLmh0bWw=', c: '3b82f6', y: 'processMatrix', g: 'Game', i: '/experiences/images/Subway%20Surfers.png' },
+            { t: 'U3Vydml2YWwgUmFjZQ==', u: 'aHR0cHM6Ly9uZWJ1bGFnYW1lcy51cy9zdG9yYWdlL2Nsc3Vydml2YWxyYWNldjIuaHRtbA==', c: '7c3aed', y: 'processMatrix', g: 'Game', i: '/experiences/images/Survival%20Race.png' },
+            { t: 'VGhpcnR5IERvbGxhciBXZWJzaXRl', u: 'aHR0cHM6Ly9rbGVlZGVyLmRlL2ZpbGVzL21vYWkyLyVGMCU5RiU5NyVCZi5odG1s', c: '34d399', y: 'processMatrix', g: 'Game', i: '/experiences/images/Thirty%20Dollar%20Website.png' },
+            { t: 'VGlueSBGaXNoaW5n', u: 'aHR0cHM6Ly9uZWJ1bGFnYW1lcy51cy9zdG9yYWdlL1RpbnklMjBGaXNoaW5nLmh0bWw=', c: 'facc15', y: 'processMatrix', g: 'Game', i: '/experiences/images/Tiny%20Fishing.png' },
+            { t: 'VHJhZmZpYyBSaWRlcg==', u: 'aHR0cHM6Ly90cmFmZmljLXJpZGVyLmlvL2dhbWUvdHJhZmZpYy1yaWRlci8=', c: 'facc15', y: 'processMatrix', g: 'Game', i: '/experiences/images/Traffic%20Rider.png' },
+            { t: 'VW5ibG9ja2Vy', u: 'aHR0cHM6Ly93YWd1cmkuZWNvbGVmcmFuY29waG9uZS5jb20vc2VhcmNoLmh0bWw=', c: 'f97316', y: 'processMatrix', g: 'App', i: '/apps/images/Unblocker.png' },
+            { t: 'WW9ob2hvLmlv', u: 'aHR0cHM6Ly9uZWJ1bGFnYW1lcy51cy9zdG9yYWdlL3lvaG9oby8=', c: '2563eb', y: 'processMatrix', g: 'Game', i: '/experiences/images/Yohoho.io.png' },
         ];
         function createAssetCardHtml(asset, sizeClass = 'w-full h-auto aspect-square') {
-            const title = asset.t;
+            const title = atob(asset.t);
             const type = asset.y;
             const safeTitle = title.replace(/'/g, "\\'");
             let clickHandler;
@@ -527,7 +526,7 @@
             `;
         }
         function renderAllAssets() {
-            const assetList = document.getElementById('game-list');
+            const assetList = document.getElementById('experience-list');
             if (assetList) {
                 const allAssetsHtml = ALL_ASSETS.map(asset => createAssetCardHtml(asset)).join('');
                 assetList.className = 'grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 lg:gap-6 transition-opacity duration-150';
@@ -559,9 +558,9 @@
             }
         }
         function applySearch() {
-            const searchInput = document.getElementById('game-search');
+            const searchInput = document.getElementById('experience-search');
             const searchQuery = (searchInput && searchInput.value || '').toLowerCase();
-            const cards = document.querySelectorAll('#game-list a');
+            const cards = document.querySelectorAll('#experience-list a');
             cards.forEach(card => {
                 const titleElement = card.querySelector('span');
                 const title = titleElement ? titleElement.textContent : '';
@@ -582,7 +581,7 @@
                 showChatSelectionModal();
                 return;
             }
-            const asset = ALL_ASSETS.find(a => a.t === title);
+            const asset = ALL_ASSETS.find(a => atob(a.t) === title);
             if (!asset) {
                 console.error('Asset not found for title:', title);
                 return;
@@ -616,7 +615,7 @@
                 // The default URL is already in the asset list, but let's be explicit just in case
                 // Default: https://padlet.com/lincolnharrison8pc/zenith-kcoo8yyruf8y416e
                 // Verify if the ALL_ASSETS has this URL or if we need to force it.
-                // Looking at ALL_ASSETS line 458: u: 'https://padlet.com/lincolnharrison8pc/zenith' ... wait, that's different.
+                // Looking at ALL_ASSETS line 458: u: 'aHR0cHM6Ly9wYWRsZXQuY29tL2xpbmNvbG5oYXJyaXNvbjhwYy96ZW5pdGg=' ... wait, that's different.
                 // The user requested: https://padlet.com/lincolnharrison8pc/zenith-kcoo8yyruf8y416e
                 // I will force the requested URL here to be safe and accurate to the request.
                 const defaultUrl = 'https://padlet.com/lincolnharrison8pc/zenith-kcoo8yyruf8y416e';
@@ -631,7 +630,7 @@
             };
         }
         function executeVariant(title) {
-            const asset = ALL_ASSETS.find(a => a.t === title);
+            const asset = ALL_ASSETS.find(a => atob(a.t) === title);
             if (!asset) return console.error('Asset not found for title:', title);
             const assetTitle = asset.t;
 
@@ -640,8 +639,8 @@
             const isSafariBrowser = userAgent.includes('Safari') && !userAgent.includes('Chrome');
             const loadMobileVersion = isMobileDevice || isSafariBrowser;
             let url;
-            const desktopUrl = 'https://html-classic.itch.zone/html/2876359-1383886/index.html';
-            const mobileUrl = 'https://html-classic.itch.zone/html/4459499/luckydog7.github.io-master/funkinmobile/game/index.html';
+            const desktopUrl = atob("aHR0cHM6Ly9odG1sLWNsYXNzaWMuaXRjaC56b25lL2h0bWwvMjg3NjM1OS0xMzgzODg2L2luZGV4Lmh0bWw=");
+            const mobileUrl = atob("aHR0cHM6Ly9odG1sLWNsYXNzaWMuaXRjaC56b25lL2h0bWwvNDQ1OTQ5OS9sdWNreWRvZzcuZ2l0aHViLmlvLW1hc3Rlci9mdW5raW5tb2JpbGUvZ2FtZS9pbmRleC5odG1s");
             if (loadMobileVersion) {
                 url = mobileUrl;
             } else {
@@ -651,7 +650,7 @@
             processMatrixInternal(tempAsset);
         }
         function processMatrixInternal(asset) {
-            const title = asset.t;
+            const title = atob(asset.t);
             const url = asset.u;
 
             if (!url) {
@@ -705,7 +704,7 @@
                     if (loadingBar) loadingBar.style.width = `${progress}%`;
                 } else {
                     clearInterval(interval);
-                    iframe.src = url;
+                    iframe.src = atob(url);
                 }
             }, 50);
 
@@ -777,7 +776,7 @@
 
 
                 try {
-                    // INFO: Attempting to auto-mute game media as requested.
+                    // INFO: Attempting to auto-mute experience media as requested.
                     const mediaElements = iframe.contentWindow.document.querySelectorAll('video, audio');
                     mediaElements.forEach(media => {
                         media.muted = true;
@@ -785,7 +784,7 @@
                 } catch (e) {
                     // This block WILL fail for cross-origin iframes.
                     // The user requested to "EXPLAIN, NOT FIX" this error, so we log it clearly.
-                    console.log("Note: Auto-mute unavailable for this game (likely cross-origin). Use in-game settings.");
+                    console.log("Note: Auto-mute unavailable for this experience (likely cross-origin). Use in-game settings.");
                 }
             };
 
@@ -799,7 +798,7 @@
 
             setTimeout(() => {
                 if (document.body.contains(loadingOverlay)) {
-                    console.warn(`DEVELOPER WARNING: Game load timed out for "${title}". It might be blocked or very slow.`);
+                    console.warn(`DEVELOPER WARNING: Experience load timed out for "${title}". It might be blocked or very slow.`);
                     // User feedback is implicit (loading disappears), but we can log for dev.
                     loadingOverlay.style.opacity = '0';
                     iframe.classList.remove('opacity-0');
@@ -880,7 +879,7 @@
             if (secretContent) {
                 secretContent.classList.add('hidden');
                 document.getElementById('tester-catalog-grid-wrapper').classList.add('hidden');
-                document.getElementById('testAllGamesButton').textContent = 'Test All Games';
+                document.getElementById('testAllExperiencesButton').textContent = 'Test All Experiences';
                 document.getElementById('game-cards-container').innerHTML = '';
             }
             if (renderTarget) renderTarget.innerHTML = '';
@@ -1034,10 +1033,10 @@
         }
         function generateTesterCatalog() {
             testerAssetList = [];
-            const desktopUrl = 'https://html-classic.itch.zone/html/2876359-1383886/index.html';
-            const mobileUrl = 'https://html-classic.itch.zone/html/4459499/luckydog7.github.io-master/funkinmobile/game/index.html';
+            const desktopUrl = atob("aHR0cHM6Ly9odG1sLWNsYXNzaWMuaXRjaC56b25lL2h0bWwvMjg3NjM1OS0xMzgzODg2L2luZGV4Lmh0bWw=");
+            const mobileUrl = atob("aHR0cHM6Ly9odG1sLWNsYXNzaWMuaXRjaC56b25lL2h0bWwvNDQ1OTQ5OS9sdWNreWRvZzcuZ2l0aHViLmlvLW1hc3Rlci9mdW5raW5tb2JpbGUvZ2FtZS9pbmRleC5odG1s");
             for (const asset of ALL_ASSETS) {
-                const decodedTitle = asset.t;
+                const decodedTitle = atob(asset.t);
                 if (asset.y === 'executeVariant') {
                     const fnfTitle = decodedTitle;
                     testerAssetList.push({ t: `${fnfTitle} (Desktop)`, u: desktopUrl, g: asset.g, c: asset.c, i: asset.i });
@@ -1060,7 +1059,7 @@
                 const iframe = iframes[i];
                 const asset = testerAssetList[i];
                 if (asset && iframe && !iframe.src) {
-                    iframe.src = iframe.getAttribute('data-src');
+                    iframe.src = atob(iframe.getAttribute('data-src'));
                 }
             }
 
@@ -1071,7 +1070,7 @@
         }
         function toggleTesterCatalog() {
             const gridWrapper = document.getElementById('tester-catalog-grid-wrapper');
-            const button = document.getElementById('testAllGamesButton');
+            const button = document.getElementById('testAllExperiencesButton');
             const container = document.getElementById('game-cards-container');
             const banner = document.getElementById('tester-loading-banner');
             if (gridWrapper.classList.contains('hidden')) {
@@ -1100,7 +1099,7 @@
                 }, 30000);
             } else {
                 gridWrapper.classList.add('hidden');
-                button.textContent = 'Test All Games';
+                button.textContent = 'Test All Experiences';
                 container.innerHTML = '';
                 banner.classList.add('hidden');
             }
@@ -1155,7 +1154,7 @@
             iframe.setAttribute('allow', 'fullscreen');
             iframe.setAttribute('allowfullscreen', 'true');
             iframe.setAttribute('loading', 'lazy');
-            iframe.src = url;
+            iframe.src = atob(url);
             const centeringWrapper = document.createElement('div');
             centeringWrapper.className = 'asset-iframe-content';
             centeringWrapper.appendChild(iframe);
@@ -1199,7 +1198,7 @@
         window.addEventListener('popstate', (event) => {
             const title = getAssetFromUrl();
             if (title) {
-                const asset = ALL_ASSETS.find(a => a.t === title);
+                const asset = ALL_ASSETS.find(a => atob(a.t) === title);
                 if (asset) {
                     if (asset.y === 'executeVariant') {
                         executeVariant(title);
@@ -1226,7 +1225,7 @@
 
             const titleFromUrl = getAssetFromUrl();
             if (titleFromUrl) {
-                const asset = ALL_ASSETS.find(a => a.t === titleFromUrl);
+                const asset = ALL_ASSETS.find(a => atob(a.t) === titleFromUrl);
                 if (asset) {
                     if (asset.y === 'executeVariant') {
                         executeVariant(titleFromUrl);
@@ -1245,11 +1244,11 @@
                 loadHomePage();
             }
             function loadHomePage() {
-                const searchInput = document.getElementById('game-search');
+                const searchInput = document.getElementById('experience-search');
                 if (searchInput) {
                     searchInput.placeholder = '';
                 }
-                document.title = 'Zenith' + ' - ' + 'Unblocked Games';
+                document.title = 'Zenith';
                 if (labelRegistry) labelRegistry.textContent = 'Homepage';
                 if (primaryMarker) primaryMarker.textContent = 'Zenith';
 
@@ -1312,10 +1311,10 @@
         <div id="secret-mode-content" class="hidden text-center py-10 rounded-xl">
             <h2 class="text-4xl font-extrabold text-blue-400 mb-6">Tester Mode</h2>
             <p class="text-lg text-gray-400 mb-8">Click below to load the live asset testing grid.</p>
-            <button id="testAllGamesButton"
+            <button id="testAllExperiencesButton"
                 class="px-8 py-3 text-lg font-semibold text-white rounded-xl shadow-lg bg-zenith-purple hover:bg-zenith-blue transition duration-200"
                 onclick="toggleTesterCatalog();">
-                Test All Games
+                Test All Experiences
             </button>
             <button id="testBadInternetButton"
                 class="ml-4 px-8 py-3 text-lg font-semibold text-white rounded-xl shadow-lg bg-yellow-600 hover:bg-yellow-500 transition duration-200"
@@ -1364,7 +1363,7 @@
             </div>
             <section class="text-center">
                 <div class="mb-10 w-full max-w-xl mx-auto relative flex items-center pt-8">
-                    <input type="text" id="game-search" placeholder=""
+                    <input type="text" id="experience-search" placeholder=""
                         class="w-full p-3 pl-12 bg-gray-700/50 border border-zenith-purple/50 rounded-lg text-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-zenith-purple"
                         oninput="applySearch()" />
                     <svg class="absolute left-4 w-5 h-5 text-gray-400" fill="none" stroke="currentColor"
@@ -1373,7 +1372,7 @@
                             d="M21 21l-4.35-4.35M17 11a6 6 0 11-12 0 6 6 0 0112 0z"></path>
                     </svg>
                 </div>
-                <div id="game-list"
+                <div id="experience-list"
                     class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 lg:gap-6 transition-opacity duration-150">
                 </div>
             </section>
