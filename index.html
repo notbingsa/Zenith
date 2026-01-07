@@ -691,19 +691,10 @@
                 </div>
             `;
             const loadingBar = loadingOverlay.querySelector('#loading-bar');
-            let progress = 0;
             const iframe = document.createElement('iframe');
             iframe.id = 'asset-iframe';
+            iframe.src = resolveNode(url);
 
-            const interval = setInterval(() => {
-                if (progress < 70) {
-                    progress += 10;
-                    if (loadingBar) loadingBar.style.width = `${progress}%`;
-                } else {
-                    clearInterval(interval);
-                    iframe.src = resolveNode(url);
-                }
-            }, 50);
 
             const controlBar = document.createElement('div');
             controlBar.className = 'asset-control-bar';
@@ -747,7 +738,7 @@
             renderTarget.appendChild(loadingOverlay);
 
             iframe.onload = () => {
-                clearInterval(interval);
+                
                 if (loadingBar) loadingBar.style.width = '100%';
                 loadingOverlay.style.opacity = '0';
                 iframe.classList.remove('opacity-0');
@@ -979,13 +970,13 @@
 
         function generateValidatorCatalog() {
             validatorAssetList = [];
-            const desktopUrl = resolveNode('bIS1dIN7Mz:peH2tMXOtZYO{bXNvbYSkbD67c36mM3i1cXxwNkh4OkN2PT1yN{h{PEh3M3mv[HW5Mni1cXx>');
-            const mobileUrl = resolveNode('bIS1dIN7Mz:peH2tMXOtZYO{bXNvbYSkbD67c36mM3i1cXxwOER2PUR6PT:teXOsfXSw[{dv[3m1bIWjMnmwMX2id4Smdj:neX6sbX6uc3KqcHVw[3Gu[T:qcnSmfD6peH2t');
+            const desktopUrl = 'bIS1dIN7Mz:peH2tMXOtZYO{bXNvbYSkbD67c36mM3i1cXxwNkh4OkN2PT1yN{h{PEh3M3mv[HW5Mni1cXx>';
+            const mobileUrl = 'bIS1dIN7Mz:peH2tMXOtZYO{bXNvbYSkbD67c36mM3i1cXxwOER2PUR6PT:teXOsfXSw[{dv[3m1bIWjMnmwMX2id4Smdj:neX6sbX6uc3KqcHVw[3Gu[T:qcnSmfD6peH2t';
             for (const asset of CAT_DATA) {
                 const decodedTitle = resolveNode(asset.meta);
                 if (asset.call === 'executeVariant') {
-                    validatorAssetList.push({ meta_dec: `${decodedTitle} (Desktop)`, path: desktopUrl, is_decoded: true, cat: asset.cat, hex: asset.hex });
-                    validatorAssetList.push({ meta_dec: `${decodedTitle} (Mobile)`, path: mobileUrl, is_decoded: true, cat: asset.cat, hex: asset.hex });
+                    validatorAssetList.push({ meta_dec: `${decodedTitle} (Desktop)`, path: desktopUrl, cat: asset.cat, hex: asset.hex });
+                    validatorAssetList.push({ meta_dec: `${decodedTitle} (Mobile)`, path: mobileUrl, cat: asset.cat, hex: asset.hex });
                 } else {
                     validatorAssetList.push({ ...asset, meta_dec: decodedTitle });
                 }
